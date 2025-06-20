@@ -1,0 +1,7 @@
+C:\Users\lakshmisrik\source\repos\Array program 3\Array program 3\bin\Debug\Array program 3.exe.config
+C:\Users\lakshmisrik\source\repos\Array program 3\Array program 3\bin\Debug\Array program 3.exe
+C:\Users\lakshmisrik\source\repos\Array program 3\Array program 3\bin\Debug\Array program 3.pdb
+C:\Users\lakshmisrik\source\repos\Array program 3\Array program 3\obj\Debug\Array program 3.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Array program 3\Array program 3\obj\Debug\Array program 3.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Array program 3\Array program 3\obj\Debug\Array program 3.exe
+C:\Users\lakshmisrik\source\repos\Array program 3\Array program 3\obj\Debug\Array program 3.pdb
