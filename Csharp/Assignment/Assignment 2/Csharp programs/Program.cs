@@ -14,7 +14,7 @@ namespace Csharp_programs
             int k, l, temp;
             Console.Write("=== swaping of numbers===");
 
-            Console.Write("\nenter first number:");
+            Console.Write("\n enter first number:");
             k = Convert.ToInt32(Console.ReadLine());
 
             Console.Write("enter second number:");
