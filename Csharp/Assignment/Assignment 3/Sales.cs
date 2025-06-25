@@ -1,46 +1,32 @@
 ﻿using System;
 
-public class SaleDetails
+class Saledetails
 {
-    int SalesNo;
-    int ProductNo;
-    double Price;
-    string DateOfSale;
-    int Qty;
-    double TotalAmount;
+    public int SalesNo;
+    public int ProductNo;
+    public double Price;
+    public DateTime DateOfSale;
+    public int Qty;
+    public double TotalAmount;
 
-    public void ProcessSale()
+    public Saledetails(int salesNo, int productNo, double price, int qty, DateTime dateOfSale)
     {
-        Console.WriteLine("");
-
-        Console.Write("Enter Sales Number: ");
-        SalesNo = Convert.ToInt32(Console.ReadLine());
-
-        Console.Write("Enter Product Number: ");
-        ProductNo = Convert.ToInt32(Console.ReadLine());
-
-        Console.Write("Enter Price: ");
-        Price = Convert.ToDouble(Console.ReadLine());
-
-        Console.Write("Enter Quantity: ");
-        Qty = Convert.ToInt32(Console.ReadLine());
-
-        Console.Write("Enter Date of Sale (dd/mm/yyyy): ");
-        DateOfSale = Console.ReadLine();
-
+        SalesNo = salesNo;
+        ProductNo = productNo;
+        Price = price;
+        Qty = qty;
+        DateOfSale = dateOfSale;
         Sales();
-        ShowData();
     }
 
-    void Sales()
+    public void Sales()
     {
-        TotalAmount = Qty * Price;
+        TotalAmount = Price * Qty;
     }
 
-    void ShowData()
+    public static void ShowData(Saledetails sale)
     {
-        Console.WriteLine("\n--- Sales Details ---");
-        Console.WriteLine($"Sales No: {SalesNo}, Product No: {ProductNo}, Price: {Price}, Qty: {Qty}, Date: {DateOfSale}, Total Amount: {TotalAmount}");
-        Console.ReadLine();
+        Console.WriteLine($"Sales No: {sale.SalesNo}\nProduct No: {sale.ProductNo}\nPrice: {sale.Price}");
+        Console.WriteLine($"Quantity: {sale.Qty}\nDate: {sale.DateOfSale.ToShortDateString()}\nTotal Amount: {sale.TotalAmount}");
     }
 }

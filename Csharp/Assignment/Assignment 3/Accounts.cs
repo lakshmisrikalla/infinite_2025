@@ -1,59 +1,52 @@
 ﻿using System;
 
-public class Accounts
+class Accounts
 {
-    int AccNo;
-    string CustName;
-    string AccType;
-    char TransactionType;
-    int Amount;
-    int Balance;
+    public int AccountNo;
+    public string CustomerName;
+    public string AccountType;
+    public char TransactionType; // D/W
+    public int Amount;
+    public int Balance;
 
-    public void ProcessAccount()
+    public Accounts(int accNo, string name, string accType, char transType, int amount, int balance)
     {
-        Console.Write("Enter Account Number: ");
-        AccNo = Convert.ToInt32(Console.ReadLine());
-
-        Console.Write("Enter Customer Name: ");
-        CustName = Console.ReadLine();
-
-        Console.Write("Enter Account Type: ");
-        AccType = Console.ReadLine();
-
-        Console.Write("Enter Transaction Type (D/W): ");
-        TransactionType = Convert.ToChar(Console.ReadLine());
-
-        Console.Write("Enter Transaction Amount: ");
-        Amount = Convert.ToInt32(Console.ReadLine());
-
-        Console.Write("Enter Current Balance: ");
-        Balance = Convert.ToInt32(Console.ReadLine());
-
+        AccountNo = accNo;
+        CustomerName = name;
+        AccountType = accType;
+        TransactionType = transType;
+        Amount = amount;
+        Balance = balance;
         UpdateBalance();
-        ShowData();
     }
 
-    void Credit(int amount) => Balance += amount;
-
-    void Debit(int amount)
-    {
-        if (amount <= Balance)
-            Balance -= amount;
-        else
-            Console.WriteLine("Insufficient balance.");
-    }
-
-    void UpdateBalance()
+    private void UpdateBalance()
     {
         if (TransactionType == 'D' || TransactionType == 'd')
             Credit(Amount);
         else if (TransactionType == 'W' || TransactionType == 'w')
             Debit(Amount);
+        else
+            Console.WriteLine("Invalid transaction type");
+    }
+
+    public void Credit(int amount)
+    {
+        Balance += amount;
+    }
+
+    public void Debit(int amount)
+    {
+        if (amount <= Balance)
+            Balance -= amount;
+        else
+            Console.WriteLine("Insufficient balance");
     }
 
     public void ShowData()
     {
-        Console.WriteLine("\n--- Account Details ---");
-        Console.WriteLine($"Account No: {AccNo}\nCustomer Name: {CustName}\nAccount Type: {AccType}\nTransaction Type: {TransactionType}\nAmount: {Amount}\nBalance: {Balance}");
+        Console.WriteLine($"Account No: {AccountNo}\nName: {CustomerName}\nAccount Type: {AccountType}");
+        Console.WriteLine($"Transaction: {TransactionType}\nAmount: {Amount}\nUpdated Balance: Rs{Balance}");
     }
 }
+

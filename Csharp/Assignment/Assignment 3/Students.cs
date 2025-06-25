@@ -1,68 +1,57 @@
 ﻿using System;
 
-public class Student
+class Student
 {
-    int RollNo;
-    string Name;
-    string ClassName;
-    int Semester;
-    string Branch;
-    int[] Marks = new int[5];
+    public int RollNo;
+    public string Name;
+    public string Class;
+    public string Semester;
+    public string Branch;
+    public int[] Marks = new int[5];
 
-    public void ProcessStudent()
+    public Student(int rollNo, string name, string cls, string sem, string branch)
     {
-        Console.WriteLine("");
-        Console.Write("Enter Roll Number: ");
-        RollNo = Convert.ToInt32(Console.ReadLine());
-
-        Console.Write("Enter Name: ");
-        Name = Console.ReadLine();
-
-        Console.Write("Enter Class: ");
-        ClassName = Console.ReadLine();
-
-        Console.Write("Enter Semester: ");
-        Semester = Convert.ToInt32(Console.ReadLine());
-
-        Console.Write("Enter Branch: ");
-        Branch = Console.ReadLine();
-
-        GetMarks();
-        DisplayResult();
-        DisplayData();
+        RollNo = rollNo;
+        Name = name;
+        Class = cls;
+        Semester = sem;
+        Branch = branch;
     }
 
-    void GetMarks()
+    public void GetMarks()
     {
-        Console.WriteLine("Enter marks for 5 subjects:");
+        Console.WriteLine($"Enter marks for {Name}:");
         for (int i = 0; i < 5; i++)
         {
             Console.Write($"Subject {i + 1}: ");
-            Marks[i] = Convert.ToInt32(Console.ReadLine());
+            Marks[i] = int.Parse(Console.ReadLine());
         }
     }
 
-    void DisplayResult()
+    public void DisplayResult()
     {
         int total = 0;
-        bool fail = false;
+        bool hasFailedSubject = false;
 
         foreach (int mark in Marks)
         {
-            if (mark < 35)
-                fail = true;
             total += mark;
+            if (mark < 35) hasFailedSubject = true;
         }
 
-        double average = total / 5.0;
+        double avg = total / 5.0;
 
-        Console.WriteLine(fail || average < 50 ? "Result: Failed" : "Result: Passed");
+        if (hasFailedSubject)
+            Console.WriteLine("Result: Failed (Subject mark < 35)");
+        else if (avg < 50)
+            Console.WriteLine("Result: Failed (Average < 50)");
+        else
+            Console.WriteLine("Result: Passed");
     }
 
-    void DisplayData()
+    public void DisplayData()
     {
-        Console.WriteLine("\n--- Student Details ---");
-        Console.WriteLine($"Roll No: {RollNo}, Name: {Name}, Class: {ClassName}, Semester: {Semester}, Branch: {Branch}");
+        Console.WriteLine($"Roll No: {RollNo}\nName: {Name}\nClass: {Class}\nSemester: {Semester}\nBranch: {Branch}");
         Console.WriteLine("Marks: " + string.Join(", ", Marks));
     }
 }
