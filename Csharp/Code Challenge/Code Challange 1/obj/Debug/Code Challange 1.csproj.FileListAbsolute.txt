@@ -1,0 +1,7 @@
+C:\Users\lakshmisrik\source\repos\Code Challange 1\Code Challange 1\bin\Debug\Code Challange 1.exe.config
+C:\Users\lakshmisrik\source\repos\Code Challange 1\Code Challange 1\bin\Debug\Code Challange 1.exe
+C:\Users\lakshmisrik\source\repos\Code Challange 1\Code Challange 1\bin\Debug\Code Challange 1.pdb
+C:\Users\lakshmisrik\source\repos\Code Challange 1\Code Challange 1\obj\Debug\Code Challange 1.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Code Challange 1\Code Challange 1\obj\Debug\Code Challange 1.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Code Challange 1\Code Challange 1\obj\Debug\Code Challange 1.exe
+C:\Users\lakshmisrik\source\repos\Code Challange 1\Code Challange 1\obj\Debug\Code Challange 1.pdb
