@@ -1,0 +1,7 @@
+C:\Users\lakshmisrik\source\repos\Assignment 5\Assignment 5\obj\Debug\Assignment 5.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Assignment 5\Assignment 5\obj\Debug\Assignment 5.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Assignment 5\Assignment 5\bin\Debug\Assignment 5.exe.config
+C:\Users\lakshmisrik\source\repos\Assignment 5\Assignment 5\bin\Debug\Assignment 5.exe
+C:\Users\lakshmisrik\source\repos\Assignment 5\Assignment 5\bin\Debug\Assignment 5.pdb
+C:\Users\lakshmisrik\source\repos\Assignment 5\Assignment 5\obj\Debug\Assignment 5.exe
+C:\Users\lakshmisrik\source\repos\Assignment 5\Assignment 5\obj\Debug\Assignment 5.pdb
