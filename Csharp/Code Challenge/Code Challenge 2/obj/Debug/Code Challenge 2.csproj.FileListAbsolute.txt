@@ -1,0 +1,7 @@
+C:\Users\lakshmisrik\source\repos\Code Challenge 2\Code Challenge 2\bin\Debug\Code Challenge 2.exe.config
+C:\Users\lakshmisrik\source\repos\Code Challenge 2\Code Challenge 2\bin\Debug\Code Challenge 2.exe
+C:\Users\lakshmisrik\source\repos\Code Challenge 2\Code Challenge 2\bin\Debug\Code Challenge 2.pdb
+C:\Users\lakshmisrik\source\repos\Code Challenge 2\Code Challenge 2\obj\Debug\Code Challenge 2.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Code Challenge 2\Code Challenge 2\obj\Debug\Code Challenge 2.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Code Challenge 2\Code Challenge 2\obj\Debug\Code Challenge 2.exe
+C:\Users\lakshmisrik\source\repos\Code Challenge 2\Code Challenge 2\obj\Debug\Code Challenge 2.pdb
