@@ -1,0 +1,10 @@
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\bin\Debug\Assignment 7.exe.config
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\bin\Debug\Assignment 7.exe
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\bin\Debug\Assignment 7.pdb
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\obj\Debug\Assignment 7.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\obj\Debug\Assignment 7.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\obj\Debug\Assignment 7.exe
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\obj\Debug\Assignment 7.pdb
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\bin\Debug\ClassLibrary.dll
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\bin\Debug\ClassLibrary.pdb
+C:\Users\lakshmisrik\source\repos\Assignment 7\Assignment 7\obj\Debug\Assignment 7.csproj.CopyComplete
