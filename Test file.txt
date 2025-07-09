@@ -1,1 +1,4 @@
 hello
+This is the new line of text to append.
+This is the new line of text to append.
+This is the new line of text to append.
