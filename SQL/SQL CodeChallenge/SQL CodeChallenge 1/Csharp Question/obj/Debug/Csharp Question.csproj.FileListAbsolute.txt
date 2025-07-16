@@ -1,0 +1,7 @@
+C:\Users\lakshmisrik\source\repos\Csharp Question\Csharp Question\bin\Debug\Csharp Question.exe.config
+C:\Users\lakshmisrik\source\repos\Csharp Question\Csharp Question\bin\Debug\Csharp Question.exe
+C:\Users\lakshmisrik\source\repos\Csharp Question\Csharp Question\bin\Debug\Csharp Question.pdb
+C:\Users\lakshmisrik\source\repos\Csharp Question\Csharp Question\obj\Debug\Csharp Question.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Csharp Question\Csharp Question\obj\Debug\Csharp Question.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Csharp Question\Csharp Question\obj\Debug\Csharp Question.exe
+C:\Users\lakshmisrik\source\repos\Csharp Question\Csharp Question\obj\Debug\Csharp Question.pdb
