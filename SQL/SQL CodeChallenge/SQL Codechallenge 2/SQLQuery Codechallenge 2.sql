@@ -41,10 +41,9 @@ Where MONTH(doj) = MONTH(GETDATE()) AND DATEDIFF(YEAR, doj, GETDATE()) >= 5;
 
 
 -- 4) Query 4
+use Codechallenge;
 
 BEGIN TRANSACTION;
-
-Select * From TestEmp;
 
 -- a. Insert 3 rows
 Insert Into TestEmp Values 
@@ -55,13 +54,15 @@ Insert Into TestEmp Values
 -- b. Update second row's salary by 15%
 UPDATE TestEmp SET sal = sal * 1.15 WHERE empno = 102;
 
+Select * From TestEmp;
+
 -- c. Delete first row
 SAVE TRANSACTION AFTERDELETE
 DELETE FROM TestEmp WHERE empno = 101;
 ROLLBACK TRANSACTION AFTERDELETE
 COMMIT;
 
-Select * From TestEmp;
+
 
 -- 5) Query 5
 CREATE OR ALTER FUNCTION fn_CalculateBonus(@deptno INT, @salary FLOAT)
