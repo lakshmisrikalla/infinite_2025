@@ -1,0 +1,7 @@
+C:\Users\lakshmisrik\source\repos\Codechallenge 1 ADO\Codechallenge 1 ADO\bin\Debug\Codechallenge 1 ADO.exe.config
+C:\Users\lakshmisrik\source\repos\Codechallenge 1 ADO\Codechallenge 1 ADO\bin\Debug\Codechallenge 1 ADO.exe
+C:\Users\lakshmisrik\source\repos\Codechallenge 1 ADO\Codechallenge 1 ADO\bin\Debug\Codechallenge 1 ADO.pdb
+C:\Users\lakshmisrik\source\repos\Codechallenge 1 ADO\Codechallenge 1 ADO\obj\Debug\Codechallenge 1 ADO.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Codechallenge 1 ADO\Codechallenge 1 ADO\obj\Debug\Codechallenge 1 ADO.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Codechallenge 1 ADO\Codechallenge 1 ADO\obj\Debug\Codechallenge 1 ADO.exe
+C:\Users\lakshmisrik\source\repos\Codechallenge 1 ADO\Codechallenge 1 ADO\obj\Debug\Codechallenge 1 ADO.pdb
