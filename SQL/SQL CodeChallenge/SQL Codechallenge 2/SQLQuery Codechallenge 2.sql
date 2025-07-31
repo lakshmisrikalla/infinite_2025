@@ -109,5 +109,6 @@ END;
 EXEC sp_UpdateSalesSalary;
 
 Select * From Emp;
+Select * From Dept;
 
 

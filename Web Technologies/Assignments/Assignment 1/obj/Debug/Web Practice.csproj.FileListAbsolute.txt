@@ -1,0 +1,7 @@
+C:\Users\lakshmisrik\source\repos\Web Practice\Web Practice\bin\Debug\Web Practice.exe.config
+C:\Users\lakshmisrik\source\repos\Web Practice\Web Practice\bin\Debug\Web Practice.exe
+C:\Users\lakshmisrik\source\repos\Web Practice\Web Practice\bin\Debug\Web Practice.pdb
+C:\Users\lakshmisrik\source\repos\Web Practice\Web Practice\obj\Debug\Web Practice.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\Web Practice\Web Practice\obj\Debug\Web Practice.csproj.CoreCompileInputs.cache
+C:\Users\lakshmisrik\source\repos\Web Practice\Web Practice\obj\Debug\Web Practice.exe
+C:\Users\lakshmisrik\source\repos\Web Practice\Web Practice\obj\Debug\Web Practice.pdb
