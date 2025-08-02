@@ -1,0 +1,245 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title> To-Do List</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdf6f0;
+            color: #333;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 60%;
+            object-fit: cover;
+        }
+        h1 {
+            text-align: center;
+            font-size: 36px;
+            color: #6a4c93;
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            font-size: 16px;
+            border: 2px solid #d3cce3;
+            border-radius: 8px;
+            background-color: #fff0f6;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-left: 10px;
+            background-color: #cdb4db;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+            button:hover {
+                background-color: #b5a1c5;
+            }
+
+        .task-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .task-column {
+            width: 45%;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #5c5470;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #e2eafc;
+            margin-bottom: 10px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+
+            li:hover {
+                background-color: #d0dfff;
+            }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .icon-btn {
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            padding: 6px 14px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .complete-btn {
+            background-color: #b5ead7;
+            color: #333;
+        }
+
+            .complete-btn:hover {
+                background-color: #a0dbc7;
+            }
+
+        .delete-btn {
+            background-color: #ffc8dd;
+            color: #333;
+        }
+
+            .delete-btn:hover {
+                background-color: #ffafcc;
+            }
+
+        .tick-icon {
+            display: inline-block;
+            width: 10px;
+            height: 18px;
+            border: solid #333;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <img src="Logo.jpg" alt="Logo" class="logo">
+        <h1>My To-Do List</h1>
+    </div>
+   
+
+    <div class="input-section">
+        <input type="text" id="taskInput" placeholder="Enter a task">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div class="task-section">
+        <div class="task-column">
+            <h2>Pending Tasks</h2>
+            <ul id="pendingList"></ul>
+        </div>
+
+        <div class="task-column">
+            <h2>Finished Tasks</h2>
+            <ul id="finishedList"></ul>
+        </div>
+    </div>
+
+    <script>
+        function addTask() {
+            const input = document.getElementById("taskInput");
+            const taskText = input.value.trim();
+
+            if (taskText === "") {
+                alert("Please enter a task.");
+                return;
+            }
+
+            const li = document.createElement("li");
+            li.textContent = taskText;
+
+            const btnGroup = document.createElement("div");
+            btnGroup.className = "btn-group";
+
+            const completeBtn = document.createElement("button");
+            completeBtn.className = "icon-btn complete-btn";
+
+            const tickIcon = document.createElement("span");
+            tickIcon.className = "tick-icon";
+            completeBtn.appendChild(tickIcon);
+
+            completeBtn.onclick = function () {
+                moveToFinished(li);
+            };
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "icon-btn delete-btn";
+            deleteBtn.textContent = "Delete";
+            deleteBtn.onclick = function () {
+                li.remove();
+            };
+
+            btnGroup.appendChild(completeBtn);
+            btnGroup.appendChild(deleteBtn);
+            li.appendChild(btnGroup);
+
+            document.getElementById("pendingList").appendChild(li);
+            input.value = "";
+        }
+
+        function moveToFinished(taskItem) {
+            taskItem.remove();
+
+            const finishedItem = document.createElement("li");
+            finishedItem.textContent = taskItem.firstChild.textContent;
+
+            const btnGroup = document.createElement("div");
+            btnGroup.className = "btn-group";
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "icon-btn delete-btn";
+            deleteBtn.textContent = "Delete";
+            deleteBtn.onclick = function () {
+                finishedItem.remove();
+            };
+
+            btnGroup.appendChild(deleteBtn);
+            finishedItem.appendChild(btnGroup);
+
+            document.getElementById("finishedList").appendChild(finishedItem);
+        }
+    </script>
+
+</body>
+</html>
