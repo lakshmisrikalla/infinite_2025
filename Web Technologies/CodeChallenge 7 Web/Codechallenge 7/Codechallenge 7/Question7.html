@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title> Add Index to list items</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h3>Add Index to List Items</h3>
+
+    <ul>
+        <li>CSHARP</li>
+        <li>SQL</li>
+        <li>ADO</li>
+    </ul>
+
+    <button id="addIndex">Add Index</button>
+
+    <script>$(document).ready(function() {
+      $("#addIndex").click(function() {
+        $("li").each(function(index) {
+          var Text = $(this).text();
+          $(this).text(index + " " + Text);
+        });
+      });
+    });</script>
+
+</body>
+</html>

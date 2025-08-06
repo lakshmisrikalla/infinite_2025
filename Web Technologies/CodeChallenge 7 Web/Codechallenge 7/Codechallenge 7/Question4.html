@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+        <title>Hide Odd Rows</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+<body>
+
+    <h2>Table Example</h2>
+
+    <table border="1" id="myTable">
+        <tr><td>Row 1</td></tr>
+        <tr><td>Row 2</td></tr>
+        <tr><td>Row 3</td></tr>
+        <tr><td>Row 4</td></tr>
+        <tr><td>Row 5</td></tr>
+    </table>
+
+    <br>
+    <button onclick="hideOddRows()">Hide Odd Rows</button>
+
+    <script>
+        function hideOddRows() {
+            $(" tr:odd").hide(); // Hides rows with odd index: Row 2, 4
+        }
+    </script>
+
+</body>
+</html>

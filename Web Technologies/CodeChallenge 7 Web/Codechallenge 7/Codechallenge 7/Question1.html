@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title> Multiplication and Division</title>
+</head>
+<body>
+    <h2>Calculator</h2>
+    <label>1st Number: <input type="number" id="num1"></label><br><br>
+    <label>2nd Number: <input type="number" id="num2"></label><br><br>
+    <button onclick="multiply()">Multiply</button>
+    <button onclick="divide()">Divide</button>
+    <p id="result">The Result Is: </p>
+
+    <script>function multiply() {
+      const a = parseFloat(document.getElementById("num1").value);
+      const b = parseFloat(document.getElementById("num2").value);
+      document.getElementById("result").innerText = "The Result Is: " + (a * b);
+    }
+
+    function divide() {
+      const a = parseFloat(document.getElementById("num1").value);
+      const b = parseFloat(document.getElementById("num2").value);
+      if (b !== 0) {
+        document.getElementById("result").innerText = "The Result Is: " + (a / b);
+      } else {
+        document.getElementById("result").innerText = "Cannot divide by zero";
+      }
+    }</script>
+</body>
+</html>

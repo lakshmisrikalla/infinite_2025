@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Input Change Message</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h3>Append Message on Input Change</h3>
+
+    <input type="text" id="myInput" placeholder="Type" />
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput").change(function () {
+                $("body").append("<p>Input field is changed.</p>");
+            });
+        });
+    </script>
+
+</body>
+</html>

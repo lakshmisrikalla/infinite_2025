@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+        <title>Style h1 in div</title>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+<body>
+
+    <h3> Applying Background to h1 Elements Inside div</h3>
+
+    <div>
+        <h1>This H1 is directly inside a div</h1>
+    </div>
+
+  
+        <p>
+            <h1>This H1 is inside a paragraph (won’t be styled)</h1>
+        </p>
+ 
+
+    <section>
+        <h1>This H1 is inside a section (won’t be styled)</h1>
+    </section>
+
+    <h1>This H1 is outside any div (won’t be styled)</h1>
+
+    <button id="styleH1">Apply Background</button>
+
+    <script>
+        $(document).ready(function () {
+            $("#styleH1").click(function () {
+                $("div > h1").css("background-color", "lightblue");
+            });
+        });
+    </script>
+
+</body>
+</html>

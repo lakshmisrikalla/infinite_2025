@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CAF925B5-4573-4F5D-9C5C-CB1A25BA4198}</ProjectGuid>
+    <ProjectGuid>{929C4A0F-4F34-4C20-8C4C-CF9F752F8F0C}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>To_Do_List_Web</RootNamespace>
-    <AssemblyName>To Do List Web</AssemblyName>
+    <RootNamespace>Codechallenge_7</RootNamespace>
+    <AssemblyName>Codechallenge 7</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -50,7 +50,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="To Do List.html" />
+    <Content Include="Question1.html" />
+    <Content Include="Question2.html" />
+    <Content Include="Question3.html" />
+    <Content Include="Question4.html" />
+    <Content Include="Question5.html" />
+    <Content Include="Question6.html" />
+    <Content Include="Question7.html" />
+    <Content Include="Question8.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

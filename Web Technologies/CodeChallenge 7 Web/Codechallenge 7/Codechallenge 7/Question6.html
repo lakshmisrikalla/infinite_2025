@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title> Single Element </title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h3>Single Element from a Selection</h3>
+
+    <ul>
+        <li>CSHARP</li>
+        <li>SQL</li>
+        <li>ADO</li>
+    </ul>
+
+    <button id="getElement">Get Element</button>
+
+    <div id="result"></div>
+
+    <script>
+        $(document).ready(function () {
+            $("#getElement").click(function () {
+                // index 1 <li> element from the selection
+                var Item = $("li").get(1); 
+                $("#result").text(" Item : " + Item.innerText);
+            });
+        });
+    </script>
+
+</body>
+</html>
