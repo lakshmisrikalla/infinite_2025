@@ -68,7 +68,7 @@ namespace Mini_Project
             while (!exitUpdate)
             {
                 Console.Clear();
-                Console.WriteLine($"✏️ Modify Details for Train ID: {trainId}");
+                Console.WriteLine($" Modify Details for Train ID: {trainId}");
                 Console.WriteLine("1. Change Train Name");
                 Console.WriteLine("2. Update Fare");
                 Console.WriteLine("3. Change Source & Destination");
@@ -226,9 +226,9 @@ namespace Mini_Project
                         Console.WriteLine($"\nTrain ID: {reader["TrainNo"]}");
                         Console.WriteLine($"Name: {reader["TrainName"]}");
                         Console.WriteLine($"Route: {reader["Source"]} To {reader["Destination"]}");
-                        Console.WriteLine($"Sleeper Seats: {reader["SleeperSeats"]} | Fare: ₹{reader["SleeperFare"]}");
-                        Console.WriteLine($"2nd AC Seats: {reader["SecondACSeats"]} | Fare: ₹{reader["SecondACFare"]}");
-                        Console.WriteLine($"3rd AC Seats: {reader["ThirdACSeats"]} | Fare: ₹{reader["ThirdACFare"]}");
+                        Console.WriteLine($"Sleeper Seats: {reader["SleeperSeats"]} | Fare: Rs{reader["SleeperFare"]}");
+                        Console.WriteLine($"2nd AC Seats: {reader["SecondACSeats"]} | Fare: Rs{reader["SecondACFare"]}");
+                        Console.WriteLine($"3rd AC Seats: {reader["ThirdACSeats"]} | Fare: Rs{reader["ThirdACFare"]}");
                         Console.WriteLine($"Status: {(Convert.ToBoolean(reader["IsActive"]) ? " Active" : "Suspended")}");
                     }
                 }

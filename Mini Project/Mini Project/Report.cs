@@ -157,9 +157,9 @@ namespace Mini_Project
                         Console.WriteLine($"\nTrain ID: {reader["TrainNo"]}");
                         Console.WriteLine($"Name: {reader["TrainName"]}");
                         Console.WriteLine($"Route: {reader["Source"]} To {reader["Destination"]}");
-                        Console.WriteLine($"Sleeper: {reader["SleeperSeats"]} seats | ₹{reader["SleeperFare"]}");
-                        Console.WriteLine($"2nd AC: {reader["SecondACSeats"]} seats | ₹{reader["SecondACFare"]}");
-                        Console.WriteLine($"3rd AC: {reader["ThirdACSeats"]} seats | ₹{reader["ThirdACFare"]}");
+                        Console.WriteLine($"Sleeper: {reader["SleeperSeats"]} seats | Rs{reader["SleeperFare"]}");
+                        Console.WriteLine($"2nd AC: {reader["SecondACSeats"]} seats | Rs{reader["SecondACFare"]}");
+                        Console.WriteLine($"3rd AC: {reader["ThirdACSeats"]} seats | Rs{reader["ThirdACFare"]}");
                     }
 
                     if (!hasRows)
