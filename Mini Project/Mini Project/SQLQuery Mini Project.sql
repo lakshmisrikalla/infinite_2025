@@ -1,11 +1,11 @@
-create database Miniprojects;
+create database Miniproject;
 
-use Miniprojects;
+use Miniproject;
 -- Admin Table
 CREATE TABLE Admin (
     AdminID INT PRIMARY KEY IDENTITY(1,1),
     Username NVARCHAR(50) UNIQUE,
-    Password NVARCHAR(50) -- You can hash this later
+    Password NVARCHAR(50) 
 );
 
 -- inserting values in admin
@@ -79,26 +79,16 @@ BEGIN
 END;
 --
 
-USE Miniprojects;
-SELECT * FROM Admin;
 
 -- sample trains 
-USE Miniprojects;
+USE Miniproject;
 
 INSERT INTO Train (TrainName, Source, Destination, SleeperSeats, SecondACSeats, ThirdACSeats,SleeperFare, SecondACFare, ThirdACFare, IsActive)VALUES
--- Train 1
+
 ('Godavari Express', 'Visakhapatnam', 'Hyderabad',120, 40, 60,350.00, 950.00, 700.00,1),
-
--- Train 2
 ('Konark Express', 'Mumbai', 'Bhubaneswar',150, 50, 80,400.00, 1000.00, 750.00,1),
-
--- Train 3
 ('Coromandel Express', 'Kolkata', 'Chennai',180, 60, 90,420.00, 1100.00, 800.00,1),
-
--- Train 4
 ('Vande Bharat Express', 'Delhi', 'Varanasi',100, 30, 50,600.00, 1500.00, 1100.00,1),
-
--- Train 5
 ('Palnadu Express', 'Guntur', 'Vijayawada',80, 20, 30,150.00, 500.00, 350.00,1);
 
 -- To view 
@@ -111,7 +101,6 @@ SELECT *FROM Train;
 
 SELECT *FROM Reservation;
 
-
 SELECT *FROM Cancellation;
 
 --
@@ -119,4 +108,4 @@ ALTER TABLE Reservation ADD TrainNo INT FOREIGN KEY REFERENCES Train(TrainNo);
 
 ALTER TABLE Reservation ADD Status NVARCHAR(20) DEFAULT 'Confirmed';
 
-
+SELECT AdminID FROM Admin WHERE Username = 'lucky' AND Password = 'lucky@123'

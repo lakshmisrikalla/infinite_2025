@@ -9,45 +9,50 @@ using System.Data.SqlClient;
 namespace Mini_Project
 {
         public static class ReportModule
-        {
+    { 
             public static void ViewCustomerReservations(int custId)
+        {
+            Console.Clear();
+            Console.WriteLine(" Your Reservations:");
+
+            using (SqlConnection conn = DBHelper.GetConnection())
             {
-                Console.WriteLine(" Your Reservations:");
+                string query = @"
+            SELECT R.BookingID, R.TrainNo, R.PassengerName, R.TravelDate, R.Class, R.BerthAllotment, 
+                   R.TotalCost, R.IsCancelled, R.BookingDate
+            FROM Reservation R
+            WHERE R.CustID = @CustID
+            ORDER BY R.BookingDate DESC";
 
-                using (SqlConnection conn = DBHelper.GetConnection())
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@CustID", custId);
+
+                SqlDataReader reader = cmd.ExecuteReader();
+                bool hasRows = false;
+
+                while (reader.Read())
                 {
-                    string query = @"SELECT R.BookingID, R.PassengerName, R.TravelDate, R.Class, R.BerthAllotment, R.TotalCost, R.IsCancelled, R.BookingDate
-                                 FROM Reservation R
-                                 WHERE R.CustID = @CustID
-                                 ORDER BY R.BookingDate DESC";
+                    hasRows = true;
+                    string status = Convert.ToBoolean(reader["IsCancelled"]) ? "Cancelled" : "Confirmed";
 
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@CustID", custId);
-
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    bool hasRows = false;
-                    while (reader.Read())
-                    {
-                        hasRows = true;
-                        string status = Convert.ToBoolean(reader["IsCancelled"]) ? "Cancelled" : "Confirmed";
-
-                        Console.WriteLine($"\nBooking ID: {reader["BookingID"]}");
-                        Console.WriteLine($"Passenger: {reader["PassengerName"]}");
-                        Console.WriteLine($"Travel Date: {Convert.ToDateTime(reader["TravelDate"]).ToShortDateString()}");
-                        Console.WriteLine($"Class: {reader["Class"]} | Berth: {reader["BerthAllotment"]}");
-                        Console.WriteLine($"Fare: Rs{reader["TotalCost"]} | Status: {status}");
-                        Console.WriteLine($"Booked On: {Convert.ToDateTime(reader["BookingDate"]).ToShortDateString()}");
-                    }
-
-                    if (!hasRows)
-                    {
-                        Console.WriteLine(" No reservations found.");
-                    }
+                    Console.WriteLine($"\nBooking ID: {reader["BookingID"]}");
+                    Console.WriteLine($"Train No: {reader["TrainNo"]}");
+                    Console.WriteLine($"Passenger: {reader["PassengerName"]}");
+                    Console.WriteLine($"Travel Date: {Convert.ToDateTime(reader["TravelDate"]).ToShortDateString()}");
+                    Console.WriteLine($"Class: {reader["Class"]} | Berth: {reader["BerthAllotment"]}");
+                    Console.WriteLine($"Fare: Rs{reader["TotalCost"]} | Status: {status}");
+                    Console.WriteLine($"Booked On: {Convert.ToDateTime(reader["BookingDate"]).ToShortDateString()}");
                 }
 
-                Console.WriteLine("\nPress Enter to continue...");
-                Console.ReadLine();
+                if (!hasRows)
+                {
+                    Console.WriteLine(" No reservations found.");
+                }
             }
+
+            Console.WriteLine("\nPress Enter to continue...");
+            Console.ReadLine();
+        }
 
         public static void ViewAllReservations()
         {
@@ -56,12 +61,12 @@ namespace Mini_Project
             using (SqlConnection conn = DBHelper.GetConnection())
             {
                 string query = @"
-            SELECT R.BookingID, R.CustID, C.CustName, R.PassengerName, R.TravelDate, R.Class, R.BerthAllotment, 
-                   R.TotalCost, R.IsCancelled, R.BookingDate, Can.RefundAmount, Can.CancellationDate
-            FROM Reservation R
-            JOIN Customer C ON R.CustID = C.CustID
-            LEFT JOIN Cancellation Can ON R.BookingID = Can.BookingID
-            ORDER BY R.BookingDate DESC";
+        SELECT R.BookingID, R.CustID, C.CustName, R.TrainNo, R.PassengerName, R.TravelDate, R.Class, R.BerthAllotment, 
+               R.TotalCost, R.IsCancelled, R.BookingDate, Can.RefundAmount, Can.CancellationDate
+        FROM Reservation R
+        JOIN Customer C ON R.CustID = C.CustID
+        LEFT JOIN Cancellation Can ON R.BookingID = Can.BookingID
+        ORDER BY R.BookingDate DESC";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 SqlDataReader reader = cmd.ExecuteReader();
@@ -69,10 +74,11 @@ namespace Mini_Project
                 while (reader.Read())
                 {
                     bool isCancelled = reader["IsCancelled"] != DBNull.Value && Convert.ToBoolean(reader["IsCancelled"]);
-                    string status = isCancelled ? " Cancelled" : " Confirmed";
+                    string status = isCancelled ? "Cancelled" : "Confirmed";
 
                     Console.WriteLine($"\nBooking ID: {reader["BookingID"]}");
                     Console.WriteLine($"Customer: {reader["CustName"]} (ID: {reader["CustID"]})");
+                    Console.WriteLine($"Train No: {reader["TrainNo"]}");
                     Console.WriteLine($"Passenger: {reader["PassengerName"]}");
                     Console.WriteLine($"Travel Date: {Convert.ToDateTime(reader["TravelDate"]).ToShortDateString()}");
                     Console.WriteLine($"Class: {reader["Class"]} | Berth: {reader["BerthAllotment"]}");

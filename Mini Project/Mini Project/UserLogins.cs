@@ -8,16 +8,11 @@ using System.Data.SqlClient;
 
 namespace Mini_Project
 {
+
     public static class UserLogins
     {
-        public static void AdminLogin()
+        public static bool AdminLogin(string username, string password)
         {
-            Console.Write("Enter admin username: ");
-            string username = Console.ReadLine();
-
-            Console.Write("Enter admin password: ");
-            string password = Console.ReadLine();
-
             using (SqlConnection conn = DBHelper.GetConnection())
             {
                 string query = "SELECT AdminID FROM Admin WHERE Username = @Username AND Password = @Password";
@@ -32,25 +27,25 @@ namespace Mini_Project
                         {
                             int adminId = Convert.ToInt32(reader["AdminID"]);
                             Console.WriteLine(" Admin login successful.");
-                            reader.Close();
+                           Console.ReadLine(); 
                             AdminModule.AdminMenu(adminId);
+                            reader.Close();
+                            return true;
                         }
                         else
                         {
-                            Console.WriteLine(" Invalid credentials.");
+                             Console.WriteLine(" Invalid credentials.");
+                            return false;
                         }
                     }
                 }
             }
         }
 
-        public static void CustomerLogin()
-        {
-            Console.Write("Enter username: ");
-            string username = Console.ReadLine();
 
-            Console.Write("Enter password: ");
-            string password = Console.ReadLine();
+        public static bool CustomerLogin(string username, string password)
+        {
+           
 
             using (SqlConnection conn = DBHelper.GetConnection())
             {
@@ -64,20 +59,71 @@ namespace Mini_Project
                     {
                         if (reader.Read())
                         {
-                            int CustId = Convert.ToInt32(reader["CustID"]);
+                            int custId = Convert.ToInt32(reader["CustID"]);
                             Console.WriteLine(" Customer login successful.");
-                            reader.Close();
-                            CustomerModule.CustomerMenu(CustId);
+                            return true;
+                            // Console.ReadLine();
+                            // CustomerModule.CustomerMenu(custId);
+                            // reader.Close();
+
                         }
                         else
                         {
-                            Console.WriteLine(" Invalid credent" +
-                                "" +
-                                "ials.");
+                            Console.WriteLine(" Invalid credentials.");
+                            Console.ReadLine();
+                            return false;
                         }
                     }
                 }
             }
         }
+
+        public static void RegisterCustomer()
+        {
+            Console.WriteLine(" Register New Customer");
+
+            Console.Write("Full Name: ");
+            string name = Console.ReadLine();
+            Console.Write("Phone Number: ");
+            string phone = Console.ReadLine();
+            Console.Write("Email ID: ");
+            string email = Console.ReadLine();
+            Console.Write("Choose Username: ");
+            string username = Console.ReadLine();
+            Console.Write("Choose Password: ");
+            string password = Console.ReadLine();
+
+            using (SqlConnection conn = DBHelper.GetConnection())
+            {
+                string query = @"INSERT INTO Customer (CustName, Phone, MailID, Username, Password)
+                                 VALUES (@Name, @Phone, @Email, @Username, @Password)";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Name", name);
+                    cmd.Parameters.AddWithValue("@Phone", phone);
+                    cmd.Parameters.AddWithValue("@Email", email);
+                    cmd.Parameters.AddWithValue("@Username", username);
+                    cmd.Parameters.AddWithValue("@Password", password);
+
+                    try
+                    {
+                        int rows = cmd.ExecuteNonQuery();
+                        Console.WriteLine(rows > 0 ? " Registration successful!" : " Registration failed.");
+                    }
+                    catch (SqlException ex)
+                    {
+                        if (ex.Number == 2627) // Unique constraint violation
+                            Console.WriteLine(" Username already exists. Try a different one.");
+                        else
+                            Console.WriteLine($" Error: {ex.Message}");
+                    }
+                }
+            }
+
+            Console.WriteLine("\nPress Enter to continue...");
+            Console.ReadLine();
+            Program.ShowMainMenu(); // Return to main menu after registration
+        }
     }
+
 }

@@ -6,51 +6,53 @@ using System.Threading.Tasks;
 
 namespace Mini_Project
 {
-        public static class AdminModule
+    public static class AdminModule
+    {
+        public static void AdminMenu(int adminId)
         {
-            public static void AdminMenu(int adminId)
+            bool exit = false;
+
+            while (!exit)
             {
-                bool exit = false;
+                Console.Clear();
+                Console.WriteLine("===  Admin Control Panel ===");
+                Console.WriteLine("1. Register New Train");
+                Console.WriteLine("2. Modify Train Details");
+                Console.WriteLine("3. Suspend Train");
+                Console.WriteLine("4. Reactivate Train");
+                Console.WriteLine("5. View All Trains");
+                Console.WriteLine("6. View All Reservations");
+                Console.WriteLine("7. View Revenue Report");
+                Console.WriteLine("8. Exit to Main Menu");
+                Console.Write("Choose option: ");
+                string choice = Console.ReadLine();
 
-                while (!exit)
+                switch (choice)
                 {
-                    Console.Clear();
-                    Console.WriteLine("===  Admin Control Panel ===");
-                    Console.WriteLine("1. Register New Train");
-                    Console.WriteLine("2. Modify Train Details");
-                    Console.WriteLine("3. Suspend Train");
-                    Console.WriteLine("4. Reactivate Train");
-                    Console.WriteLine("5. View All Trains");
-                    Console.WriteLine("6. View All Reservations");
-                    Console.WriteLine("7. View Revenue Report");
-                    Console.WriteLine("8. Exit");
-                    Console.Write("Choose option: ");
-                    string choice = Console.ReadLine();
+                    case "1": TrainModule.RegisterNewTrain(); break;
+                    case "2": TrainModule.ModifyTrainDetails(); break;
+                    case "3": TrainModule.SuspendTrain(); break;
+                    case "4": TrainModule.RestoreSuspendedTrain(); break;
+                    case "5": TrainModule.ListAllTrains(); break;
+                    case "6": ReportModule.ViewAllReservations(); break;
+                    case "7": ReportModule.ViewRevenueReport(); break;
+                    case "8":
+                        exit = true;
+                        Console.WriteLine("Returning to main menu...");
+                        Program.ShowMainMenu(); 
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice. Try again.");
+                        break;
+                }
 
-                    switch (choice)
-                    {
-                        case "1": TrainModule.RegisterNewTrain(); break;
-                        case "2": TrainModule.ModifyTrainDetails(); break;
-                        case "3": TrainModule.SuspendTrain(); break;
-                        case "4": TrainModule.RestoreSuspendedTrain(); break;
-                        case "5": TrainModule.ListAllTrains(); break;
-                        case "6": ReportModule.ViewAllReservations(); break;
-                        case "7": ReportModule.ViewRevenueReport(); break;
-                        case "8":
-                            exit = true;
-                            Console.WriteLine(" Exiting from admin menu...");
-                            break;
-                        default:
-                            Console.WriteLine(" Invalid choice. Try again.");
-                            break;
-                    }
-
-                    if (!exit)
-                    {
-                        Console.WriteLine("\nPress Enter to return to the menu...");
-                        Console.ReadLine();
-                    }
+                if (!exit)
+                {
+                    Console.WriteLine("\nPress Enter to return to the menu...");
+                    Console.ReadLine();
                 }
             }
         }
     }
+
+}

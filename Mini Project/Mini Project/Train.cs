@@ -25,11 +25,11 @@ namespace Mini_Project
             int ac2 = int.Parse(Console.ReadLine());
             Console.Write("3rd AC Seats: ");
             int ac3 = int.Parse(Console.ReadLine());
-            Console.Write("Sleeper Fare: ₹");
+            Console.Write("Sleeper Fare: Rs");
             decimal fareSleeper = decimal.Parse(Console.ReadLine());
-            Console.Write("2nd AC Fare: ₹");
+            Console.Write("2nd AC Fare: Rs");
             decimal fare2AC = decimal.Parse(Console.ReadLine());
-            Console.Write("3rd AC Fare: ₹");
+            Console.Write("3rd AC Fare: Rs");
             decimal fare3AC = decimal.Parse(Console.ReadLine());
 
             using (SqlConnection conn = DBHelper.GetConnection())
