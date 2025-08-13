@@ -26,9 +26,9 @@ namespace Mini_Project
                         if (reader.Read())
                         {
                             int adminId = Convert.ToInt32(reader["AdminID"]);
-                            Console.WriteLine(" Admin login successful.");
+                           //  Console.WriteLine(" Admin login successful.");
                            Console.ReadLine(); 
-                            AdminModule.AdminMenu(adminId);
+                          //  AdminModule.AdminMenu(adminId);
                             reader.Close();
                             return true;
                         }
@@ -60,11 +60,11 @@ namespace Mini_Project
                         if (reader.Read())
                         {
                             int custId = Convert.ToInt32(reader["CustID"]);
-                            Console.WriteLine(" Customer login successful.");
+                          //  Console.WriteLine(" Customer login successful.");
+                            Console.ReadLine();
+                           // CustomerModule.CustomerMenu(custId);
+                            reader.Close();
                             return true;
-                            // Console.ReadLine();
-                            // CustomerModule.CustomerMenu(custId);
-                            // reader.Close();
 
                         }
                         else
