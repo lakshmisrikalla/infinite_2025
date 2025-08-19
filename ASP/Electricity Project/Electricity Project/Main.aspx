@@ -16,7 +16,7 @@
 <body>
     <form id="form1" runat="server">
 
-        <!-- 🔘 Main Menu Panel -->
+        <!--  Main Menu Panel -->
         <asp:Panel ID="pnlMainMenu" runat="server" CssClass="section">
             <h3>Welcome, Admin</h3>
             <asp:Button ID="btnGoToEntry" runat="server" Text="Enter Bills" OnClick="btnGoToEntry_Click" CssClass="aspNetButton" />
@@ -26,7 +26,7 @@
             <asp:Button ID="btnLogout" runat="server" Text="Logout" OnClick="btnLogout_Click" CssClass="aspNetButton" />
         </asp:Panel>
 
-        <!-- 🧾 Bill Entry Panel -->
+        <!--  Bill Entry Panel -->
         <asp:Panel ID="pnlEntry" runat="server" Visible="false" CssClass="section">
             <h3>Enter Electricity Bill Details</h3>
             <span class="label">Enter Number of Bills to Add:</span>
@@ -58,14 +58,14 @@
 </asp:Panel>
 
 
-        <!-- ✅ Summary Panel -->
+        <!--  Summary Panel -->
         <asp:Panel ID="pnlSummary" runat="server" Visible="false" CssClass="section">
             <h3>Bill Entry Summary</h3>
             <asp:Literal ID="litSummary" runat="server" />
             <asp:Button ID="btnBackFromSummary" runat="server" Text="Back to Menu" OnClick="btnBack_Click" CssClass="aspNetButton" />
         </asp:Panel>
 
-        <!-- 📊 Retrieve Panel -->
+        <!--  Retrieve Panel -->
         <asp:Panel ID="pnlRetrieve" runat="server" Visible="false" CssClass="section">
             <h3>Retrieve Last N Bills</h3>
             <span class="label">Enter Number of Bills to Retrieve:</span>
