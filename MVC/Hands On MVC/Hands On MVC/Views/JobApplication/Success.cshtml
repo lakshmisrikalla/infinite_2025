@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Application Submitted";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-success text-center">
+        <h2> Application Submitted Successfully!</h2>
+        <p>Thank you for applying. Your details have been received.</p>
+        
+    </div>
+
+    <div class="text-center mt-4">
+        @Html.ActionLink("Submit Another Application", "Application", "JobApplication", new { }, new { @class = "btn btn-primary" })
+       
+    </div>
+</div>
+
