@@ -1,0 +1,43 @@
+﻿@model List<Assignment_1.Models.Contact>
+
+@{
+    ViewBag.Title = "Contacts";
+}
+
+<h2 class="mb-3">Contacts</h2>
+
+<div class="text-end mb-3">
+    @Html.ActionLink("Add New Contact", "Create", null, new { @class = "btn btn-success" })
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th style="width: 120px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in Model)
+            {
+        <tr>
+            <td>@contact.Id</td> <!-- Correct casing -->
+            <td>@contact.FirstName</td>
+            <td>@contact.LastName</td>
+            <td>@contact.Email</td>
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { id = contact.Id }, new { @class = "btn btn-danger" })
+            </td>
+        </tr>}
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">No contacts found.</div>
+}
+
+
