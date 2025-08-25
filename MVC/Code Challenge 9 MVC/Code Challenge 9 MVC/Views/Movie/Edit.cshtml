@@ -1,0 +1,50 @@
+﻿@model Code_Challenge_9_MVC.Models.Movie
+
+<h2> Edit Movie by ID</h2>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+@if (ViewBag.Message != null)
+{
+    <p style="color:green">@ViewBag.Message</p>
+}
+
+<!-- Step 1: Enter ID to Load Movie -->
+<form action="@Url.Action("Edit", "Movie")" method="post">
+    <label>Enter Movie ID:</label>
+    <input type="number" name="id" required />
+    <input type="submit" value="Load Movie" />
+</form>
+
+<!-- Step 2: If movie is loaded, show edit form -->
+@if (Model != null && Model.Mid != 0)
+{
+    <hr />
+    <h3>Edit Details</h3>
+
+    <form action="@Url.Action("EditForm", "Movie")" method="post">
+        <input type="hidden" name="Mid" value="@Model.Mid" />
+
+        <p>
+            Movie Name:
+            <input type="text" name="Moviename" value="@Model.Moviename" required />
+        </p>
+
+        <p>
+            Director Name:
+            <input type="text" name="DirectorName" value="@Model.DirectorName" required />
+        </p>
+
+        <p>
+            Date of Release:
+            <input type="date" name="DateofRelease" value="@Model.DateofRelease.ToString("yyyy-MM-dd")" required />
+        </p>
+
+        <input type="submit" value="Update Movie" />
+    </form>
+}
+
+
+

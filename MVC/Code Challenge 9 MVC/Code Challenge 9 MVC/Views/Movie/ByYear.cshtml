@@ -1,0 +1,11 @@
+﻿
+
+
+@model IEnumerable<Code_Challenge_9_MVC.Models.Movie>
+<h2>Movies Released in Given Year</h2>
+<ul>
+    @foreach (var m in Model)
+    {
+        <li>@m.Moviename (@m.DateofRelease.Year)</li>
+    }
+</ul>

@@ -1,0 +1,10 @@
+﻿
+
+@model IEnumerable<Code_Challenge_9_MVC.Models.Movie>
+<h2>Movies by @ViewBag.Director</h2>
+<ul>
+    @foreach (var m in Model)
+    {
+        <li>@m.Moviename - @m.DateofRelease.ToShortDateString()</li>
+    }
+</ul>

@@ -1,0 +1,29 @@
+﻿@model Code_Challenge_9_MVC.Models.Movie
+
+@{
+    ViewBag.Title = "Add New Movie";
+}
+
+<h2> Add New Movie</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+        <label>Movie Name:</label>
+        @Html.TextBoxFor(m => m.Moviename)
+    </div>
+
+    <div>
+        <label>Director Name:</label>
+        @Html.TextBoxFor(m => m.DirectorName)
+    </div>
+
+    <div>
+        <label>Date of Release:</label>
+        @Html.TextBoxFor(m => m.DateofRelease, new { @type = "date" })
+    </div>
+
+    <br />
+    <input type="submit" value="Add Movie" />
+}
+

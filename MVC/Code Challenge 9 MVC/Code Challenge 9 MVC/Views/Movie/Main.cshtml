@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Movies Dashboard";
+}
+
+<h2>Movies Dashboard</h2>
+
+<div style="margin-bottom: 20px;">
+    <button onclick="location.href='@Url.Action("Index", "Movie")'"> View All Movies</button>
+    <button onclick="location.href='@Url.Action("Create", "Movie")'"> Create Movie</button>
+    <button onclick="location.href='@Url.Action("Edit", "Movie")'"> Edit Movie by ID</button>
+    <button onclick="location.href='@Url.Action("Delete", "Movie")'"> Delete Movie by ID</button>
+</div>
+
+<hr />
+
+<h3> Filter Movies by Year</h3>
+@using (Html.BeginForm("ByYear", "Movie", FormMethod.Get))
+{
+    <label>Enter Release Year:</label>
+    <input type="number" name="year" required />
+    <input type="submit" value="Search by Year" />
+}
+
+<br />
+
+<h3> Filter Movies by Director</h3>
+@using (Html.BeginForm("ByDirector", "Movie", FormMethod.Get))
+{
+    <label>Enter Director Name:</label>
+    <input type="text" name="name" required />
+    <input type="submit" value="Search by Director" />
+}
+
+<hr />
+
+
+
+
+
+
+
