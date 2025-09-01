@@ -11,14 +11,14 @@
     <p style="color:green">@ViewBag.Message</p>
 }
 
-<!-- Step 1: Enter ID to Load Movie -->
+
 <form action="@Url.Action("Edit", "Movie")" method="post">
     <label>Enter Movie ID:</label>
     <input type="number" name="id" required />
     <input type="submit" value="Load Movie" />
 </form>
 
-<!-- Step 2: If movie is loaded, show edit form -->
+
 @if (Model != null && Model.Mid != 0)
 {
     <hr />

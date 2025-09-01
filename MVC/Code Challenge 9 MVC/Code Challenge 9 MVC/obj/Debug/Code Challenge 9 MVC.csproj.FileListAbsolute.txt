@@ -76,6 +76,7 @@ C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\bin\System.Web.WebPages
 C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\bin\Newtonsoft.Json.xml
 C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\bin\Antlr3.Runtime.pdb
 C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\obj\Debug\Code Challenge 9 MVC.csproj.AssemblyReference.cache
 C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\obj\Debug\Code Challenge 9 MVC.csproj.CoreCompileInputs.cache
 C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\obj\Debug\Code Challenge 9 MVC.csproj.CopyComplete
 C:\Project\MVC\Code Challenge 9 MVC\Code Challenge 9 MVC\obj\Debug\Code Challenge 9 MVC.dll
