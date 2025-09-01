@@ -109,5 +109,50 @@ namespace Web_Api_Code_Challenge_10
         {
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Ten_Most_Expensive_Products_Result>("Ten_Most_Expensive_Products");
         }
+    
+        public virtual ObjectResult<GetCustomersByCountry_Result> GetCustomersByCountry(string country)
+        {
+            var countryParameter = country != null ?
+                new ObjectParameter("Country", country) :
+                new ObjectParameter("Country", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetCustomersByCountry_Result>("GetCustomersByCountry", countryParameter);
+        }
+    
+        public virtual ObjectResult<Customer> GetCustomersByCountry1(string country)
+        {
+            var countryParameter = country != null ?
+                new ObjectParameter("Country", country) :
+                new ObjectParameter("Country", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Customer>("GetCustomersByCountry1", countryParameter);
+        }
+    
+        public virtual ObjectResult<Customer> GetCustomersByCountry1(string country, MergeOption mergeOption)
+        {
+            var countryParameter = country != null ?
+                new ObjectParameter("Country", country) :
+                new ObjectParameter("Country", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Customer>("GetCustomersByCountry1", mergeOption, countryParameter);
+        }
+    
+        public virtual ObjectResult<Customer> GetCustomersByCountrys(string country)
+        {
+            var countryParameter = country != null ?
+                new ObjectParameter("Country", country) :
+                new ObjectParameter("Country", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Customer>("GetCustomersByCountrys", countryParameter);
+        }
+    
+        public virtual ObjectResult<Customer> GetCustomersByCountrys(string country, MergeOption mergeOption)
+        {
+            var countryParameter = country != null ?
+                new ObjectParameter("Country", country) :
+                new ObjectParameter("Country", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Customer>("GetCustomersByCountrys", mergeOption, countryParameter);
+        }
     }
 }

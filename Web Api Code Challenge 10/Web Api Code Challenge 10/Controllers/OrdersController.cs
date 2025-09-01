@@ -1,5 +1,6 @@
-﻿using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
+using System.Data.SqlClient;
+using System.Linq;
 using Web_Api_Code_Challenge_10.Models;
 
 namespace Web_Api_Code_Challenge_10.Controllers
@@ -7,28 +8,24 @@ namespace Web_Api_Code_Challenge_10.Controllers
     [RoutePrefix("api/Orders")]
     public class OrdersController : ApiController
     {
-        NorthWindEntities db = new NorthWindEntities();
+        private readonly NorthWindEntities db = new NorthWindEntities();
 
+        // GET: api/Orders/ByEmployee
         [HttpGet]
         [Route("ByEmployee")]
-        public IHttpActionResult GetOrdersByEmployee(int employeeId)
+        public IHttpActionResult GetOrdersByEmployee([FromUri] int employeeId)
         {
-            var orders = db.Orders
-                           .Where(o => o.EmployeeID == employeeId)
-                           .Select(o => new
-                           {
-                               o.OrderID,
-                               o.OrderDate,
-                               o.ShipName,
-                               o.ShipCountry
-                           }).ToList();
+            var orders = db.Database.SqlQuery<Order>(
+                "EXEC GetOrdersByEmployee @EmployeeId",
+                new SqlParameter("@EmployeeId", employeeId)).ToList();
 
-            if (orders == null || orders.Count == 0)
-                return NotFound();
+            if (!orders.Any())
+                return Content(System.Net.HttpStatusCode.NotFound, $"No orders found for EmployeeId = {employeeId}");
 
             return Ok(orders);
         }
     }
 }
+
 
 

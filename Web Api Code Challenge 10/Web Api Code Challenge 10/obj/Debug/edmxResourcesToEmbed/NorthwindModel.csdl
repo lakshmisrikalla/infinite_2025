@@ -356,6 +356,15 @@
       <Parameter Name="OrdYear" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="Ten_Most_Expensive_Products" ReturnType="Collection(NorthWindModel.Ten_Most_Expensive_Products_Result)" />
+    <FunctionImport Name="GetCustomersByCountry" ReturnType="Collection(NorthWindModel.GetCustomersByCountry_Result)">
+      <Parameter Name="Country" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetCustomersByCountry1" EntitySet="Customers" ReturnType="Collection(NorthWindModel.Customer)">
+      <Parameter Name="Country" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="GetCustomersByCountrys" EntitySet="Customers" ReturnType="Collection(NorthWindModel.Customer)">
+      <Parameter Name="Country" Mode="In" Type="String" />
+    </FunctionImport>
   </EntityContainer>
   <ComplexType Name="CustOrderHist_Result">
     <Property Type="String" Name="ProductName" Nullable="false" MaxLength="40" />
@@ -395,5 +404,13 @@
   <ComplexType Name="Ten_Most_Expensive_Products_Result">
     <Property Type="String" Name="TenMostExpensiveProducts" Nullable="false" MaxLength="40" />
     <Property Type="Decimal" Name="UnitPrice" Nullable="true" Precision="19" />
+  </ComplexType>
+  <ComplexType Name="GetCustomersByCountry_Result">
+    <Property Type="String" Name="CustomerID" Nullable="false" MaxLength="5" />
+    <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="40" />
+    <Property Type="String" Name="ContactName" Nullable="true" MaxLength="30" />
+    <Property Type="String" Name="Country" Nullable="true" MaxLength="15" />
+    <Property Type="String" Name="City" Nullable="true" MaxLength="15" />
+    <Property Type="String" Name="Phone" Nullable="true" MaxLength="24" />
   </ComplexType>
 </Schema>

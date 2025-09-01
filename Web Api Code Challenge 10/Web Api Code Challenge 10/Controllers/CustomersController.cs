@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using System.Web.Http;
+﻿using System.Web.Http;
+using System.Linq;
 using Web_Api_Code_Challenge_10.Models;
 
 namespace Web_Api_Code_Challenge_10.Controllers
@@ -13,22 +13,13 @@ namespace Web_Api_Code_Challenge_10.Controllers
         [Route("ByCountry")]
         public IHttpActionResult GetCustomersByCountry(string country)
         {
-            var customers = db.Customers
-                              .Where(c => c.Country == country)
-                              .Select(c => new
-                              {
-                                  c.CustomerID,
-                                  c.CompanyName,
-                                  c.ContactName,
-                                  c.Country,
-                                  c.City,
-                                  c.Phone
-                              }).ToList();
+            var result = db.GetCustomersByCountrys(country).ToList();
 
-            if (customers == null || customers.Count == 0)
+            if (result == null || result.Count == 0)
                 return NotFound();
 
-            return Ok(customers);
+            return Ok(result);
         }
     }
 }
+

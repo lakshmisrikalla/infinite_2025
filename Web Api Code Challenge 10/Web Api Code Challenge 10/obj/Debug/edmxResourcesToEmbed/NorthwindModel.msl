@@ -234,5 +234,19 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetCustomersByCountry" FunctionName="NorthWindModel.Store.GetCustomersByCountry">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="NorthWindModel.GetCustomersByCountry_Result">
+          <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+          <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+          <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Phone" ColumnName="Phone" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="GetCustomersByCountry1" FunctionName="NorthWindModel.Store.GetCustomersByCountry" />
+    <FunctionImportMapping FunctionImportName="GetCustomersByCountrys" FunctionName="NorthWindModel.Store.GetCustomersByCountry" />
   </EntityContainerMapping>
 </Mapping>
