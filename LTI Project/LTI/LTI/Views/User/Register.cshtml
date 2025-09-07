@@ -1,0 +1,54 @@
+﻿@model LTI.Models.User
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script>
+        function togglePassword(id, iconId) {
+            const input = document.getElementById(id);
+            const icon = document.getElementById(iconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            }
+        }
+    </script>
+</head>
+<body class="container mt-5">
+    <h2>User Registration</h2>
+    @if (ViewBag.Error != null)
+    {
+        <div class="text-danger">@ViewBag.Error</div>
+    }
+
+    <form method="post" action="/User/Register">
+        <div class="mb-3">@Html.LabelFor(m => m.FullName) @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", required = "required" })</div>
+        <div class="mb-3">@Html.LabelFor(m => m.Username) @Html.TextBoxFor(m => m.Username, new { @class = "form-control", required = "required" })</div>
+        <div class="mb-3">@Html.LabelFor(m => m.Email) @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })</div>
+        <div class="mb-3">@Html.LabelFor(m => m.PhoneNumber) @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", required = "required", type = "tel" })</div>
+        <div class="mb-3">@Html.LabelFor(m => m.Address) @Html.TextAreaFor(m => m.Address, new { @class = "form-control", required = "required" })</div>
+        <div class="mb-3">@Html.LabelFor(m => m.DateOfBirth) @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = "required" })</div>
+        <div class="mb-3">@Html.LabelFor(m => m.Gender) @Html.DropDownListFor(m => m.Gender, new SelectList(new[] { "Male", "Female", "Other" }), "Select Gender", new { @class = "form-control", required = "required" })</div>
+        <div class="mb-3">
+            <label>Password</label>
+            <div class="input-group">
+                <input type="password" name="password" id="registerPassword" class="form-control" required />
+                <span class="input-group-text" onclick="togglePassword('registerPassword','registerEye')">
+                    <i class="fa-solid fa-eye-slash" id="registerEye"></i>
+                </span>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+</body>
+</html>
