@@ -90,3 +90,4 @@ C:\Users\lakshmisrik\source\repos\LTI Project\LTI\LTI\obj\Debug\LTI.csproj.CoreC
 C:\Users\lakshmisrik\source\repos\LTI Project\LTI\LTI\obj\Debug\LTI.csproj.CopyComplete
 C:\Users\lakshmisrik\source\repos\LTI Project\LTI\LTI\obj\Debug\LTI.dll
 C:\Users\lakshmisrik\source\repos\LTI Project\LTI\LTI\obj\Debug\LTI.pdb
+C:\Users\lakshmisrik\source\repos\LTI Project\LTI\LTI\obj\Debug\LTI.csproj.AssemblyReference.cache

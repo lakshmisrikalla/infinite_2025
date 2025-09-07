@@ -233,39 +233,111 @@ namespace LTI.Controllers
 
 
         [HttpPost]
-        public ActionResult ConfirmPurchase(int policyId, int emiMonths, string paymentMethod, string nomineeName, bool extendEMI)
+        public ActionResult ConfirmPurchase(int policyId, int emiMonths, string paymentMethod, string nomineeName, bool? extendEMI, string UPI)
         {
             int userId = Convert.ToInt32(Session["UserID"]);
+            bool isExtended = extendEMI ?? false;
+
             DateTime startDate = DateTime.Today;
             DateTime endDate = startDate.AddMonths(emiMonths);
-            string insuranceType = GetPolicyType(policyId); // helper method below
 
+            string insuranceType = GetPolicyType(policyId);
             decimal basePremium = GetPolicyPremium(policyId);
-            decimal totalPremium = extendEMI ? basePremium * 1.35m : basePremium;
+            int baseMonths = GetPolicyDuration(policyId);
+            decimal monthlyBase = basePremium / baseMonths;
+
+            // 🔹 Calculate total premium and first month paid
+            decimal totalPremium = 0;
+            decimal firstMonthPaid = monthlyBase;
+
+            if (isExtended && emiMonths > baseMonths)
+            {
+                int extraMonths = emiMonths - baseMonths;
+                decimal taxedEMI = monthlyBase + (monthlyBase * 0.35m);
+                totalPremium = (monthlyBase * baseMonths) + (taxedEMI * extraMonths);
+            }
+            else
+            {
+                totalPremium = basePremium;
+            }
+
+            decimal pendingAmount = totalPremium - firstMonthPaid;
+            int userPolicyId = 0;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
-                // Insert into UserPolicies
+                // 🔹 Insert into UserPolicies
                 string insertPolicySql = @"
-            INSERT INTO UserPolicies (UserID, PolicyID, InsuranceType, StartDate, EndDate, Status, PaymentStatus, CreatedAt, NomineeName)
-            VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIME(), @Nominee)";
-                SqlCommand cmd = new SqlCommand(insertPolicySql, conn);
-                cmd.Parameters.AddWithValue("@UserID", userId);
-                cmd.Parameters.AddWithValue("@PolicyID", policyId);
-                cmd.Parameters.AddWithValue("@Type", insuranceType);
-                cmd.Parameters.AddWithValue("@Start", startDate);
-                cmd.Parameters.AddWithValue("@End", endDate);
-                cmd.Parameters.AddWithValue("@Nominee", nomineeName ?? "Not Provided");
-                cmd.ExecuteNonQuery();
+        INSERT INTO UserPolicies (UserID, PolicyID, InsuranceType, StartDate, EndDate, Status, PaymentStatus, CreatedAt, NomineeName)
+        OUTPUT INSERTED.UserPolicyID
+        VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIME(), @Nominee)";
+                using (SqlCommand cmd = new SqlCommand(insertPolicySql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    cmd.Parameters.AddWithValue("@PolicyID", policyId);
+                    cmd.Parameters.AddWithValue("@Type", insuranceType);
+                    cmd.Parameters.AddWithValue("@Start", startDate);
+                    cmd.Parameters.AddWithValue("@End", endDate);
+                    cmd.Parameters.AddWithValue("@Nominee", nomineeName ?? "Not Provided");
+                    userPolicyId = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+                // 🔹 Insert first EMI into Payments
+                string insertPaymentSql = @"
+        INSERT INTO Payments (UserPolicyID, Amount, Mode, PaidAt, Status, GatewayRef)
+        VALUES (@UserPolicyID, @Amount, @Mode, SYSUTCDATETIME(), 'Success', @Ref)";
+                using (SqlCommand payCmd = new SqlCommand(insertPaymentSql, conn))
+                {
+                    payCmd.Parameters.AddWithValue("@UserPolicyID", userPolicyId);
+                    payCmd.Parameters.AddWithValue("@Amount", firstMonthPaid);
+                    payCmd.Parameters.AddWithValue("@Mode", paymentMethod);
+                    payCmd.Parameters.AddWithValue("@Ref", "TXN" + Guid.NewGuid().ToString("N").Substring(0, 12));
+                    payCmd.ExecuteNonQuery();
+                }
+
+                // 🔹 Insert EMI schedule into PolicyDueDates
+                for (int i = 0; i < emiMonths; i++)
+                {
+                    DateTime dueDate = startDate.AddMonths(i);
+                    string insertDueSql = @"
+            INSERT INTO PolicyDueDates (UserPolicyID, DueDate, IsPaid, ReminderSent)
+            VALUES (@UserPolicyID, @DueDate, @IsPaid, 0)";
+                    using (SqlCommand dueCmd = new SqlCommand(insertDueSql, conn))
+                    {
+                        dueCmd.Parameters.AddWithValue("@UserPolicyID", userPolicyId);
+                        dueCmd.Parameters.AddWithValue("@DueDate", dueDate);
+                        dueCmd.Parameters.AddWithValue("@IsPaid", i == 0 ? 1 : 0); // First month paid
+                        dueCmd.ExecuteNonQuery();
+                    }
+                }
             }
 
+            // 🔹 Pass data to success view
             ViewBag.PolicyName = GetPolicyName(policyId);
             ViewBag.EMIMonths = emiMonths;
             ViewBag.TotalPremium = totalPremium;
+            ViewBag.FirstMonthPaid = firstMonthPaid;
+            ViewBag.PendingAmount = pendingAmount;
+
             return View("PurchaseSuccess");
         }
+
+
+
+
+        private int GetPolicyDuration(int policyId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand("SELECT DurationMonths FROM Policies WHERE PolicyID = @PolicyID", conn);
+                cmd.Parameters.AddWithValue("@PolicyID", policyId);
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+
 
         // Helper methods
         private string GetPolicyType(int policyId)
@@ -340,7 +412,8 @@ namespace LTI.Controllers
                     };
                 }
             }
-
+           
+           
             return View(policy);
         }
 

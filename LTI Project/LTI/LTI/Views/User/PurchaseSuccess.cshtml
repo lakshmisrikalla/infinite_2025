@@ -1,0 +1,14 @@
+﻿<h2>✅ Purchase Successful</h2>
+<p>Your policy <strong>@ViewBag.PolicyName</strong> has been activated.</p>
+
+<ul>
+    <li><strong>EMI Duration:</strong> @ViewBag.EMIMonths months</li>
+    <li><strong>Total Premium:</strong> ₹@ViewBag.TotalPremium</li>
+    <li><strong>First Month Paid:</strong> ₹@ViewBag.FirstMonthPaid</li>
+    <li><strong>Pending Amount:</strong> ₹@ViewBag.PendingAmount</li>
+</ul>
+
+<div class="alert alert-warning">
+    ⏰ Please pay your remaining EMIs on time to keep your policy active.
+</div>
+<a href="/User/Dashboard" class="btn btn-primary mt-3">Go to Dashboard</a>

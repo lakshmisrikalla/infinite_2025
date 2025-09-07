@@ -1,0 +1,32 @@
+﻿
+
+.hidden {
+    display: none;
+}
+
+.tick {
+    font-size: 60px;
+    color: green;
+    animation: tickPop 0.6s ease-in-out;
+}
+
+@keyframes tickPop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.form-label {
+    font-weight: bold;
+    margin-top: 10px;
+}
