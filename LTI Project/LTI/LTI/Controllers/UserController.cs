@@ -5,6 +5,10 @@ using System.Web.Mvc;
 using LTI.Models;
 using LTI.Helpers;
 using System.Collections.Generic;
+using System.IO;
+using System.Web;
+
+
 
 
 namespace LTI.Controllers
@@ -233,7 +237,7 @@ namespace LTI.Controllers
 
 
         [HttpPost]
-        public ActionResult ConfirmPurchase(int policyId, int emiMonths, string paymentMethod, string nomineeName, bool? extendEMI, string UPI)
+        public ActionResult ConfirmPurchase(int policyId, int emiMonths, int payNowMonths, string paymentMethod, string nomineeName, bool? extendEMI, string UPI)
         {
             int userId = Convert.ToInt32(Session["UserID"]);
             bool isExtended = extendEMI ?? false;
@@ -246,22 +250,29 @@ namespace LTI.Controllers
             int baseMonths = GetPolicyDuration(policyId);
             decimal monthlyBase = basePremium / baseMonths;
 
-            // 🔹 Calculate total premium and first month paid
             decimal totalPremium = 0;
-            decimal firstMonthPaid = monthlyBase;
+            decimal payNowAmount = 0;
 
             if (isExtended && emiMonths > baseMonths)
             {
                 int extraMonths = emiMonths - baseMonths;
-                decimal taxedEMI = monthlyBase + (monthlyBase * 0.35m);
+                decimal taxedEMI = monthlyBase + (monthlyBase * 0.25m);
                 totalPremium = (monthlyBase * baseMonths) + (taxedEMI * extraMonths);
+
+                for (int i = 0; i < payNowMonths; i++)
+                {
+                    if (i < baseMonths)
+                        payNowAmount += monthlyBase;
+                    else
+                        payNowAmount += taxedEMI;
+                }
             }
             else
             {
                 totalPremium = basePremium;
+                payNowAmount = monthlyBase * payNowMonths;
             }
 
-            decimal pendingAmount = totalPremium - firstMonthPaid;
             int userPolicyId = 0;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -270,9 +281,11 @@ namespace LTI.Controllers
 
                 // 🔹 Insert into UserPolicies
                 string insertPolicySql = @"
-        INSERT INTO UserPolicies (UserID, PolicyID, InsuranceType, StartDate, EndDate, Status, PaymentStatus, CreatedAt, NomineeName)
-        OUTPUT INSERTED.UserPolicyID
-        VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIME(), @Nominee)";
+INSERT INTO UserPolicies (UserID, PolicyID, InsuranceType, StartDate, EndDate, Status, PaymentStatus, CreatedAt, NomineeName)
+OUTPUT INSERTED.UserPolicyID
+VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIME(), @Nominee)";
+
+                
                 using (SqlCommand cmd = new SqlCommand(insertPolicySql, conn))
                 {
                     cmd.Parameters.AddWithValue("@UserID", userId);
@@ -284,23 +297,25 @@ namespace LTI.Controllers
                     userPolicyId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                // 🔹 Insert first EMI into Payments
+                // 🔹 Insert payment for selected months
                 string insertPaymentSql = @"
         INSERT INTO Payments (UserPolicyID, Amount, Mode, PaidAt, Status, GatewayRef)
         VALUES (@UserPolicyID, @Amount, @Mode, SYSUTCDATETIME(), 'Success', @Ref)";
                 using (SqlCommand payCmd = new SqlCommand(insertPaymentSql, conn))
                 {
                     payCmd.Parameters.AddWithValue("@UserPolicyID", userPolicyId);
-                    payCmd.Parameters.AddWithValue("@Amount", firstMonthPaid);
+                    payCmd.Parameters.AddWithValue("@Amount", payNowAmount);
                     payCmd.Parameters.AddWithValue("@Mode", paymentMethod);
                     payCmd.Parameters.AddWithValue("@Ref", "TXN" + Guid.NewGuid().ToString("N").Substring(0, 12));
                     payCmd.ExecuteNonQuery();
                 }
 
-                // 🔹 Insert EMI schedule into PolicyDueDates
+                // 🔹 Insert EMI schedule
                 for (int i = 0; i < emiMonths; i++)
                 {
                     DateTime dueDate = startDate.AddMonths(i);
+                    bool isPaid = i < payNowMonths;
+
                     string insertDueSql = @"
             INSERT INTO PolicyDueDates (UserPolicyID, DueDate, IsPaid, ReminderSent)
             VALUES (@UserPolicyID, @DueDate, @IsPaid, 0)";
@@ -308,7 +323,7 @@ namespace LTI.Controllers
                     {
                         dueCmd.Parameters.AddWithValue("@UserPolicyID", userPolicyId);
                         dueCmd.Parameters.AddWithValue("@DueDate", dueDate);
-                        dueCmd.Parameters.AddWithValue("@IsPaid", i == 0 ? 1 : 0); // First month paid
+                        dueCmd.Parameters.AddWithValue("@IsPaid", isPaid ? 1 : 0);
                         dueCmd.ExecuteNonQuery();
                     }
                 }
@@ -318,8 +333,9 @@ namespace LTI.Controllers
             ViewBag.PolicyName = GetPolicyName(policyId);
             ViewBag.EMIMonths = emiMonths;
             ViewBag.TotalPremium = totalPremium;
-            ViewBag.FirstMonthPaid = firstMonthPaid;
-            ViewBag.PendingAmount = pendingAmount;
+            ViewBag.PaidMonths = payNowMonths;
+            ViewBag.PaidAmount = payNowAmount;
+            ViewBag.PendingAmount = totalPremium - payNowAmount;
 
             return View("PurchaseSuccess");
         }
@@ -377,14 +393,72 @@ namespace LTI.Controllers
         }
 
 
+
+
         public ActionResult BuyNow(int id)
         {
+            int userId = Convert.ToInt32(Session["UserID"]);
             PolicyViewModel policy = null;
+            int userPolicyId = 0;
+            bool docsUploaded = false;
+            bool docsApproved = false;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
 
+                // 🔹 Get UserPolicyID if it exists
+                string getUserPolicySql = @"
+            SELECT TOP 1 UserPolicyID FROM UserPolicies
+            WHERE UserID = @UserID AND PolicyID = @PolicyID";
+                using (SqlCommand cmd = new SqlCommand(getUserPolicySql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    cmd.Parameters.AddWithValue("@PolicyID", id);
+                    var result = cmd.ExecuteScalar();
+                    if (result != null)
+                        userPolicyId = Convert.ToInt32(result);
+                }
+
+                // 🔹 Check if documents are uploaded
+                if (userPolicyId > 0)
+                {
+                    string checkDocsSql = @"
+                SELECT COUNT(*) FROM Documents
+                WHERE OwnerType = 'UserPolicy' AND OwnerID = @UserPolicyID";
+                    using (SqlCommand cmd = new SqlCommand(checkDocsSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserPolicyID", userPolicyId);
+                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        docsUploaded = count >= 3; // Expecting Doc1, Doc2, Doc3
+                    }
+
+                    // 🔹 Check if documents are approved
+                    string checkApprovalSql = @"
+                SELECT Decision FROM UserPolicyApprovals
+                WHERE UserPolicyID = @UserPolicyID";
+                    using (SqlCommand cmd = new SqlCommand(checkApprovalSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserPolicyID", userPolicyId);
+                        var decision = cmd.ExecuteScalar();
+                        docsApproved = decision != null && decision.ToString() == "Approved";
+                    }
+                }
+
+                // 🔹 Redirect logic
+                if (userPolicyId == 0 || !docsUploaded)
+                {
+                    TempData["DocRedirectMessage"] = "Please submit required documents before purchasing this policy.";
+                    return RedirectToAction("SubmitDocuments", new { policyId = id });
+                }
+
+                if (!docsApproved)
+                {
+                    TempData["DocRedirectMessage"] = "Your documents are under review. You can proceed once they are approved.";
+                    return RedirectToAction("SubmitDocuments", new { policyId = id });
+                }
+
+                // 🔹 Load policy details
                 string query = @"
             SELECT p.PolicyID, p.PolicyName, p.PlanKind, p.Description, p.DurationMonths, p.BasePremium,
                    pt.TypeName, c.CompanyName
@@ -393,28 +467,120 @@ namespace LTI.Controllers
             INNER JOIN Clients c ON p.ClientID = c.ClientID
             WHERE p.PolicyID = @PolicyID";
 
-                SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@PolicyID", id);
-
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.Read())
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    policy = new PolicyViewModel
+                    cmd.Parameters.AddWithValue("@PolicyID", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
                     {
-                        PolicyID = Convert.ToInt32(reader["PolicyID"]),
-                        PolicyName = reader["PolicyName"].ToString(),
-                        PlanKind = reader["PlanKind"].ToString(),
-                        Description = reader["Description"].ToString(),
-                        DurationMonths = Convert.ToInt32(reader["DurationMonths"]),
-                        BasePremium = Convert.ToDecimal(reader["BasePremium"]),
-                        TypeName = reader["TypeName"].ToString(),
-                        CompanyName = reader["CompanyName"].ToString()
-                    };
+                        policy = new PolicyViewModel
+                        {
+                            PolicyID = Convert.ToInt32(reader["PolicyID"]),
+                            PolicyName = reader["PolicyName"].ToString(),
+                            PlanKind = reader["PlanKind"].ToString(),
+                            Description = reader["Description"].ToString(),
+                            DurationMonths = Convert.ToInt32(reader["DurationMonths"]),
+                            BasePremium = Convert.ToDecimal(reader["BasePremium"]),
+                            TypeName = reader["TypeName"].ToString(),
+                            CompanyName = reader["CompanyName"].ToString()
+                        };
+                    }
                 }
             }
-           
-           
-            return View(policy);
+
+            if (policy != null)
+                return View(policy);
+
+            return RedirectToAction("Dashboard");
+        }
+
+
+        [HttpPost]
+        public ActionResult SubmitDocuments(DocumentSubmissionViewModel model, HttpPostedFileBase Doc1, HttpPostedFileBase Doc2, HttpPostedFileBase Doc3)
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // 🔹 Insert Travel or Motor details
+                if (model.PolicyType == "Travel")
+                {
+                    string travelSql = @"
+                INSERT INTO TravelDetails (UserPolicyID, PersonName, Age, Gender, DOB, HealthIssues)
+                VALUES (@UserPolicyID, @Name, @Age, @Gender, @DOB, @Issues)";
+                    using (SqlCommand cmd = new SqlCommand(travelSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserPolicyID", model.UserPolicyID);
+                        cmd.Parameters.AddWithValue("@Name", model.PersonName);
+                        cmd.Parameters.AddWithValue("@Age", model.Age);
+                        cmd.Parameters.AddWithValue("@Gender", model.Gender);
+                        cmd.Parameters.AddWithValue("@DOB", model.DOB);
+                        cmd.Parameters.AddWithValue("@Issues", model.HealthIssues ?? "");
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                else if (model.PolicyType == "Motor")
+                {
+                    string motorSql = @"
+                INSERT INTO VehicleDetails (UserPolicyID, VehicleType, VehicleName, Model, DrivingLicense, RegistrationNumber, RCNumber, RegistrationDate, ExpiryDate, EngineNumber, ChassisNumber, HolderName)
+                VALUES (@UserPolicyID, @Type, @Name, @Model, @License, @RegNo, @RC, @RegDate, @ExpDate, @Engine, @Chassis, @Holder)";
+                    using (SqlCommand cmd = new SqlCommand(motorSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserPolicyID", model.UserPolicyID);
+                        cmd.Parameters.AddWithValue("@Type", model.VehicleType);
+                        cmd.Parameters.AddWithValue("@Name", model.VehicleName);
+                        cmd.Parameters.AddWithValue("@Model", model.Model);
+                        cmd.Parameters.AddWithValue("@License", model.DrivingLicense);
+                        cmd.Parameters.AddWithValue("@RegNo", model.RegistrationNumber);
+                        cmd.Parameters.AddWithValue("@RC", model.RCNumber);
+                        cmd.Parameters.AddWithValue("@RegDate", model.RegistrationDate ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@ExpDate", model.ExpiryDate);
+                        cmd.Parameters.AddWithValue("@Engine", model.EngineNumber);
+                        cmd.Parameters.AddWithValue("@Chassis", model.ChassisNumber);
+                        cmd.Parameters.AddWithValue("@Holder", model.HolderName);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                // 🔹 Upload documents
+                SaveDocument(conn, "Doc1", Doc1, model.UserPolicyID);
+                SaveDocument(conn, "Doc2", Doc2, model.UserPolicyID);
+                SaveDocument(conn, "Doc3", Doc3, model.UserPolicyID);
+            }
+
+            TempData["SuccessMessage"] = "Documents and details submitted successfully!";
+            return RedirectToAction("Dashboard");
+        }
+
+        private void SaveDocument(SqlConnection conn, string docType, HttpPostedFileBase file, int userPolicyId)
+        {
+            if (file != null && file.ContentLength > 0)
+            {
+                string fileName = Path.GetFileName(file.FileName);
+                string folderPath = Server.MapPath("~/Uploads");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                string fullPath = Path.Combine(folderPath, fileName);
+                file.SaveAs(fullPath);
+
+                string relativePath = "/Uploads/" + fileName;
+
+                string insertDocSql = @"
+            INSERT INTO Documents (OwnerType, OwnerID, DocumentType, FilePath, IsVerified, Visibility)
+            VALUES ('UserPolicy', @OwnerID, @Type, @Path, 0, 'ClientAndUser')";
+                using (SqlCommand cmd = new SqlCommand(insertDocSql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@OwnerID", userPolicyId);
+                    cmd.Parameters.AddWithValue("@Type", docType);
+                    cmd.Parameters.AddWithValue("@Path", relativePath);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
 

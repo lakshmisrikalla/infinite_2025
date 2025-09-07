@@ -1,0 +1,75 @@
+﻿@model LTI.Models.DocumentSubmissionViewModel
+@{
+    ViewBag.Title = "Submit Documents";
+}
+
+<h2>📄 Submit Documents for @Model.PolicyName</h2>
+
+@if (TempData["DocRedirectMessage"] != null)
+{
+    <div class="alert alert-warning">@TempData["DocRedirectMessage"]</div>
+}
+
+<form method="post" enctype="multipart/form-data" action="/User/SubmitDocuments">
+    <input type="hidden" name="PolicyID" value="@Model.PolicyID" />
+    <input type="hidden" name="UserPolicyID" value="@Model.UserPolicyID" />
+    <input type="hidden" name="PolicyType" value="@Model.PolicyType" />
+
+    @if (Model.PolicyType == "Travel")
+    {
+        <h4>✈️ Travel Details</h4>
+        <label>Person Name:</label>
+        <input type="text" name="PersonName" class="form-control" required />
+        <label>Age:</label>
+        <input type="number" name="Age" class="form-control" required />
+        <label>Gender:</label>
+        <select name="Gender" class="form-control" required>
+            <option value="">-- Select --</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+        <label>Date of Birth:</label>
+        <input type="date" name="DOB" class="form-control" required />
+        <label>Health Issues (if any):</label>
+        <textarea name="HealthIssues" class="form-control"></textarea>
+    }
+    else if (Model.PolicyType == "Motor")
+    {
+        <h4>🚗 Vehicle Details</h4>
+        <label>Vehicle Type:</label>
+        <input type="text" name="VehicleType" class="form-control" required />
+        <label>Vehicle Name:</label>
+        <input type="text" name="VehicleName" class="form-control" required />
+        <label>Model:</label>
+        <input type="text" name="Model" class="form-control" required />
+        <label>Driving License:</label>
+        <input type="text" name="DrivingLicense" class="form-control" required />
+        <label>Registration Number:</label>
+        <input type="text" name="RegistrationNumber" class="form-control" required />
+        <label>RC Number:</label>
+        <input type="text" name="RCNumber" class="form-control" required />
+        <label>Registration Date:</label>
+        <input type="date" name="RegistrationDate" class="form-control" />
+        <label>Expiry Date:</label>
+        <input type="date" name="ExpiryDate" class="form-control" required />
+        <label>Engine Number:</label>
+        <input type="text" name="EngineNumber" class="form-control" required />
+        <label>Chassis Number:</label>
+        <input type="text" name="ChassisNumber" class="form-control" required />
+        <label>Holder Name:</label>
+        <input type="text" name="HolderName" class="form-control" required />
+    }
+
+    <h4 class="mt-4">📎 Upload Documents</h4>
+    <label>Document 1:</label>
+    <input type="file" name="Doc1" class="form-control" required />
+    <label>Document 2:</label>
+    <input type="file" name="Doc2" class="form-control" required />
+    <label>Document 3:</label>
+    <input type="file" name="Doc3" class="form-control" required />
+
+    <button type="submit" class="btn btn-success mt-3">Submit</button>
+</form>
+
+

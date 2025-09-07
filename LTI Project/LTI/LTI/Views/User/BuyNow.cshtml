@@ -19,182 +19,216 @@
       data-base-premium="@Model.BasePremium"
       data-base-months="@Model.DurationMonths">
 
+    <h2>Buy: @Model.PolicyName</h2>
 
+    <form method="post" action="/User/ConfirmPurchase" onsubmit="return validateBeforeSubmit();">
+        <input type="hidden" name="policyId" value="@Model.PolicyID" />
+        <input type="hidden" name="UPI" id="upiInput" />
+        <input type="hidden" name="extendEMI" id="extendEMIHidden" value="false" />
 
-        <h2>Buy: @Model.PolicyName</h2>
+        <label class="form-label">Nominee Name:</label>
+        <input type="text" name="nomineeName" class="form-control mb-3" required />
 
-        <form method="post" action="/User/ConfirmPurchase" onsubmit="return validateBeforeSubmit();">
-            <input type="hidden" name="policyId" value="@Model.PolicyID" />
-            <input type="hidden" name="UPI" id="upiInput" />
-            <input type="hidden" name="extendEMI" id="extendEMIHidden" value="false" />
+        <label class="form-label">Do you want EMI extension?</label>
+        <input type="checkbox" id="extendEMI" onchange="toggleExtension()" />
+        <div id="taxNote" class="text-warning mt-2 hidden">
+            EMI extension adds 25% tax on extra months beyond the original duration.
+        </div>
 
-            <label class="form-label">Nominee Name:</label>
-            <input type="text" name="nomineeName" class="form-control mb-3" required />
+        <div class="mt-3">
+            <label class="form-label">Select EMI Duration:</label>
+            <select id="emiMonths" name="emiMonths" class="form-select w-25 mb-3"></select>
+        </div>
 
-            <label class="form-label">Do you want EMI extension?</label>
-            <input type="checkbox" id="extendEMI" onchange="toggleExtension()" />
-            <div id="taxNote" class="text-warning mt-2 hidden">
-                EMI extension adds 25% tax on extra months beyond the original duration.
+        <div class="mt-3">
+            <label class="form-label">How many months do you want to pay now?</label>
+            <select id="payNowMonths" name="payNowMonths" class="form-select w-25 mb-3"></select>
+        </div>
+
+        <button type="button" class="btn btn-outline-info mb-3" onclick="toggleBreakdown()">Monthly Breakdown</button>
+        <div id="emiPlan" class="mb-4 hidden"></div>
+
+        <div id="durationConfirm" class="mb-3 hidden">
+            <p><strong>Start Date:</strong> <span id="startDate"></span></p>
+            <p><strong>End Date:</strong> <span id="endDate"></span></p>
+            <label><input type="checkbox" id="termsCheck" /> I accept the terms and conditions</label>
+        </div>
+
+        <div class="mt-4">
+            <label class="form-label">Select Payment Method:</label>
+            <select id="paymentMethod" name="paymentMethod" class="form-select w-50 mb-3">
+                <option value="">-- Select --</option>
+                <option value="Credit Card">Credit Card</option>
+                <option value="Debit Card">Debit Card</option>
+                <option value="UPI">UPI</option>
+            </select>
+
+            <div id="creditFields" class="hidden">
+                <label>Card Number:</label>
+                <input type="text" name="CardNumber" class="form-control mb-2" />
+                <label>Name on Card:</label>
+                <input type="text" name="CardName" class="form-control mb-2" />
+                <label>Expiry Date:</label>
+                <input type="text" name="CardExpiry" class="form-control mb-2" />
+                <label>CVV:</label>
+                <input type="text" name="CardCVV" class="form-control mb-2" />
             </div>
 
-            <div class="mt-3">
-                <label class="form-label">Select EMI Duration:</label>
-                <select id="emiMonths" name="emiMonths" class="form-select w-25 mb-3"></select>
+            <div id="debitFields" class="hidden">
+                <label>Debit Card Number:</label>
+                <input type="text" name="DebitNumber" class="form-control mb-2" />
+                <label>Name on Card:</label>
+                <input type="text" name="DebitName" class="form-control mb-2" />
+                <label>Expiry Date:</label>
+                <input type="text" name="DebitExpiry" class="form-control mb-2" />
+                <label>CVV:</label>
+                <input type="text" name="DebitCVV" class="form-control mb-2" />
             </div>
 
-            <div id="emiPlan" class="mb-4"></div>
-
-            <div id="durationConfirm" class="mb-3 hidden">
-                <p><strong>Start Date:</strong> <span id="startDate"></span></p>
-                <p><strong>End Date:</strong> <span id="endDate"></span></p>
-                <label><input type="checkbox" id="termsCheck" /> I accept the terms and conditions</label>
+            <div id="upiFields" class="hidden">
+                <label>Enter your UPI ID:</label>
+                <input type="text" id="upiField" class="form-control mb-2" placeholder="yourname@bank" />
             </div>
+        </div>
 
-            <div class="mt-4">
-                <label class="form-label">Select Payment Method:</label>
-                <select id="paymentMethod" name="paymentMethod" class="form-select w-50 mb-3">
-                    <option value="">-- Select --</option>
-                    <option value="Credit Card">Credit Card</option>
-                    <option value="Debit Card">Debit Card</option>
-                    <option value="UPI">UPI</option>
-                </select>
+        <button type="submit" class="btn btn-success mt-3">Pay Now</button>
+    </form>
 
-                <div id="creditFields" class="hidden">
-                    <label>Card Number:</label>
-                    <input type="text" name="CardNumber" class="form-control mb-2" />
-                    <label>Name on Card:</label>
-                    <input type="text" name="CardName" class="form-control mb-2" />
-                    <label>Expiry Date:</label>
-                    <input type="text" name="CardExpiry" class="form-control mb-2" />
-                    <label>CVV:</label>
-                    <input type="text" name="CardCVV" class="form-control mb-2" />
-                </div>
+    <script>
+        function toggleExtension() {
+            const checked = document.getElementById("extendEMI").checked;
+            document.getElementById("extendEMIHidden").value = checked;
+            document.getElementById("taxNote").classList.toggle("hidden", !checked);
+            generateEMIOptions();
+            calculateEMI();
+        }
 
-                <div id="debitFields" class="hidden">
-                    <label>Debit Card Number:</label>
-                    <input type="text" name="DebitNumber" class="form-control mb-2" />
-                    <label>Name on Card:</label>
-                    <input type="text" name="DebitName" class="form-control mb-2" />
-                    <label>Expiry Date:</label>
-                    <input type="text" name="DebitExpiry" class="form-control mb-2" />
-                    <label>CVV:</label>
-                    <input type="text" name="DebitCVV" class="form-control mb-2" />
-                </div>
+        function generateEMIOptions() {
+            const baseMonths = parseInt(document.body.dataset.baseMonths);
+            const emiSelect = document.getElementById("emiMonths");
+            const payNowSelect = document.getElementById("payNowMonths");
+            emiSelect.innerHTML = "";
+            payNowSelect.innerHTML = "";
 
-                <div id="upiFields" class="hidden">
-                    <label>Enter your UPI ID:</label>
-                    <input type="text" id="upiField" class="form-control mb-2" placeholder="yourname@bank" />
-                </div>
-            </div>
+            const extend = document.getElementById("extendEMI").checked;
+            const maxMonths = extend ? baseMonths + 4 : baseMonths;
 
-            <button type="submit" class="btn btn-success mt-3">Pay Now</button>
-        </form>
-
-        <script>
-            function toggleExtension() {
-                const checked = document.getElementById("extendEMI").checked;
-                document.getElementById("extendEMIHidden").value = checked;
-                document.getElementById("taxNote").classList.toggle("hidden", !checked);
-                generateEMIOptions();
-                calculateEMI();
+            for (let i = baseMonths; i <= maxMonths; i++) {
+                const opt = document.createElement("option");
+                opt.value = i;
+                opt.text = i + " months";
+                emiSelect.appendChild(opt);
             }
 
+            emiSelect.value = baseMonths;
 
+            for (let i = 1; i <= maxMonths; i++) {
+                const opt = document.createElement("option");
+                opt.value = i;
+                opt.text = i + " month" + (i > 1 ? "s" : "");
+                payNowSelect.appendChild(opt);
+            }
 
-            function generateEMIOptions() {
-                const baseMonths = parseInt(document.body.dataset.baseMonths);
-                const emiSelect = document.getElementById("emiMonths");
-                emiSelect.innerHTML = "";
+            payNowSelect.value = 1;
+        }
 
-                const extend = document.getElementById("extendEMI").checked;
-                const maxMonths = extend ? 10 : baseMonths;
+        function calculateEMI() {
+            const basePremium = parseFloat(document.body.dataset.basePremium);
+            const baseMonths = parseInt(document.body.dataset.baseMonths);
+            const selectedMonths = parseInt(document.getElementById("emiMonths").value);
+            const payNowMonths = parseInt(document.getElementById("payNowMonths").value);
+            const extend = document.getElementById("extendEMI").checked;
 
-                for (let i = baseMonths; i <= maxMonths; i++) {
-                    const opt = document.createElement("option");
-                    opt.value = i;
-                    opt.text = i + " months";
-                    emiSelect.appendChild(opt);
+            const monthlyBase = basePremium / baseMonths;
+            let output = "<ul>";
+            let total = 0;
+            let payNowTotal = 0;
+            const today = new Date();
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+            for (let i = 0; i < selectedMonths; i++) {
+                const dueDate = new Date(today);
+                dueDate.setMonth(today.getMonth() + i);
+                const dateStr = dueDate.getDate() + " " + monthNames[dueDate.getMonth()] + " " + dueDate.getFullYear();
+
+                let amount = monthlyBase;
+                let label = "Base";
+                if (extend && i >= baseMonths) {
+                    const tax = monthlyBase * 0.25;
+                    amount += tax;
+                    label = "Base + 25% Tax";
                 }
 
-                emiSelect.value = baseMonths;
+                output += `<li>Month ${i + 1} (${dateStr}): ₹${amount.toFixed(2)} (${label})</li>`;
+                total += amount;
+                if (i < payNowMonths) payNowTotal += amount;
             }
 
-            function calculateEMI() {
-                const basePremium = parseFloat(document.body.dataset.basePremium);
-                const baseMonths = parseInt(document.body.dataset.baseMonths);
-                const selectedMonths = parseInt(document.getElementById("emiMonths").value);
-                const extend = document.getElementById("extendEMI").checked;
+            output += `<p><strong>Total Premium:</strong> ₹${total.toFixed(2)}</p>`;
+            output += `<p><strong>Pay Now:</strong> ₹${payNowTotal.toFixed(2)} for ${payNowMonths} month(s)</p>`;
+            document.getElementById("emiPlan").innerHTML = output;
 
-                const monthlyBase = basePremium / baseMonths;
-                let output = "<ul>";
-                let total = 0;
-                const today = new Date();
-                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const startDate = new Date(today);
+            const endDate = new Date(today);
+            endDate.setMonth(today.getMonth() + selectedMonths);
 
-                for (let i = 0; i < selectedMonths; i++) {
-                    const dueDate = new Date(today);
-                    dueDate.setMonth(today.getMonth() + i);
-                    const dateStr = dueDate.getDate() + " " + monthNames[dueDate.getMonth()] + " " + dueDate.getFullYear();
+            document.getElementById("startDate").textContent = startDate.toDateString();
+            document.getElementById("endDate").textContent = endDate.toDateString();
 
-                    let amount = monthlyBase;
-                    let label = "Base";
-                    if (extend && i >= baseMonths) {
-                        const tax = monthlyBase * 0.25;
-                        amount += tax;
-                        label = "With Tax";
-                    }
+            document.getElementById("durationConfirm").classList.remove("hidden");
+        }
 
-                    output += `<li>Month ${i + 1} (${dateStr}): ₹${amount.toFixed(2)} (${label})</li>`;
-                    total += amount;
-                }
+        function showPaymentFields() {
+            const method = document.getElementById("paymentMethod").value;
+            document.getElementById("creditFields").classList.add("hidden");
+            document.getElementById("debitFields").classList.add("hidden");
+            document.getElementById("upiFields").classList.add("hidden");
 
-                output += `<p><strong>Total Payable:</strong> ₹${total.toFixed(2)}</p>`;
-                document.getElementById("emiPlan").innerHTML = output;
+            if (method === "Credit Card") document.getElementById("creditFields").classList.remove("hidden");
+            if (method === "Debit Card") document.getElementById("debitFields").classList.remove("hidden");
+            if (method === "UPI") document.getElementById("upiFields").classList.remove("hidden");
+        }
 
-                const startDate = new Date(today);
-                const endDate = new Date(today);
-                endDate.setMonth(today.getMonth() + selectedMonths);
+ 
 
-                document.getElementById("startDate").textContent = startDate.toDateString();
-                document.getElementById("endDate").textContent = endDate.toDateString();
-
-                document.getElementById("durationConfirm").classList.remove("hidden");
+        function validateBeforeSubmit() {
+            const termsAccepted = document.getElementById("termsCheck").checked;
+            if (!termsAccepted) {
+                alert("Please accept the terms and conditions before proceeding.");
+                return false;
             }
 
-            function showPaymentFields() {
-                const method = document.getElementById("paymentMethod").value;
-                document.getElementById("creditFields").classList.add("hidden");
-                document.getElementById("debitFields").classList.add("hidden");
-                document.getElementById("upiFields").classList.add("hidden");
+            const emiMonths = parseInt(document.getElementById("emiMonths").value);
+            const payNowMonths = parseInt(document.getElementById("payNowMonths").value);
 
-                if (method === "Credit Card") document.getElementById("creditFields").classList.remove("hidden");
-                if (method === "Debit Card") document.getElementById("debitFields").classList.remove("hidden");
-                if (method === "UPI") document.getElementById("upiFields").classList.remove("hidden");
+            if (payNowMonths > emiMonths) {
+                alert("You cannot pay more months than the selected EMI duration. Please reselect.");
+                return false;
             }
 
-            function validateBeforeSubmit() {
-                const termsAccepted = document.getElementById("termsCheck").checked;
-                if (!termsAccepted) {
-                    alert("Please accept the terms and conditions before proceeding.");
-                    return false;
-                }
+            const upiField = document.getElementById("upiField");
+            const upiValue = upiField ? upiField.value.trim() : "";
+            document.getElementById("upiInput").value = upiValue;
 
-                const upiField = document.getElementById("upiField");
-                const upiValue = upiField ? upiField.value.trim() : "";
-                document.getElementById("upiInput").value = upiValue;
+            return true;
+        }
 
-                return true;
-            }
 
-            window.onload = function () {
-                generateEMIOptions();      // ✅ Populates EMI dropdown
-                calculateEMI();            // ✅ Shows breakdown
-                document.getElementById("emiMonths").addEventListener("change", calculateEMI);
-                document.getElementById("extendEMI").addEventListener("change", toggleExtension);
-                document.getElementById("paymentMethod").addEventListener("change", showPaymentFields);
-            };
 
-        </script>
-    </body>
+        function toggleBreakdown() {
+            const breakdown = document.getElementById("emiPlan");
+            breakdown.classList.toggle("hidden");
+        }
+
+        window.onload = function () {
+            generateEMIOptions();
+            calculateEMI();
+            document.getElementById("emiMonths").addEventListener("change", calculateEMI);
+            document.getElementById("payNowMonths").addEventListener("change", calculateEMI);
+            document.getElementById("extendEMI").addEventListener("change", toggleExtension);
+            document.getElementById("paymentMethod").addEventListener("change", showPaymentFields);
+        };
+    </script>
+</body>
 </html>
 

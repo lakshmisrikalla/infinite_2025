@@ -259,8 +259,8 @@ CREATE TABLE PolicyDueDates (
   ReminderSent BIT NOT NULL DEFAULT 0
 );
 
-
-
+Select *FROM Payments;
+Select *FROM PolicyDueDates;
 Select *FROM Users;
 Select *FROM LoginCredentials;
 
