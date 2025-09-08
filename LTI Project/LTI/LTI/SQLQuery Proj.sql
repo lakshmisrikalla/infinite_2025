@@ -268,6 +268,7 @@ Select *FROM PolicyTypes;
 Select *FROM Policies;
 Select *FROM Clients;
 Select *FROM UserPolicies;
+Select *FROM Claims;
 
 
 INSERT INTO LoginCredentials (Username, Email, PasswordHash, Role)

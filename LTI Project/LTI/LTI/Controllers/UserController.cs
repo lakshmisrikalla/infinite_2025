@@ -450,13 +450,13 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
                 {
                     TempData["DocRedirectMessage"] = "Please submit required documents before purchasing this policy.";
                     return RedirectToAction("SubmitDocuments", new { policyId = id });
-                }
+                } 
 
-                if (!docsApproved)
+                 if (!docsApproved)
                 {
                     TempData["DocRedirectMessage"] = "Your documents are under review. You can proceed once they are approved.";
                     return RedirectToAction("SubmitDocuments", new { policyId = id });
-                }
+                } 
 
                 // 🔹 Load policy details
                 string query = @"
@@ -584,6 +584,190 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
         }
 
 
+        public ActionResult SubmitDocuments(int policyId)
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
+            DocumentSubmissionViewModel model = new DocumentSubmissionViewModel();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // Get policy info and type
+                string policySql = @"
+            SELECT p.PolicyName, pt.TypeName, up.UserPolicyID
+            FROM Policies p
+            INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
+            LEFT JOIN UserPolicies up ON up.PolicyID = p.PolicyID AND up.UserID = @UserID
+            WHERE p.PolicyID = @PolicyID";
+                using (SqlCommand cmd = new SqlCommand(policySql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PolicyID", policyId);
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        model.PolicyID = policyId;
+                        model.PolicyName = reader["PolicyName"].ToString();
+                        model.PolicyType = reader["TypeName"].ToString(); // Travel or Motor
+                        model.UserPolicyID = reader["UserPolicyID"] != DBNull.Value
+                            ? Convert.ToInt32(reader["UserPolicyID"])
+                            : 0;
+                    }
+                }
+
+                // Create UserPolicy if not exists
+                if (model.UserPolicyID == 0)
+                {
+                    string insertSql = @"
+                INSERT INTO UserPolicies (UserID, PolicyID, InsuranceType, StartDate, EndDate, Status, PaymentStatus, CreatedAt, NomineeName)
+                OUTPUT INSERTED.UserPolicyID
+                VALUES (@UserID, @PolicyID, @Type, GETDATE(), GETDATE(), 'Pending', 'Unpaid', GETDATE(), 'Pending')";
+                    using (SqlCommand cmd = new SqlCommand(insertSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", userId);
+                        cmd.Parameters.AddWithValue("@PolicyID", policyId);
+                        cmd.Parameters.AddWithValue("@Type", model.PolicyType);
+                        model.UserPolicyID = Convert.ToInt32(cmd.ExecuteScalar());
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+
+
+        public ActionResult ClaimInsurance()
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
+            List<SelectListItem> policies = new List<SelectListItem>();
+            Dictionary<int, decimal> policyAmounts = new Dictionary<int, decimal>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string sql = @"
+            SELECT up.UserPolicyID, p.PolicyName, pt.TypeName, p.BasePremium
+            FROM UserPolicies up
+            INNER JOIN Policies p ON up.PolicyID = p.PolicyID
+            INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
+            WHERE up.UserID = @UserID
+              AND (up.Status = 'Active' OR up.PaymentStatus = 'Paid')
+              AND pt.IsActive = 1";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        int userPolicyId = Convert.ToInt32(reader["UserPolicyID"]);
+                        string label = $"{reader["PolicyName"]} ({reader["TypeName"]})";
+                        decimal basePremium = Convert.ToDecimal(reader["BasePremium"]);
+
+                        policies.Add(new SelectListItem
+                        {
+                            Value = userPolicyId.ToString(),
+                            Text = label
+                        });
+
+                        policyAmounts[userPolicyId] = basePremium;
+                    }
+                }
+            }
+
+            if (policies.Count == 0)
+            {
+                TempData["ErrorMessage"] = "You have no active or paid policies eligible for claims.";
+                return RedirectToAction("Dashboard");
+            }
+
+            ViewBag.Policies = policies;
+            ViewBag.PolicyAmounts = policyAmounts;
+            return View();
+        }
+
+
+
+
+
+
+
+        [HttpPost]
+        public ActionResult ClaimInsurance(ClaimSubmissionViewModel model, HttpPostedFileBase ClaimDocument)
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
+            int claimId = 0;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // 🔹 Get latest active UserPolicyID for selected type
+                string getPolicySql = @"
+            SELECT TOP 1 up.UserPolicyID
+            FROM UserPolicies up
+            INNER JOIN Policies p ON up.PolicyID = p.PolicyID
+            INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
+            WHERE up.UserID = @UserID AND up.Status = 'Active' AND pt.TypeName = @Type
+            ORDER BY up.CreatedAt DESC";
+
+                using (SqlCommand cmd = new SqlCommand(getPolicySql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    cmd.Parameters.AddWithValue("@Type", (object)model.PolicyType ?? DBNull.Value); // ✅ Only once
+
+                    var result = cmd.ExecuteScalar();
+                    if (result == null)
+                    {
+                        TempData["ErrorMessage"] = "No active policy found for selected type.";
+                        return RedirectToAction("Dashboard");
+                    }
+                    model.UserPolicyID = Convert.ToInt32(result);
+                }
+
+                // 🔹 Insert into Claims table
+                string claimSql = @"
+            INSERT INTO Claims (UserPolicyID, ClaimType, Reason, ClaimedAmount)
+            OUTPUT INSERTED.ClaimID
+            VALUES (@UserPolicyID, @ClaimType, @Reason, @ClaimedAmount)";
+                using (SqlCommand cmd = new SqlCommand(claimSql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserPolicyID", model.UserPolicyID);
+                    cmd.Parameters.AddWithValue("@ClaimType", model.ClaimType);
+                    cmd.Parameters.AddWithValue("@Reason", model.Reason ?? "");
+                    cmd.Parameters.AddWithValue("@ClaimedAmount", model.ClaimedAmount);
+                    claimId = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+                // 🔹 Save claim document
+                if (ClaimDocument != null && ClaimDocument.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(ClaimDocument.FileName);
+                    string folderPath = Server.MapPath("~/Uploads");
+                    if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+                    string fullPath = Path.Combine(folderPath, fileName);
+                    ClaimDocument.SaveAs(fullPath);
+
+                    string relativePath = "/Uploads/" + fileName;
+
+                    string docSql = @"
+                INSERT INTO Documents (OwnerType, OwnerID, DocumentType, FilePath, IsVerified, Visibility)
+                VALUES ('UserPolicy', @OwnerID, 'ClaimDocument', @Path, 0, 'ClientAndUser')";
+                    using (SqlCommand cmd = new SqlCommand(docSql, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@OwnerID", model.UserPolicyID);
+                        cmd.Parameters.AddWithValue("@Path", relativePath);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            TempData["SuccessMessage"] = "Claim submitted successfully. Our agent will contact you shortly. Once approved, the amount will be credited.";
+            return View("ClaimInsurance", model); // ✅ Return same view to show success message
+        }
 
 
 

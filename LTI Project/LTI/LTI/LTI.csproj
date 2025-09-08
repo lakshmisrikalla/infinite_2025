@@ -149,6 +149,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\PasswordHelper.cs" />
+    <Compile Include="Models\ClaimSubmissionViewModel.cs" />
     <Compile Include="Models\DocumentSubmissionViewModel.cs" />
     <Compile Include="Models\InsuranceDbContext.cs" />
     <Compile Include="Models\PolicyViewModel.cs" />
@@ -201,6 +202,7 @@
     <Content Include="Views\User\BuyNow.cshtml" />
     <Content Include="Views\User\PurchaseSuccess.cshtml" />
     <Content Include="Views\User\SubmitDocuments.cshtml" />
+    <Content Include="Views\User\ClaimInsurance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
