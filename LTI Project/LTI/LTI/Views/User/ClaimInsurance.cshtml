@@ -68,17 +68,20 @@
     }
 </div>
 
-<script>
-    const policyAmounts = {
-        @foreach (var entry in policyAmounts)
-        {
-            @: "@entry.Key": "@entry.Value.ToString("F2")",
-        }
-    };
+@if (policyAmounts != null)
+{
+    <script>
+        const policyAmounts = {
+            @foreach (var entry in policyAmounts)
+            {
+                @: "@entry.Key": "@entry.Value.ToString("F2")",
+            }
+        };
 
-    function updateAmount() {
-        const selectedId = document.getElementById("UserPolicyID").value;
-        const amount = policyAmounts[selectedId] || "";
-        document.getElementById("PolicyAmountDisplay").value = amount ? `₹${amount}` : "";
-    }
-</script>
+        function updateAmount() {
+            const selectedId = document.getElementById("UserPolicyID").value;
+            const amount = policyAmounts[selectedId] || "";
+            document.getElementById("PolicyAmountDisplay").value = amount ? `₹${amount}` : "";
+        }
+    </script>
+}

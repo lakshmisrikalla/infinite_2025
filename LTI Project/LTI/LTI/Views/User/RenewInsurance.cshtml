@@ -1,0 +1,41 @@
+﻿@{
+    Layout = null;
+    var policies = ViewBag.Policies as List<SelectListItem>;
+    bool hasPolicies = policies != null && policies.Count > 0;
+}
+
+<div class="container mt-5">
+    <h2>🔁 Renew Insurance</h2>
+
+    @if (!hasPolicies)
+    {
+        <div class="alert alert-info text-center">
+            You have no policies eligible for renewal.
+        </div>
+        <div class="mt-3 text-center">
+            <a href="/User/Dashboard" class="btn btn-outline-primary">Go to Dashboard</a>
+        </div>
+    }
+    else
+    {
+        <form method="post" action="/User/RenewInsurance">
+            <div class="mb-3">
+                <label for="UserPolicyID" class="form-label">Select Policy to Renew</label>
+                <select name="UserPolicyID" id="UserPolicyID" class="form-control" required>
+                    <option value="">-- Select Policy --</option>
+                    @foreach (var policy in policies)
+                    {
+                        <option value="@policy.Value">@policy.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="Amount" class="form-label">Renewal Amount (₹)</label>
+                <input type="number" name="Amount" id="Amount" class="form-control" step="0.01" required />
+            </div>
+
+            <button type="submit" class="btn btn-warning w-100">Submit Renewal Request</button>
+        </form>
+    }
+</div>

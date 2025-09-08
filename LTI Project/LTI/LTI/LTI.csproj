@@ -203,6 +203,7 @@
     <Content Include="Views\User\PurchaseSuccess.cshtml" />
     <Content Include="Views\User\SubmitDocuments.cshtml" />
     <Content Include="Views\User\ClaimInsurance.cshtml" />
+    <Content Include="Views\User\RenewInsurance.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

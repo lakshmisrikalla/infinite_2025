@@ -695,6 +695,7 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
 
 
 
+
         [HttpPost]
         public ActionResult ClaimInsurance(ClaimSubmissionViewModel model, HttpPostedFileBase ClaimDocument)
         {
@@ -705,30 +706,7 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
             {
                 conn.Open();
 
-                // 🔹 Get latest active UserPolicyID for selected type
-                string getPolicySql = @"
-            SELECT TOP 1 up.UserPolicyID
-            FROM UserPolicies up
-            INNER JOIN Policies p ON up.PolicyID = p.PolicyID
-            INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
-            WHERE up.UserID = @UserID AND up.Status = 'Active' AND pt.TypeName = @Type
-            ORDER BY up.CreatedAt DESC";
-
-                using (SqlCommand cmd = new SqlCommand(getPolicySql, conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserID", userId);
-                    cmd.Parameters.AddWithValue("@Type", (object)model.PolicyType ?? DBNull.Value); // ✅ Only once
-
-                    var result = cmd.ExecuteScalar();
-                    if (result == null)
-                    {
-                        TempData["ErrorMessage"] = "No active policy found for selected type.";
-                        return RedirectToAction("Dashboard");
-                    }
-                    model.UserPolicyID = Convert.ToInt32(result);
-                }
-
-                // 🔹 Insert into Claims table
+                // Insert into Claims table
                 string claimSql = @"
             INSERT INTO Claims (UserPolicyID, ClaimType, Reason, ClaimedAmount)
             OUTPUT INSERTED.ClaimID
@@ -742,7 +720,7 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
                     claimId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
-                // 🔹 Save claim document
+                // Save claim document
                 if (ClaimDocument != null && ClaimDocument.ContentLength > 0)
                 {
                     string fileName = Path.GetFileName(ClaimDocument.FileName);
@@ -765,9 +743,94 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
                 }
             }
 
-            TempData["SuccessMessage"] = "Claim submitted successfully. Our agent will contact you shortly. Once approved, the amount will be credited.";
-            return View("ClaimInsurance", model); // ✅ Return same view to show success message
+            TempData["SuccessMessage"] = "Claim submitted successfully. Sit back and wait — one of our agents will contact you to settle.";
+            return View("ClaimInsurance");
         }
+
+
+        public ActionResult RenewInsurance()
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
+            List<SelectListItem> policies = new List<SelectListItem>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string sql = @"
+            SELECT up.UserPolicyID, p.PolicyName, pt.TypeName
+            FROM UserPolicies up
+            INNER JOIN Policies p ON up.PolicyID = p.PolicyID
+            INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
+            WHERE up.UserID = @UserID
+              AND up.PaymentStatus = 'Paid'
+              AND up.EndDate <= CAST(SYSUTCDATETIME() AS DATE)
+              AND pt.IsActive = 1";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        policies.Add(new SelectListItem
+                        {
+                            Value = reader["UserPolicyID"].ToString(),
+                            Text = $"{reader["PolicyName"]} ({reader["TypeName"]})"
+                        });
+                    }
+                }
+            }
+
+            ViewBag.Policies = policies;
+            return View("RenewInsurance");
+        }
+
+
+
+        [HttpPost]
+        public ActionResult RenewInsurance(int UserPolicyID, decimal Amount)
+        {
+            int userId = Convert.ToInt32(Session["UserID"]);
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // Validate policy ownership and eligibility
+                string validateSql = @"
+            SELECT COUNT(*) FROM UserPolicies
+            WHERE UserPolicyID = @UserPolicyID AND UserID = @UserID
+              AND PaymentStatus = 'Paid' AND EndDate <= CAST(SYSUTCDATETIME() AS DATE)";
+                using (SqlCommand cmd = new SqlCommand(validateSql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserPolicyID", UserPolicyID);
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count == 0)
+                    {
+                        TempData["ErrorMessage"] = "This policy is not eligible for renewal.";
+                        return RedirectToAction("Dashboard");
+                    }
+                }
+
+                // Insert renewal request
+                string insertSql = @"
+            INSERT INTO Renewals (UserPolicyID, Amount)
+            VALUES (@UserPolicyID, @Amount)";
+                using (SqlCommand cmd = new SqlCommand(insertSql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserPolicyID", UserPolicyID);
+                    cmd.Parameters.AddWithValue("@Amount", Amount);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            TempData["SuccessMessage"] = "Renewal request submitted successfully. Sit back and wait — one of our agents will contact you to settle.";
+            return View("RenewInsurance");
+        }
+
 
 
 
