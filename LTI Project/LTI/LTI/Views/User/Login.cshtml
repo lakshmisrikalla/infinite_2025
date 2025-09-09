@@ -32,6 +32,7 @@
         padding: 10px;
         font-weight: 500;
         border-radius: 6px;
+
     }
 
     .cursor-pointer {
@@ -48,21 +49,24 @@
             <div class="alert alert-danger">@ViewBag.Error</div>
         }
 
-        <form method="post" action="/User/Login">
-            <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" required />
-            </div>
+    <form method="post" action="/User/Login">
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" required />
+        </div>
 
-            <div class="mb-3 position-relative">
-                <label class="form-label">Password</label>
-                <input type="password" name="password" id="passwordInput" class="form-control" required />
-                <i class="fa fa-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer"
-                   id="toggleIcon" onclick="togglePassword('passwordInput', 'toggleIcon')"></i>
-            </div>
+        <div class="mb-3 position-relative">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" id="passwordInput" class="form-control" required />
+            <i class="fa fa-eye-slash position-absolute top-50 end-0 translate-middle-y me-3 cursor-pointer"
+               id="toggleIcon" onclick="togglePassword('passwordInput', 'toggleIcon')"></i>
+        </div>
 
-            <button type="submit" class="btn btn-success w-100">Login</button>
-        </form>
+        <div class="text-center">
+            <button type="submit" class="btn btn-success w-70">Login</button>
+        </div>
+
+    </form>
 
         <div class="mt-4 text-center">
             <p>

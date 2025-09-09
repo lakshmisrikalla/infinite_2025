@@ -147,17 +147,17 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Title=="Premium Calculator"?"active":"")" href="@Url.Action("PremiumCalculator","User")">
+                        <a class="nav-link @(ViewBag.Title=="Premium Calculator"?"active":"")" href="@Url.Action("Calculate","Premium")">
                             <i class="bi bi-calculator"></i> Premium Calculator
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Title=="Policy History"?"active":"")" href="@Url.Action("PolicyHistory","User")">
+                        <a class="nav-link @(ViewBag.Title=="Policy History"?"active":"")" href="@Url.Action("Index","History")">
                             <i class="bi bi-clock-history"></i> Policy History
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewBag.Title=="Pending Policies"?"active":"")" href="@Url.Action("PendingPolicies","User")">
+                        <a class="nav-link @(ViewBag.Title=="Pending Policies"?"active":"")" href="@Url.Action("Index","PendingPolicies")">
                             <i class="bi bi-hourglass-split"></i> Pending Policies
                         </a>
                     </li>
@@ -202,5 +202,6 @@
             document.body.classList.toggle('dark');
         }
     </script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

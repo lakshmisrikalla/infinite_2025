@@ -296,6 +296,9 @@ VALUES
 (2, 1, 'Tata Car Protect', 'Comprehensive', 'Car insurance with roadside assistance', 'Covers accidents, theft, fire, and towing', 12, 8900.00, 'Approved'),
 (3, 1, 'HDFC Motor Max', 'Comprehensive', 'Premium motor insurance for SUVs', 'Includes engine protection, zero depreciation', 12, 10500.00, 'Approved');
 
+INSERT INTO Policies (ClientID, PolicyTypeID, PolicyName, PlanKind, Description, CoverageDetails, DurationMonths, BasePremium, Status)
+VALUES 
+(3, 2, 'HDFC Motor Max 2', 'Comprehensive', 'Premium motor insurance for XUVs', 'Includes engine protection, zero depreciation', 12, 10500.00, 'Pending');
 
 INSERT INTO Policies (ClientID, PolicyTypeID, PolicyName, PlanKind, Description, CoverageDetails, DurationMonths, BasePremium, Status)
 VALUES 

@@ -1,21 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LTI.Models
 {
     public class User
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserID { get; set; }
-
-        [Required]
+        [ForeignKey("LoginCredentials")]
         public int LoginID { get; set; }
 
         [Required]
         public string FullName { get; set; }
-
-        [Required]
+        [NotMapped]
+        //[Required]
         public string Username { get; set; }
-
+        [NotMapped]
         [EmailAddress]
         public string Email { get; set; }
 
@@ -34,5 +37,11 @@ namespace LTI.Models
 
         public string Status { get; set; } = "Active";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        //navigation
+        //navigation
+        public virtual LoginCredentials LoginCredentials { get; set; }
+        public virtual ICollection<PremiumCalculation> PremiumCalculations { get; set; }
+        public virtual ICollection<UserPolicy> UserPolicies { get; set; }
     }
 }

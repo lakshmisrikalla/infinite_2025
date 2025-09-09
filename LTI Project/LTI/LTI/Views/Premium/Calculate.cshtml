@@ -1,0 +1,103 @@
+﻿@model LTI.Models.ViewModels.PremiumCalculationVM
+@{
+    Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "Premium Calculator"; }
+
+<h2>Calculate Premium</h2>
+<!-- Hidden JSON container for safe Razor-to-JS transfer -->
+<div id="planData" data-plans='@Html.Raw(Json.Encode(Model.AvailablePlans))'></div>
+
+@using (Html.BeginForm("CalculatePremium", "Premium", FormMethod.Post))
+
+{
+<div class="form-group">
+
+    @Html.LabelFor(m => m.PlanID, "Select Policy")
+
+    @Html.DropDownListFor(
+
+                 m => m.PlanID,
+
+                 new SelectList(Model.AvailablePlans, "PolicyID", "PolicyName"),
+
+                 "-- Select a Policy --",
+
+                 new { @class = "form-control", id = "PlanID" }
+
+             )
+
+</div>
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.VehicleModel, "Vehicle Model")
+
+                    @Html.TextBoxFor(m => m.VehicleModel, new { @class = "form-control", id = "VehicleModel" })
+                </div>
+
+                <div class="form-group">
+
+                                    @Html.LabelFor(m => m.VehicleAge, "Vehicle Age")
+
+                                    @Html.TextBoxFor(m => m.VehicleAge, new { @class = "form-control", type = "number", id = "VehicleAge" })
+                                </div>
+
+                                                <div class="form-group">
+
+                                                    @Html.LabelFor(m => m.TravelDetails, "Travel Details")
+
+                                                    @Html.TextBoxFor(m => m.TravelDetails, new { @class = "form-control", id = "TravelDetails" })
+                                                </div>
+
+                                                                <div class="form-group">
+
+                                                                    @Html.LabelFor(m => m.TripDurationDetails, "Trip Duration (Days)")
+
+                                                                    @Html.TextBoxFor(m => m.TripDurationDetails, new { @class = "form-control", type = "number" , id = "TripDurationDetails" })
+                                                                </div>
+
+                                                                                <div class="form-group">
+
+                                                                                    @Html.LabelFor(m => m.TravellerAge, "Age of the traveller")
+
+                                                                                    @Html.TextBoxFor(m => m.TravellerAge, new { @class = "form-control", type = "number", id = "TravellerAge" })
+                                                                                </div> <!--@Html.HiddenFor(m => m.UserID)--> <!-- Pass UserID if needed -->
+
+                                                                                                <button type="submit" class="btn btn-primary">Calculate Premium</button>
+ }
+
+@section Scripts {
+    <script>const travelFields = ['TravelDetails', 'TripDurationDetails', 'TravellerAge'];
+
+        const motorFields = ['VehicleModel', 'VehicleAge'];
+
+        function toggleFields() {
+            const selectedPlanId = $('#PlanID').val();
+            const plans = JSON.parse(document.getElementById('planData').dataset.plans);
+            const selectedPlan = plans.find(p => p.PolicyID == selectedPlanId);
+
+            if (!selectedPlan) return;
+
+            const isTravel = selectedPlan.PolicyTypeID === 2;
+            const isMotor = selectedPlan.PolicyTypeID === 1;
+
+            travelFields.forEach(id => {
+                $('#' + id).closest('.form-group').toggle(isTravel);
+            });
+
+            motorFields.forEach(id => {
+                $('#' + id).closest('.form-group').toggle(isMotor);
+            });
+        }
+
+        $(document).ready(function () {
+
+            toggleFields();
+
+            $('#PlanID').change(toggleFields);
+
+        });
+    </script>
+
+}
+
