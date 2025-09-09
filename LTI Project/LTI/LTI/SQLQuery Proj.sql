@@ -5,8 +5,6 @@ Use MainProject;
 
 
 
-
-
 --**********IDENTITY & ACCESS**************
 
 -- One login table for all roles. Clients must also supply CompanyCode at login.

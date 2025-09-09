@@ -7,6 +7,13 @@ using LTI.Helpers;
 using System.Collections.Generic;
 using System.IO;
 using System.Web;
+using MimeKit;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using System.Security.Cryptography;
+using System.Text;
+using System.Net;
+
 
 
 
@@ -110,13 +117,13 @@ namespace LTI.Controllers
                 conn.Open();
 
                 string query = @"
-            SELECT l.LoginID, u.UserID, u.FullName, l.PasswordHash
-            FROM LoginCredentials l
-            INNER JOIN Users u ON l.LoginID = u.LoginID
-            WHERE l.Username = @Username AND l.Role = 'User' AND l.IsActive = 1";
+        SELECT l.LoginID, u.UserID, u.FullName, l.PasswordHash
+        FROM LoginCredentials l
+        INNER JOIN Users u ON l.LoginID = u.LoginID
+        WHERE l.Username = @Username AND l.Role = 'User' AND l.IsActive = 1";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@Username", username); // ✅ This line is essential
+                cmd.Parameters.AddWithValue("@Username", username);
 
                 SqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
@@ -126,7 +133,7 @@ namespace LTI.Controllers
                     {
                         Session["UserID"] = reader["UserID"];
                         Session["FullName"] = reader["FullName"].ToString();
-                        return RedirectToAction("Dashboard");
+                        return RedirectToAction("Overview");
                     }
                 }
 
@@ -134,6 +141,181 @@ namespace LTI.Controllers
                 return View();
             }
         }
+
+        [HttpGet]
+        public ActionResult ForgotPassword()
+        {
+            return View("ForgotPassword");
+        }
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(password);
+                byte[] hash = sha256.ComputeHash(bytes);
+                return BitConverter.ToString(hash).Replace("-", "").ToLower();
+            }
+        }
+
+        // POST: ForgotPassword
+        [HttpPost]
+        public ActionResult ForgotPassword(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ViewBag.Error = "❌ Please enter a valid email address.";
+                return View("ForgotPassword");
+            }
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM LoginCredentials WHERE Email = @Email", con);
+                cmd.Parameters.AddWithValue("@Email", email.Trim());
+                int count = (int)cmd.ExecuteScalar();
+                con.Close();
+
+                if (count == 0)
+                {
+                    ViewBag.Error = "❌ Email not found. Please register with this email.";
+                    return View("ForgotPassword");
+                }
+            }
+
+            // Generate OTP code
+            string code = new Random().Next(100000, 999999).ToString();
+            Session["ResetCode"] = code;
+            Session["ResetEmail"] = email.Trim();
+
+            // Send email
+            string errorMessage;
+            bool sent = SendEmail(email.Trim(), "Password Reset Code", $"Your reset code is: {code}", out errorMessage);
+
+            if (!sent)
+            {
+                ViewBag.Error = "❌ Failed to send email: " + errorMessage;
+                return View("ForgotPassword");
+            }
+
+            return RedirectToAction("VerifyResetCode");
+        }
+
+
+
+        private bool SendEmail(string toEmail, string subject, string body, out string errorMessage)
+        {
+            errorMessage = "";
+
+            try
+            {
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress(
+                    ConfigurationManager.AppSettings["FromName"],
+                    ConfigurationManager.AppSettings["FromEmail"]
+                ));
+                email.To.Add(MailboxAddress.Parse(toEmail));
+                email.Subject = subject;
+                email.Body = new TextPart("plain") { Text = body };
+
+                using (var smtp = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    smtp.Connect(
+                        ConfigurationManager.AppSettings["SmtpHost"],
+                        int.Parse(ConfigurationManager.AppSettings["SmtpPort"]),
+                        SecureSocketOptions.StartTls
+                    );
+
+                    smtp.Authenticate(
+                        ConfigurationManager.AppSettings["SmtpUser"],
+                        ConfigurationManager.AppSettings["SmtpPass"]
+                    );
+
+                    smtp.Send(email);
+                    smtp.Disconnect(true);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
+        }
+
+        // GET: VerifyResetCode
+        [HttpGet]
+        public ActionResult VerifyResetCode()
+        {
+            return View("VerifyCode"); // Views/User/VerifyCode.cshtml
+        }
+
+        [HttpPost]
+        public ActionResult VerifyResetCode(string code)
+        {
+            if (code == Session["ResetCode"]?.ToString())
+            {
+                return RedirectToAction("ResetPassword");
+            }
+
+            ViewBag.Error = "❌ Invalid code.";
+            return View("VerifyCode");
+        }
+
+
+        // GET: ResetPassword
+        [HttpGet]
+        public ActionResult ResetPassword()
+        {
+            return View("ResetPassword");
+        }
+
+        [HttpPost]
+        public ActionResult ResetPassword(string newPassword, string confirmPassword)
+        {
+            if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                ViewBag.Error = "Password fields cannot be empty.";
+                return View("ResetPassword");
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                ViewBag.Error = "❌ Passwords do not match.";
+                return View("ResetPassword");
+            }
+
+            if (Session["ResetEmail"] == null)
+            {
+                ViewBag.Error = "Session expired. Please restart the password reset process.";
+                return View("ResetPassword");
+            }
+
+            string hashedPassword = PasswordHelper.HashPassword(newPassword.Trim());
+
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                SqlCommand cmd = new SqlCommand(@"
+            UPDATE LoginCredentials 
+            SET PasswordHash = @Password 
+            WHERE Email = @Email AND Role = 'User' AND IsActive = 1", con);
+
+                cmd.Parameters.AddWithValue("@Password", hashedPassword);
+                cmd.Parameters.AddWithValue("@Email", Session["ResetEmail"].ToString());
+                cmd.ExecuteNonQuery();
+            }
+
+            // Clear reset session
+            Session.Remove("ResetEmail");
+            Session.Remove("ResetCode");
+
+            TempData["Success"] = "✅ Password reset successful. Please log in with your new password.";
+            return RedirectToAction("Login");
+        }
+
+
+
 
         public ActionResult BrowseInsurance(string typeFilter = "All")
         {
@@ -613,7 +795,9 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
                         model.UserPolicyID = reader["UserPolicyID"] != DBNull.Value
                             ? Convert.ToInt32(reader["UserPolicyID"])
                             : 0;
+                        
                     }
+                    reader.Close();
                 }
 
                 // Create UserPolicy if not exists
@@ -649,13 +833,13 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
                 conn.Open();
 
                 string sql = @"
-            SELECT up.UserPolicyID, p.PolicyName, pt.TypeName, p.BasePremium
-            FROM UserPolicies up
-            INNER JOIN Policies p ON up.PolicyID = p.PolicyID
-            INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
-            WHERE up.UserID = @UserID
-              AND (up.Status = 'Active' OR up.PaymentStatus = 'Paid')
-              AND pt.IsActive = 1";
+        SELECT up.UserPolicyID, p.PolicyName, pt.TypeName, p.BasePremium
+        FROM UserPolicies up
+        INNER JOIN Policies p ON up.PolicyID = p.PolicyID
+        INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
+        WHERE up.UserID = @UserID
+          AND (up.Status = 'Active' OR up.PaymentStatus = 'Paid')
+          AND pt.IsActive = 1";
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
@@ -675,19 +859,17 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
 
                         policyAmounts[userPolicyId] = basePremium;
                     }
+                    reader.Close();
                 }
-            }
-
-            if (policies.Count == 0)
-            {
-                TempData["ErrorMessage"] = "You have no active or paid policies eligible for claims.";
-                return RedirectToAction("Dashboard");
             }
 
             ViewBag.Policies = policies;
             ViewBag.PolicyAmounts = policyAmounts;
+            ViewBag.HasPolicies = policies.Count > 0;
+
             return View();
         }
+
 
 
 
@@ -744,7 +926,9 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
             }
 
             TempData["SuccessMessage"] = "Claim submitted successfully. Sit back and wait — one of our agents will contact you to settle.";
-            return View("ClaimInsurance");
+            return View(); // This will render the same ClaimInsurance.cshtml view
+
+
         }
 
 
@@ -831,14 +1015,133 @@ VALUES (@UserID, @PolicyID, @Type, @Start, @End, 'Active', 'Paid', SYSUTCDATETIM
             return View("RenewInsurance");
         }
 
+        public ActionResult Overview()
+        {
+            if (Session["UserID"] == null)
+                return RedirectToAction("Login");
+
+            ViewBag.FullName = Session["FullName"]?.ToString();
+
+            var userId = Convert.ToInt32(Session["UserID"]);
+            var model = new OverviewViewModel { LatestPolicies = new List<PolicyViewModel>() };
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // ✅ Latest 3 active policies for browsing
+                string latestSql = @"
+            SELECT TOP 3 PolicyID, PolicyName, Description, BasePremium, DurationMonths
+            FROM Policies
+            WHERE Status IN ('Draft','Pending','Approved','Rejected','Inactive','Active')
+            ORDER BY CreatedAt DESC";
+
+                using (SqlCommand cmd = new SqlCommand(latestSql, conn))
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        model.LatestPolicies.Add(new PolicyViewModel
+                        {
+                            PolicyID = Convert.ToInt32(reader["PolicyID"]),
+                            PolicyName = reader["PolicyName"].ToString(),
+                            Description = reader["Description"].ToString(),
+                            BasePremium = Convert.ToDecimal(reader["BasePremium"]),
+                            DurationMonths = Convert.ToInt32(reader["DurationMonths"])
+                        });
+                    }
+                }
+
+                // ✅ Total policies purchased across platform
+                string totalSql = "SELECT COUNT(*) FROM UserPolicies WHERE PaymentStatus = 'Paid'";
+                using (SqlCommand cmd = new SqlCommand(totalSql, conn))
+                {
+                    model.TotalPolicies = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+                // ✅ Total users with at least one paid policy
+                string userSql = @"
+            SELECT COUNT(DISTINCT UserID)
+            FROM UserPolicies
+            WHERE PaymentStatus = 'Paid'";
+                using (SqlCommand cmd = new SqlCommand(userSql, conn))
+                {
+                    model.TotalUsers = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+            }
+
+            return View(model);
+        }
+
+
+        private PolicyViewModel GetPolicyById(int policyId)
+        {
+            PolicyViewModel policy = null;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                string sql = @"
+        SELECT p.PolicyID, p.PolicyName, pt.TypeName, p.Description,
+               p.PlanKind, p.DurationMonths, p.BasePremium
+        FROM Policies p
+        INNER JOIN PolicyTypes pt ON p.PolicyTypeID = pt.PolicyTypeID
+        WHERE p.PolicyID = @PolicyID";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@PolicyID", policyId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        policy = new PolicyViewModel
+                        {
+                            PolicyID = Convert.ToInt32(reader["PolicyID"]),
+                            PolicyName = reader["PolicyName"].ToString(),
+                            TypeName = reader["TypeName"].ToString(),
+                            Description = reader["Description"].ToString(),
+                            PlanKind = reader["PlanKind"].ToString(),
+                            DurationMonths = Convert.ToInt32(reader["DurationMonths"]),
+                            BasePremium = Convert.ToDecimal(reader["BasePremium"])
+                        };
+                    }
+
+                    reader.Close();
+                }
+            }
+
+            return policy;
+        }
+
+
+
+        public ActionResult PolicyDetails(int policyId)
+        {
+            var policy = GetPolicyById(policyId);
+
+            if (policy == null)
+            {
+                TempData["ErrorMessage"] = "Policy not found.";
+                return RedirectToAction("BrowseInsurance");
+            }
+
+            return View(policy);
+        }
+
 
 
 
         public ActionResult Dashboard()
         {
+            if (Session["UserID"] == null)
+                return RedirectToAction("Login");
+
             ViewBag.FullName = Session["FullName"]?.ToString();
-            return View();
+            return View("Overview");
         }
+
 
         public ActionResult Logout()
         {

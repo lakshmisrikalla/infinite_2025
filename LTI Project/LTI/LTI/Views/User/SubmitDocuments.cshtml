@@ -1,79 +1,172 @@
 ﻿@model LTI.Models.DocumentSubmissionViewModel
 @{
+    Layout = "~/Views/User/UserLayout.cshtml";
     ViewBag.Title = "Submit Documents";
-   
-   
-
 }
 
-
-<h2>📄 Submit Documents for @Model.PolicyName</h2>
-
-@if (TempData["DocRedirectMessage"] != null)
-{
-    <div class="alert alert-warning">@TempData["DocRedirectMessage"]</div>
-}
-
-<form method="post" enctype="multipart/form-data" action="/User/SubmitDocuments">
-    <input type="hidden" name="PolicyID" value="@Model.PolicyID" />
-    <input type="hidden" name="UserPolicyID" value="@Model.UserPolicyID" />
-    <input type="hidden" name="PolicyType" value="@Model.PolicyType" />
-
-    @if (Model.PolicyType == "Travel")
-    {
-        <h4>✈️ Travel Details</h4>
-        <label>Person Name:</label>
-        <input type="text" name="PersonName" class="form-control" required />
-        <label>Age:</label>
-        <input type="number" name="Age" class="form-control" required />
-        <label>Gender:</label>
-        <select name="Gender" class="form-control" required>
-            <option value="">-- Select --</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
-        </select>
-        <label>Date of Birth:</label>
-        <input type="date" name="DOB" class="form-control" required />
-        <label>Health Issues (if any):</label>
-        <textarea name="HealthIssues" class="form-control"></textarea>
-    }
-    else if (Model.PolicyType == "Motor")
-    {
-        <h4>🚗 Vehicle Details</h4>
-        <label>Vehicle Type:</label>
-        <input type="text" name="VehicleType" class="form-control" required />
-        <label>Vehicle Name:</label>
-        <input type="text" name="VehicleName" class="form-control" required />
-        <label>Model:</label>
-        <input type="text" name="Model" class="form-control" required />
-        <label>Driving License:</label>
-        <input type="text" name="DrivingLicense" class="form-control" required />
-        <label>Registration Number:</label>
-        <input type="text" name="RegistrationNumber" class="form-control" required />
-        <label>RC Number:</label>
-        <input type="text" name="RCNumber" class="form-control" required />
-        <label>Registration Date:</label>
-        <input type="date" name="RegistrationDate" class="form-control" />
-        <label>Expiry Date:</label>
-        <input type="date" name="ExpiryDate" class="form-control" required />
-        <label>Engine Number:</label>
-        <input type="text" name="EngineNumber" class="form-control" required />
-        <label>Chassis Number:</label>
-        <input type="text" name="ChassisNumber" class="form-control" required />
-        <label>Holder Name:</label>
-        <input type="text" name="HolderName" class="form-control" required />
+<style>
+    .form-card {
+        background-color: #f8f9fa;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
     }
 
-    <h4 class="mt-4">📎 Upload Documents</h4>
-    <label>Document 1:</label>
-    <input type="file" name="Doc1" class="form-control" required />
-    <label>Document 2:</label>
-    <input type="file" name="Doc2" class="form-control" required />
-    <label>Document 3:</label>
-    <input type="file" name="Doc3" class="form-control" required />
+    .form-section {
+        margin-bottom: 30px;
+    }
 
-    <button type="submit" class="btn btn-success mt-3">Submit</button>
-</form>
+        .form-section h5 {
+            color: #0d6efd;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
 
+    .form-label {
+        font-weight: 500;
+        color: #343a40;
+    }
 
+    .form-control, .form-select {
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        background-color: #ffffff;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    .btn-success {
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 6px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="form-card">
+        <h4 class="mb-4">📄 Submit Documents for <span class="text-primary">@Model.PolicyName</span></h4>
+
+        @if (TempData["DocRedirectMessage"] != null)
+        {
+            <div class="alert alert-warning">@TempData["DocRedirectMessage"]</div>
+        }
+
+        <form method="post" enctype="multipart/form-data" action="/User/SubmitDocuments">
+            <input type="hidden" name="PolicyID" value="@Model.PolicyID" />
+            <input type="hidden" name="UserPolicyID" value="@Model.UserPolicyID" />
+            <input type="hidden" name="PolicyType" value="@Model.PolicyType" />
+
+            @if (Model.PolicyType == "Travel")
+            {
+                <div class="form-section">
+                    <h5>✈️ Travel Details</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Person Name:</label>
+                            <input type="text" name="PersonName" class="form-control" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Age:</label>
+                            <input type="number" name="Age" class="form-control" required />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Gender:</label>
+                            <select name="Gender" class="form-select" required>
+                                <option value="">-- Select --</option>
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Birth:</label>
+                            <input type="date" name="DOB" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Health Issues (if any):</label>
+                            <textarea name="HealthIssues" class="form-control" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Model.PolicyType == "Motor")
+            {
+                <div class="form-section">
+                    <h5>🚗 Vehicle Details</h5>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Vehicle Type:</label>
+                            <input type="text" name="VehicleType" class="form-control" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Vehicle Name:</label>
+                            <input type="text" name="VehicleName" class="form-control" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Model:</label>
+                            <input type="text" name="Model" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Driving License:</label>
+                            <input type="text" name="DrivingLicense" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Registration Number:</label>
+                            <input type="text" name="RegistrationNumber" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">RC Number:</label>
+                            <input type="text" name="RCNumber" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Registration Date:</label>
+                            <input type="date" name="RegistrationDate" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Expiry Date:</label>
+                            <input type="date" name="ExpiryDate" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Engine Number:</label>
+                            <input type="text" name="EngineNumber" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Chassis Number:</label>
+                            <input type="text" name="ChassisNumber" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Holder Name:</label>
+                            <input type="text" name="HolderName" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="form-section">
+                <h5>📎 Upload Documents</h5>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Document 1:</label>
+                        <input type="file" name="Doc1" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Document 2:</label>
+                        <input type="file" name="Doc2" class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Document 3:</label>
+                        <input type="file" name="Doc3" class="form-control" required />
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-end">
+                <button type="submit" class="btn btn-success">Submit Documents</button>
+            </div>
+        </form>
+    </div>
+</div>

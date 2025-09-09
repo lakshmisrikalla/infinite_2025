@@ -1,0 +1,61 @@
+﻿@model LTI.Models.PolicyViewModel
+
+@{
+    Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "Policy Details";
+}
+
+<div class="container mt-4">
+    <h2>@Model.PolicyName</h2>
+    <h5 class="text-muted">@Model.TypeName Insurance</h5>
+
+    <div class="mt-3">
+        <p>@Model.Description</p>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Plan Type: @Model.PlanKind</li>
+            <li class="list-group-item">Duration: @Model.DurationMonths months</li>
+            <li class="list-group-item">Base Premium: ₹@Model.BasePremium.ToString("F2")</li>
+        </ul>
+    </div>
+
+    <hr class="my-4" />
+
+    <div class="alert alert-info">
+        <h5>📋 Terms & Conditions</h5>
+        <ol class="mb-0">
+            <li>Coverage begins only after successful payment and document verification. Claims made before activation will not be entertained.</li>
+            <li>Policy benefits are subject to exclusions listed in the official policy document, including pre-existing conditions and fraudulent claims.</li>
+            <li>Claim submissions must be made within 30 days of the incident, along with all required supporting documents.</li>
+            <li>Policyholders must maintain accurate and up-to-date personal and vehicle/travel information to avoid claim rejection.</li>
+            <li>In case of disputes, the final decision will be governed by the Insurance Regulatory and Development Authority of India (IRDAI) guidelines.</li>
+        </ol>
+    </div>
+
+    @if (Model.TypeName == "Travel")
+    {
+        <div class="alert alert-warning mt-4">
+            <h6>🌍 Required Documents for Travel Insurance</h6>
+            <ul>
+                <li>Passport (optional)</li>
+                <li>Aadhaar / PAN (for KYC in India)</li>
+                <li>Travel ticket or itinerary</li>
+            </ul>
+        </div>
+    }
+    else if (Model.TypeName == "Motor")
+    {
+        <div class="alert alert-warning mt-4">
+            <h6>✅ Required Documents for Motor Insurance</h6>
+            <ul>
+                <li>RC (Registration Certificate)</li>
+                <li>Driving License (valid DL)</li>
+                <li>Aadhaar card / PAN card (for KYC)</li>
+            </ul>
+        </div>
+    }
+
+    <div class="mt-4">
+        <a href="/User/BuyNow/@Model.PolicyID" class="btn btn-success">Proceed to Buy</a>
+        <a href="/User/BrowseInsurance" class="btn btn-outline-secondary ms-2">Back to Browse</a>
+    </div>
+</div>

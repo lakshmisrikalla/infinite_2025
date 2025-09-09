@@ -15,5 +15,16 @@ namespace LTI.Models
         public decimal BasePremium { get; set; }
         public string TypeName { get; set; }
         public string CompanyName { get; set; }
+
+        public string Status { get; set; }
+
     }
+
+    public class OverviewViewModel
+    {
+        public List<PolicyViewModel> LatestPolicies { get; set; }
+        public int TotalPolicies { get; set; }
+        public int TotalUsers { get; set; }
+    }
+
 }
