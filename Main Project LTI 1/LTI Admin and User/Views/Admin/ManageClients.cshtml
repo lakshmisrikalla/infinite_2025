@@ -1,0 +1,58 @@
+﻿@model List<LTI.Models.ClientViewModel>
+@{
+    ViewBag.Title = "Manage Clients";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<h3 class="text-center mb-4">👥 Manage Clients</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Company Name</th>
+            <th>Company Code</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Document</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var client in Model)
+        {
+            <tr>
+                <td>@client.CompanyName</td>
+                <td>@client.CompanyCode</td>
+                <td>@client.ContactEmail</td>
+                <td>@client.ContactPhone</td>
+                <td>@client.Status</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(client.FilePath))
+                    {
+                        <a href="@Url.Content(client.FilePath)" target="_blank">@client.DocumentType</a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No document</span>
+                    }
+                </td>
+                <td>
+                    @if (client.Status == "Pending")
+                    {
+                        using (Html.BeginForm("UpdateVerificationStatus", "Admin", FormMethod.Post))
+                        {
+                            @Html.Hidden("clientId", client.ClientID)
+                            <button type="submit" name="approve" value="true" class="btn btn-success btn-sm me-1">Approve</button>
+                            <button type="submit" name="approve" value="false" class="btn btn-danger btn-sm">Reject</button>
+                        }
+                    }
+                    else
+                    {
+                        <span class="text-muted">—</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

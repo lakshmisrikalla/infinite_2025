@@ -1,0 +1,72 @@
+﻿@{
+    ViewBag.Title = "Contact";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - LTI Insurance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .custom-gradient {
+            background: linear-gradient(135deg, #5a009d, #00ccff);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark custom-gradient shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">LTI Insurance</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ltiNavbar" aria-controls="ltiNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="ltiNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="@Url.Action("Home", "MainHome")">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("UserLogin", "Account")">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("UserRegister", "Account")">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Contact", "MainHome")">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("About", "MainHome")">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Help", "MainHome")">Help</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("FAQ", "MainHome")">FAQ</a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Contact Info -->
+    <div class="container py-5">
+        <h2 class="text-primary mb-4">Contact Us</h2>
+        <p class="lead">We’re here to help. Reach out anytime:</p>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">📧 Email: support@ltiinsurance.com</li>
+            <li class="list-group-item">📞 Phone: +91-9876543210</li>
+            <li class="list-group-item">📍 Address: LTI Insurance HQ, Mumbai</li>
+        </ul>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p class="mb-0">© 2025 LTI Insurance System. All rights reserved.</p>
+        <small>Built for smarter insurance management.</small>
+    </footer>
+</body>
+</html>

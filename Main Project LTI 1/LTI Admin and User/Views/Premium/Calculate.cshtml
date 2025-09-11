@@ -1,0 +1,166 @@
+﻿@model LTI.Models.ViewModels.PremiumCalculationVM
+@{ Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "Premium Calculator"; }
+
+<h2>Calculate Premium</h2>
+<!-- Hidden JSON container for safe Razor-to-JS transfer -->
+<div id="planData" data-plans='@Html.Raw(Json.Encode(Model.AvailablePlans))'></div>
+
+@using (Html.BeginForm("CalculatePremium", "Premium", FormMethod.Post))
+
+{
+<div class="form-group">
+
+    @Html.LabelFor(m => m.PlanID, "Select Policy")
+
+    @Html.DropDownListFor(
+
+                                 m => m.PlanID,
+
+                                 new SelectList(Model.AvailablePlans, "PolicyID", "PolicyName"),
+
+                                 "-- Select a Policy --",
+
+                                 new { @class = "form-control", id = "PlanID" }
+
+                             )
+
+</div>
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.VehicleModel, "Vehicle Model")
+
+                    @Html.TextBoxFor(m => m.VehicleModel, new { @class = "form-control", id = "VehicleModel" })
+                </div>
+
+                                <div class="form-group">
+
+                                    @Html.LabelFor(m => m.VehicleAge, "Vehicle Age")
+
+                                    @Html.TextBoxFor(m => m.VehicleAge, new { @class = "form-control", type = "number", id = "VehicleAge" })
+                                </div>
+
+                                                <div class="form-group">
+
+                                                    @Html.LabelFor(m => m.TravelDetails, "Travel Details")
+
+                                                    @Html.TextBoxFor(m => m.TravelDetails, new { @class = "form-control", id = "TravelDetails" })
+                                                </div>
+
+                                                                <div class="form-group">
+
+                                                                    @Html.LabelFor(m => m.TripDurationDetails, "Trip Duration (Days)")
+
+                                                                    @Html.TextBoxFor(m => m.TripDurationDetails, new { @class = "form-control", type = "number", id = "TripDurationDetails" })
+                                                                </div>
+
+                                                                                <div class="form-group">
+
+                                                                                    @Html.LabelFor(m => m.TravellerAge, "Age of the traveller")
+
+                                                                                    @Html.TextBoxFor(m => m.TravellerAge, new { @class = "form-control", type = "number", id = "TravellerAge" })
+                                                                                </div> <!--@Html.HiddenFor(m => m.UserID)--> <!-- Pass UserID if needed -->
+
+                                                                                                <button type="submit" class="btn btn-primary">Calculate Premium</button>}
+@section scripts {
+    <script>
+        (function () {
+            // IDs of fields to show/hide
+            const travelFields = ['TravelDetails', 'TripDurationDetails', 'TravellerAge'];
+            const motorFields = ['VehicleModel', 'VehicleAge'];
+
+            // read plan JSON safely
+            const planDataEl = document.getElementById('planData');
+            let plans = [];
+            if (planDataEl) {
+                const raw = planDataEl.getAttribute('data-plans');
+                try {
+                    plans = raw ? JSON.parse(raw) : [];
+                } catch (err) {
+                    console.error('Failed to parse planData JSON:', err, raw);
+                    plans = [];
+                }
+            } else {
+                console.warn('planData element not found. Ensure <div id="planData" data-plans="..."> exists.');
+            }
+
+            // hide all form groups containing the given input id
+            function hideAllFields() {
+                [...travelFields, ...motorFields].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const container = el.closest ? el.closest('.form-group') : el.parentElement;
+                    if (container) container.style.display = 'none';
+                });
+            }
+
+            // show/hide based on booleans
+            function showForType(isTravel, isMotor) {
+                travelFields.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const container = el.closest ? el.closest('.form-group') : el.parentElement;
+                    if (container) container.style.display = isTravel ? 'block' : 'none';
+                });
+                motorFields.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const container = el.closest ? el.closest('.form-group') : el.parentElement;
+                    if (container) container.style.display = isMotor ? 'block' : 'none';
+                });
+            }
+
+            // called when Plan selection changes
+            function onPlanChange() {
+                const sel = document.getElementById('PlanID');
+                if (!sel) {
+                    console.warn('PlanID select not found.');
+                    return;
+                }
+
+                const selectedValue = sel.value;
+                // nothing selected -> hide everything
+                if (!selectedValue) {
+                    hideAllFields();
+                    return;
+                }
+
+                // try to find plan in JSON by PolicyID
+                let selectedPlan = plans.find(p => String(p.PolicyID) === String(selectedValue));
+
+                // fallback: if not found, use option text to guess type
+                if (!selectedPlan) {
+                    const txt = (sel.options[sel.selectedIndex] && sel.options[sel.selectedIndex].text) || '';
+                    const lower = txt.toLowerCase();
+                    const isTravel = lower.includes('travel');
+                    const isMotor = lower.includes('motor');
+                    showForType(isTravel, isMotor);
+                    return;
+                }
+
+                // detect type either via PolicyTypeID or by name fallback
+                const name = (selectedPlan.PolicyName || '').toString().toLowerCase();
+                const isTravel = (selectedPlan.PolicyTypeID && Number(selectedPlan.PolicyTypeID) === 2) || name.includes('travel');
+                const isMotor = (selectedPlan.PolicyTypeID && Number(selectedPlan.PolicyTypeID) === 1) || name.includes('motor');
+
+                showForType(isTravel, isMotor);
+            }
+
+            // init on DOM ready
+            document.addEventListener('DOMContentLoaded', function () {
+                // hide all first
+                hideAllFields();
+
+                // wire change event
+                const sel = document.getElementById('PlanID');
+                if (sel) {
+                    sel.addEventListener('change', onPlanChange);
+                }
+
+                // run once (handles postback where PlanID might already be selected)
+                onPlanChange();
+            });
+        })();
+    </script>
+}

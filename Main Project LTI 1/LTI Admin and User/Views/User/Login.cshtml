@@ -1,0 +1,150 @@
+﻿@{
+    Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "Login";
+}
+
+<style>
+    .auth-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        margin: 60px auto;
+        max-width: 800px;
+    }
+
+    .auth-left {
+        background-color: #0d6efd;
+        padding: 40px 20px;
+        text-align: center;
+        color: #ffffff;
+    }
+
+        .auth-left h2 {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .auth-left p {
+            font-size: 1rem;
+            color: #e2e6ea;
+        }
+
+    .auth-right {
+        background-color: #f8f9fa;
+        padding: 30px;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #343a40;
+    }
+
+    .form-control {
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        background-color: #ffffff;
+        transition: border-color 0.3s ease;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    .btn-primary {
+        padding: 8px 24px;
+        font-weight: 500;
+        border-radius: 6px;
+        display: block;
+        margin: 0 auto;
+        width: fit-content;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .fa-eye-slash, .fa-eye {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .position-relative {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .text-center p {
+        margin-bottom: 0.5rem;
+    }
+</style>
+<script>
+    function togglePassword(id, iconId) {
+        const input = document.getElementById(id);
+        const icon = document.getElementById(iconId);
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.replace("fa-eye-slash", "fa-eye");
+        } else {
+            input.type = "password";
+            icon.classList.replace("fa-eye", "fa-eye-slash");
+        }
+    }
+</script>
+
+<div class="container">
+    <div class="card auth-card">
+        <div class="row g-0">
+            <!-- Left Branding Panel -->
+            <div class="col-md-5 auth-left d-flex flex-column justify-content-center align-items-center">
+                <div class="mb-3" style="font-size: 3rem;">🛡️</div>
+                <h2>Welcome Back</h2>
+                <p>Sign in to manage your policies and claims.</p>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div class="col-md-7 auth-right">
+                <h3 class="mb-4 text-center text-primary">🔐 User Sign In</h3>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger text-center">@ViewBag.Error</div>
+                }
+
+                <form method="post" action="/User/Login">
+                    <div class="mb-3 text-center">
+                        <label class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3 position-relative">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" id="passwordInput" class="form-control" required />
+                        <i class="fa fa-eye-slash cursor-pointer" id="toggleIcon" onclick="togglePassword('passwordInput', 'toggleIcon')"></i>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <p>
+                        Not a user? <a href="/User/Register" class="text-primary text-decoration-none">Register here</a>
+                    </p>
+                    <p>
+                        <a href="@Url.Action("ForgotPassword", "User")" class="text-decoration-none text-warning">Forgot Password?</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

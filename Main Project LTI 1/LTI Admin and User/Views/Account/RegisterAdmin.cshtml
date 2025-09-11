@@ -1,0 +1,67 @@
+﻿@model LTI.Models.AdminRegistrationViewModel
+@{
+    ViewBag.Title = "Register Admin";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Register Admin</h2>
+
+@using (Html.BeginForm("RegisterAdmin", "Account", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.ContactNumber)
+        @Html.TextBoxFor(m => m.ContactNumber, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ContactNumber, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Username)
+        @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Password)
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.ConfirmPassword)
+        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Gender)
+        @Html.DropDownListFor(m => m.Gender, new SelectList(new[] {
+            new { Value = "", Text = "-- Select Gender --" },
+            new { Value = "Male", Text = "Male" },
+            new { Value = "Female", Text = "Female" },
+            new { Value = "Other", Text = "Other" }
+        }, "Value", "Text"), new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label>Captcha: <strong>@ViewBag.Captcha</strong></label>
+        @Html.TextBoxFor(m => m.Captcha, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Captcha, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+}

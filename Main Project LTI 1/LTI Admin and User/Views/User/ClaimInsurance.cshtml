@@ -1,0 +1,145 @@
+﻿@{
+    Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "Submit Insurance Claim";
+
+    var policies = ViewBag.Policies as List<SelectListItem>;
+    var policyAmounts = ViewBag.PolicyAmounts as Dictionary<int, decimal>;
+    bool isSuccess = TempData["SuccessMessage"] != null;
+    bool hasPolicies = ViewBag.HasPolicies != null && (bool)ViewBag.HasPolicies;
+}
+
+<style>
+    .claim-card {
+        background-color: #f8f9fa;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #343a40;
+    }
+
+    .form-control, .form-select {
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        background-color: #ffffff;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+
+    .btn-success {
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 6px;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #0d6efd;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="claim-card">
+        <h3 class="mb-4 text-primary">📝 Submit Insurance Claim</h3>
+
+        @if (isSuccess)
+        {
+            <div class="alert alert-success text-center">
+                @TempData["SuccessMessage"]
+                <div class="mt-3">
+                    <a href="/User/Dashboard" class="btn btn-outline-primary">Go to Dashboard</a>
+                </div>
+            </div>
+        }
+        else if (!hasPolicies)
+        {
+            <div class="alert alert-warning text-center">
+                You have no policies eligible for claims at the moment.
+                <div class="mt-3">
+                    <a href="/User/Dashboard" class="btn btn-outline-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        }
+        else
+        {
+            <form method="post" enctype="multipart/form-data" action="/User/ClaimInsurance">
+                <div class="section-title">Claim Details</div>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="UserPolicyID" class="form-label">Select Policy</label>
+                        <select name="UserPolicyID" id="UserPolicyID" class="form-select" required onchange="updateAmount()">
+                            <option value="">-- Select Policy --</option>
+                            @foreach (var policy in policies)
+                            {
+                                <option value="@policy.Value">@policy.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Policy Amount (Base Premium)</label>
+                        <input type="text" id="PolicyAmountDisplay" class="form-control" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="ClaimType" class="form-label">Claim Type</label>
+                        <select name="ClaimType" id="ClaimType" class="form-select" required>
+                            <option value="">-- Select --</option>
+                            <option>Accident</option>
+                            <option>Medical</option>
+                            <option>Theft</option>
+                            <option>Damage</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="ClaimedAmount" class="form-label">Claimed Amount (₹)</label>
+                        <input type="number" name="ClaimedAmount" id="ClaimedAmount" class="form-control" step="0.01" required />
+                    </div>
+
+                    <div class="col-12">
+                        <label for="Reason" class="form-label">Reason for Claim</label>
+                        <textarea name="Reason" id="Reason" class="form-control" rows="4" required></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="ClaimDocument" class="form-label">Upload Supporting Document</label>
+                        <input type="file" name="ClaimDocument" id="ClaimDocument" class="form-control" required />
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-success">Submit Claim</button>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+
+@if (policyAmounts != null && hasPolicies)
+{
+    <script>
+        const policyAmounts = {
+            @foreach (var entry in policyAmounts)
+            {
+                @: "@entry.Key": "@entry.Value.ToString("F2")",
+            }
+        };
+
+        function updateAmount() {
+            const selectedId = document.getElementById("UserPolicyID").value;
+            const amount = policyAmounts[selectedId] || "";
+            document.getElementById("PolicyAmountDisplay").value = amount ? `₹${amount}` : "";
+        }
+    </script>
+}

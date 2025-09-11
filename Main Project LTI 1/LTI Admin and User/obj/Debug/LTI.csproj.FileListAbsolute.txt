@@ -1,0 +1,2 @@
+C:\Users\lakshmisrik\source\repos\LTI Project\LTI\LTI\obj\Debug\LTI.csproj.AssemblyReference.cache
+C:\Users\lakshmisrik\source\repos\LTI Project\LTI\LTI\obj\Debug\LTI.csproj.CoreCompileInputs.cache

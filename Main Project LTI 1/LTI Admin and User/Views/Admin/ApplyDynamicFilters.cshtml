@@ -1,0 +1,61 @@
+﻿@model LTI.Models.ClientFilterViewModel
+@{
+    ViewBag.Title = "Apply Dynamic Filters";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Client Status Filter</h2>
+
+<div class="card p-4 mb-4 shadow-sm">
+    @using (Html.BeginForm("ApplyDynamicFilters", "Admin", FormMethod.Post))
+    {
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label>Status</label>
+                @Html.DropDownListFor(m => m.Status, new SelectList(new[] { "All", "Approved", "Pending", "Blocked" }), "Select Status", new { @class = "form-control" })
+            </div>
+            <div class="col-md-4">
+                <label>Registered After</label>
+                @Html.TextBoxFor(m => m.RegisteredAfter, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+            </div>
+        </div>
+    }
+</div>
+
+@if (Model.FilteredClients != null && Model.FilteredClients.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Client ID</th>
+                    <th>Company Name</th>
+                    <th>Company Code</th>
+                    <th>Contact Phone</th>
+                    <th>Status</th>
+                    <th>Registered At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var client in Model.FilteredClients)
+                {
+                    <tr>
+                        <td>@client.ClientID</td>
+                        <td>@client.CompanyName</td>
+                        <td>@client.CompanyCode</td>
+                        <td>@client.ContactPhone</td>
+                        <td>@client.Status</td>
+                        <td>@client.RegisteredAt.ToString("dd-MM-yyyy")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">No clients found with the selected filters.</div>
+}

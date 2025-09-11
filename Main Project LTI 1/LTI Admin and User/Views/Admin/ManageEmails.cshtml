@@ -1,0 +1,86 @@
+﻿
+@model LTI.Models.AdminEmailModel
+
+@{
+    ViewBag.Title = "Manage Emails";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<h3 class="text-center mb-4">📧 Send Email</h3>
+
+@using (Html.BeginForm("ManageEmails", "Admin", FormMethod.Post))
+
+{
+<div class="mb-3">
+    <label>Recipient Type</label>
+
+    @Html.DropDownListFor(m => m.RecipientType,
+
+             new SelectList(new[] { "User", "Client" }),
+
+             "-- Select --",
+
+             new { @class = "form-control", onchange = "this.form.submit();" })
+</div>
+
+                <div class="mb-3">
+                    <label>Email Template</label>
+
+                    @Html.DropDownListFor(m => m.EmailType,
+
+                             new SelectList(ViewBag.EmailTypes as List<string>),
+
+                             "-- Select Template --",
+
+                             new { @class = "form-control", onchange = "toggleCustomBody(this.value);" })
+                </div>
+
+                                <div class="mb-3">
+                                    <label>Recipient Email</label>
+
+                                    @Html.DropDownListFor(m => m.ToEmail,
+
+                                             new SelectList(ViewBag.RecipientEmails as List<string>),
+
+                                             "-- Select Email --",
+
+                                             new { @class = "form-control", required = "required" })
+                                </div>
+
+                                                <div class="mb-3" id="customBodyContainer" style="display:none;">
+                                                    <label>Custom Message Body</label>
+
+                                                    @Html.TextAreaFor(m => m.CustomBody, new { @class = "form-control", rows = "5", placeholder = "Type your custom message here..." })
+                                                </div>
+
+                                                                <button type="submit" class="btn btn-success">Send Email</button>
+                                                                            }
+
+@if (ViewBag.Status != null)
+
+{
+<div class="alert alert-info mt-3 text-center">
+
+    @ViewBag.Status
+</div>
+            }
+
+<script>
+
+    function toggleCustomBody(selectedTemplate) {
+
+        const customBodyDiv = document.getElementById("customBodyContainer");
+
+        customBodyDiv.style.display = selectedTemplate === "Custom" ? "block" : "none";
+
+    }
+
+    window.onload = function () {
+
+        const selected = document.querySelector('[name="EmailType"]').value;
+
+        toggleCustomBody(selected);
+
+    };
+</script>
+

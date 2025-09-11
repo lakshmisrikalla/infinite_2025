@@ -1,0 +1,177 @@
+﻿@model LTI.Models.ViewModels.UserHistoryVM
+
+@{
+    Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "User History";
+
+}
+
+<div class="container mt-4">
+    <h2 class="mb-3">User History</h2>
+
+    <!-- Dropdown -->
+    <div class="form-group mb-4">
+        <label for="historyFilter">Select History Type:</label>
+        <select id="historyFilter" class="form-control">
+            <option value="calculations">Premium Calculations</option>
+            <option value="policies">Policies</option>
+            <option value="renewals">Renewals</option>
+            <option value="claims">Claims</option>
+        </select>
+    </div>
+
+    <!-- Calculations Section -->
+    <div id="calculationsSection" class="history-section">
+        <h4>Premium Calculations</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Calculation ID</th>
+                    <th>User Name</th>
+                    <th>Phone</th>
+                    <th>Policy Type</th>
+                    <th>Vehicle Model</th>
+                    <th>Vehicle Age</th>
+                    <th>Travel Details</th>
+                    <th>Premium</th>
+                    <th>Calculated At</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var calc in Model.Calculations)
+
+                {
+    <tr>
+        <td>@calc.CalculationID</td>
+        <td>@calc.UserName</td>
+        <td>@calc.PhoneNumber</td>
+        <td>@calc.PolicyType</td>
+        <td>@calc.VehicleModel</td>
+        <td>@calc.VehicleAge</td>
+        <td>@calc.TravelDetails</td>
+        <td>@calc.EstimatedPremium</td>
+        <td>@calc.CalculatedAt</td>
+    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Policies Section -->
+    <div id="policiesSection" class="history-section" style="display:none;">
+        <h4>Policies</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Policy ID</th>
+                    <th>Policy Name</th>
+                    <th>Insurance Type</th>
+                    <th>Status</th>
+                    <th>Payment Status</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var policy in Model.Policies)
+
+                {
+    <tr>
+        <td>@policy.UserPolicyID</td>
+        <td>@policy.PolicyName</td>
+        <td>@policy.InsuranceType</td>
+        <td>@policy.Status</td>
+        <td>@policy.PaymentStatus</td>
+        <td>@policy.StartDate</td>
+        <td>@policy.EndDate</td>
+    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Renewals Section -->
+    <div id="renewalsSection" class="history-section" style="display:none;">
+        <h4>Renewals</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Renewal ID</th>
+                    <th>Policy ID</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Requested At</th>
+                    <th>Approved At</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var renewal in Model.Renewals)
+
+                {
+    <tr>
+        <td>@renewal.RenewalID</td>
+        <td>@renewal.UserPolicyID</td>
+        <td>@renewal.Amount</td>
+        <td>@renewal.Status</td>
+        <td>@renewal.RequestedAt</td>
+        <td>@renewal.ApprovedAt</td>
+    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Claims Section -->
+    <div id="claimsSection" class="history-section" style="display:none;">
+        <h4>Claims</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Claim ID</th>
+                    <th>Policy ID</th>
+                    <th>Claim Type</th>
+                    <th>Reason</th>
+                    <th>Claimed Amount</th>
+                    <th>Approved Amount</th>
+                    <th>Status</th>
+                    <th>Claim Date</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var claim in Model.Claims)
+
+                {
+    <tr>
+        <td>@claim.ClaimID</td>
+        <td>@claim.UserPolicyID</td>
+        <td>@claim.ClaimType</td>
+        <td>@claim.Reason</td>
+        <td>@claim.ClaimedAmount</td>
+        <td>@claim.ApprovedAmount</td>
+        <td>@claim.Status</td>
+        <td>@claim.ClaimDate</td>
+    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- JS to handle dropdown -->
+<script>
+
+    document.getElementById("historyFilter").addEventListener("change", function () {
+
+        var selected = this.value;
+
+        document.querySelectorAll(".history-section").forEach(sec => sec.style.display = "none");
+
+        document.getElementById(selected + "Section").style.display = "block";
+
+    });
+</script>
+

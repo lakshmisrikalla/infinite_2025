@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Admin Dashboard";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+   
+
+    var isLoggedIn = Session["AdminLoggedIn"] != null;
+    var adminName = Session["AdminName"]?.ToString();
+    var loginId = Session["LoginID"]?.ToString();
+    var loginTime = Session["LoginTime"] != null
+                    ? Convert.ToDateTime(Session["LoginTime"]).ToString("f")
+                    : DateTime.Now.ToString("f");
+}
+
+<div class="container">
+    @if (isLoggedIn)
+    {
+        <div class="admin-card text-center">
+            <i class="bi bi-person-circle admin-icon mb-3"></i>
+            <h3 class="mb-4 text-primary">Welcome, @adminName</h3>
+
+            <div class="text-start">
+                <p><span class="admin-label">Login ID:</span> <span class="admin-value">@loginId</span></p>
+                <p><span class="admin-label">Role:</span> <span class="admin-value">Admin</span></p>
+                <p><span class="admin-label">Login Time:</span> <span class="admin-value">@loginTime</span></p>
+                <p><span class="admin-label">Status:</span> <span class="badge bg-success">Active</span></p>
+            </div>
+
+            <div class="mt-4">
+                <a href="@Url.Action("Logout", "Account")" class="btn btn-outline-danger px-4">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center mt-5">
+            <h3 class="text-danger">You are not logged in.</h3>
+            <a href="@Url.Action("Login", "Account")" class="btn btn-primary mt-3">Go to Login</a>
+        </div>
+    }
+</div>

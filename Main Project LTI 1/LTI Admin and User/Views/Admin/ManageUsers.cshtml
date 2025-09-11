@@ -1,0 +1,204 @@
+﻿@model LTI.Models.ManageUsersFilterVm
+@{ ViewBag.Title = "Manage Users";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+    }
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<style>
+    .filter-card .form-label {
+        font-weight: 600;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .btn + .btn {
+        margin-left: .25rem;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <!-- Page Header -->
+    <div class="d-flex align-items-center mb-3">
+        <h3 class="mb-0">Manage Users</h3>
+        <span class="badge bg-secondary ms-2">@Model.Total total</span>
+    </div>
+
+    @if (TempData["Msg"] != null)
+    {
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    @TempData["Msg"]
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>}
+
+    <!-- Filters -->
+    <div class="card shadow-sm filter-card mb-3">
+        <div class="card-body">
+            @using (Html.BeginForm("ManageUsers", "Admin", FormMethod.Get, new { @class = "row g-3" }))
+            {
+<div class="col-lg-4 col-md-6">
+    <label class="form-label">Search</label>
+    @Html.TextBoxFor(m => m.Search, new { @class = "form-control", placeholder = "name / email / phone" })
+</div>
+
+                <div class="col-lg-3 col-md-4">
+                    <label class="form-label">Status</label>
+                    @Html.DropDownListFor(m => m.Status,
+                             new SelectList(new[] { "All", "Active", "Blocked" }, Model.Status),
+                             new { @class = "form-select" })
+                </div>
+
+                                <div class="col-lg-3 col-md-4">
+                                    <label class="form-label">Blacklisted</label>
+                                    @Html.DropDownListFor(m => m.Blacklist,
+                                             new SelectList(new[] { "All", "Yes", "No" }, Model.Blacklist),
+                                             new { @class = "form-select" })
+                                </div>
+
+                                                <div class="col-lg-2 col-md-3">
+                                                    <label class="form-label">Page Size</label>
+                                                    @Html.TextBoxFor(m => m.PageSize, new { @class = "form-control", type = "number", min = "5", max = "100" })
+                                                </div>
+
+                                                                <div class="col-12 d-flex">
+                                                                    <button type="submit" class="btn btn-primary me-2">Filter</button>
+                                                                    <a class="btn btn-outline-secondary" href="@Url.Action("ManageUsers","Admin")">Reset</a>
+                                                                </div>            }
+        </div>
+    </div>
+
+    <!-- Results Table -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 90px;">LoginID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th style="width: 140px;">Phone</th>
+                            <th style="width: 110px;">Status</th>
+                            <th style="width: 120px;">Blacklisted</th>
+                            <th style="width: 320px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Items == null || Model.Items.Count == 0)
+                        {
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    No users found for the selected filters.
+                </td>
+            </tr> }
+                        else
+                        {
+                            foreach (var item in Model.Items)
+                            {
+            <tr>
+                <td>@item.LoginID</td>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>
+                    @if (string.Equals(item.Status, "Active", StringComparison.OrdinalIgnoreCase))
+                    {
+<span class="badge bg-success">Active</span> }
+                    else if (string.Equals(item.Status, "Blocked", StringComparison.OrdinalIgnoreCase))
+                    {
+<span class="badge bg-danger">Blocked</span> }
+                    else
+                    {
+<span class="badge bg-secondary">@item.Status</span>}
+                </td>
+                <td>
+                    @if (item.Blacklisted)
+                    {
+<span class="badge bg-danger">Yes</span> }
+                    else
+                    {
+<span class="badge bg-success">No</span>}
+                </td>
+                <td>
+                    <!-- Block / Unblock -->
+                    @if (string.Equals(item.Status, "Active", StringComparison.OrdinalIgnoreCase))
+                    {
+                        using (Html.BeginForm("BlockUser", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                        {
+@Html.AntiForgeryToken()
+                            @Html.Hidden("id", item.LoginID)
+                                                        <button type="submit" class="btn btn-outline-warning btn-sm">Block</button> }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                using (Html.BeginForm("UnblockUser", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                                                                                {
+                                                        @Html.AntiForgeryToken()
+                                                                                    @Html.Hidden("id", item.LoginID)
+                                                                                                                <button type="submit" class="btn btn-outline-success btn-sm">Unblock</button>}
+                                                                                                                                    }
+
+                    <!-- Blacklist / Whitelist -->
+                    @if (item.Blacklisted)
+                    {
+                        using (Html.BeginForm("WhitelistUser", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                        {
+@Html.AntiForgeryToken()
+                            @Html.Hidden("id", item.LoginID)
+                                                        <button type="submit" class="btn btn-outline-success btn-sm">Whitelist</button> }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                using (Html.BeginForm("BlacklistUser", "Admin", FormMethod.Post, new { @class = "d-inline" }))
+                                                                                {
+                                                        @Html.AntiForgeryToken()
+                                                                                    @Html.Hidden("id", item.LoginID)
+                                                                                                                @Html.Hidden("reason", "Manual") @* replace with a modal later if needed *@
+                                                                                                                                            <button type="submit" class="btn btn-outline-danger btn-sm">Blacklist</button>}
+                                                                                                                                                                }
+
+                    <!-- Details -->
+                    @Html.ActionLink(
+                             "Details",
+                             "UserDetails",
+                             "Admin",
+                             new { id = item.LoginID },
+                             new { @class = "btn btn-outline-info btn-sm" })
+                </td>
+            </tr>}
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    @{ var totalPages = (int)Math.Ceiling((Model.Total <= 0 ? 1 : Model.Total) / (double)(Model.PageSize <= 0 ? 10 : Model.PageSize));
+                    var current = Model.Page <= 0 ? 1 : Model.Page; }
+
+    <nav class="mt-3">
+        <ul class="pagination">
+            <li class="page-item @(current <= 1 ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("ManageUsers","Admin", new { search = Model.Search, status = Model.Status, blacklist = Model.Blacklist, page = current - 1, pageSize = Model.PageSize })">
+                    Prev
+                </a>
+            </li>
+
+            <li class="page-item disabled"><span class="page-link">Page @current of @totalPages</span></li>
+
+            <li class="page-item @(current >= totalPages ? "disabled" : "")">
+                <a class="page-link"
+                   href="@Url.Action("ManageUsers","Admin", new { search = Model.Search, status = Model.Status, blacklist = Model.Blacklist, page = current + 1, pageSize = Model.PageSize })">
+                    Next
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

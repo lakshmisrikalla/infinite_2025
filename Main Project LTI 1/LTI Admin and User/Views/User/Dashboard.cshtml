@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "Dashboard";
+    var name = ViewBag.FullName as string;
+    bool isLoggedIn = !string.IsNullOrEmpty(name);
+}
+
+<div class="container mt-5 text-center">
+    @if (isLoggedIn)
+    {
+        <h2 class="mb-3">Hello, @name 👋</h2>
+        <p class="lead">Welcome back to LTI Insurance. You can now access your personalized dashboard and explore your insurance options.</p>
+
+        <a href="@Url.Action("Overview", "User")" class="btn btn-primary btn-lg mt-3">
+            Go to Overview
+        </a>
+    }
+    else
+    {
+        <h2 class="mb-3">Welcome to LTI Insurance Portal</h2>
+        <p class="lead">Please log in to access your dashboard and manage your insurance policies.</p>
+
+        <a href="@Url.Action("Login", "User")" class="btn btn-outline-primary btn-lg mt-3">
+            Login
+        </a>
+    }
+</div>

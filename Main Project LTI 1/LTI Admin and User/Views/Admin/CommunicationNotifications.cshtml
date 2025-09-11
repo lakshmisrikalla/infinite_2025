@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "Communication & Notifications";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<style>
+    .comm-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        background-color: #f8f9fa;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+        .comm-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+        }
+
+    .comm-icon {
+        font-size: 2.5rem;
+        color: #0d6efd;
+        margin-bottom: 15px;
+    }
+
+    .comm-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .comm-link {
+        text-decoration: none;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-warning text-dark text-center">
+            <h3 class="mb-0">Communication & Notifications</h3>
+        </div>
+        <div class="card-body">
+            <div class="row g-4 justify-content-center">
+
+                <!-- 📧 Send Emails -->
+                <div class="col-md-5">
+                    <a href="@Url.Action("ManageEmails", "Admin")" class="comm-link">
+                        <div class="comm-card">
+                            <i class="bi bi-envelope-paper comm-icon"></i>
+                            <div class="comm-title">Send Emails</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 📜 View Email History -->
+                <div class="col-md-5">
+                    <a href="@Url.Action("ViewAllEmails", "Admin")" class="comm-link">
+                        <div class="comm-card">
+                            <i class="bi bi-journal-text comm-icon"></i>
+                            <div class="comm-title">View All Email History</div>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+

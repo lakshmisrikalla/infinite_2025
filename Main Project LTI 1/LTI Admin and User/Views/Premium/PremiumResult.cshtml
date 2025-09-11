@@ -1,0 +1,36 @@
+﻿@{
+     ViewBag.Title = "Premium Result";
+
+}
+
+<h2>Premium Calculation Result</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Policy</th>
+        <td>@ViewBag.PolicyName</td>
+    </tr>
+    <tr>
+        <th>Policy Type</th>
+        <td>@ViewBag.PolicyType</td>
+    </tr>
+    <tr>
+        <th>Final Premium</th>
+        <td><strong>@ViewBag.FinalPremium</strong></td>
+    </tr>
+</table>
+
+<h3>Premium Breakdown</h3>
+<ul>
+
+    @foreach (var item in (List<string>)ViewBag.Breakdown)
+
+    {
+<li>@item</li>
+            }
+</ul>
+
+<a href="@Url.Action("Calculate", "Premium")" class="btn btn-secondary">Back</a>
+
+
+

@@ -1,0 +1,170 @@
+﻿@model LTI.Models.ReportsAnalyticsVm
+@{
+    ViewBag.Title = "Reports & Analytics";
+
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+   
+}
+ 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+ 
+<div class="container mt-3">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h3 class="mb-0">Reports & Analytics</h3>
+        <form method="get" class="d-flex gap-2">
+            <select name="period" class="form-select" style="width: 160px;">
+                <option value="Daily" @(Model.SelectedPeriod=="Daily" ? "selected" : "")>Daily</option>
+                <option value="Weekly" @(Model.SelectedPeriod=="Weekly" ? "selected" : "")>Weekly</option>
+                <option value="Monthly" @(Model.SelectedPeriod=="Monthly" ? "selected" : "")>Monthly</option>
+            </select>
+            <input type="date" name="startDate" class="form-control" value="@Model.StartDate.ToString("yyyy-MM-dd")" />
+            <input type="date" name="endDate" class="form-control" value="@Model.EndDate.ToString("yyyy-MM-dd")" />
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </form>
+    </div>
+ 
+    <!-- KPI cards -->
+    <div class="row g-3 mb-3">
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted">Total Users</div>
+                    <div class="display-6">@Model.TotalUsers</div>
+                    <small class="text-success">Active: @Model.ActiveUsers</small><br/>
+                    <small class="text-danger">Blocked: @Model.BlockedUsers</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted">Clients</div>
+                    <div class="display-6">@Model.TotalClients</div>
+                    <small class="text-success">Approved: @Model.ApprovedClients</small><br/>
+                    <small class="text-warning">Pending: @Model.PendingClients</small><br/>
+                    <small class="text-danger">Blocked: @Model.BlockedClients</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted">Policies</div>
+                    <div class="display-6">@Model.TotalPolicies</div>
+                    <small class="text-success">Approved: @Model.ApprovedPolicies</small><br/>
+                    <small class="text-warning">Pending: @Model.PendingPolicies</small><br/>
+                    <small class="text-danger">Rejected: @Model.RejectedPolicies</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="text-muted">Revenue</div>
+                    <div class="display-6">₹@Model.TotalRevenue.ToString("N0")</div>
+                    <small class="text-muted">@Model.StartDate:dd MMM yyyy → @Model.EndDate:dd MMM yyyy</small>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- Revenue over time -->
+    <div class="card mb-3">
+        <div class="card-header">Revenue over time</div>
+        <div class="card-body" style="height: 340px;">
+            <canvas id="revChart"></canvas>
+        </div>
+    </div>
+ 
+    <!-- New users over time -->
+    <div class="card mb-3">
+        <div class="card-header">New users over time</div>
+        <div class="card-body" style="height: 340px;">
+            <canvas id="usersChart"></canvas>
+        </div>
+    </div>
+ 
+    <div class="row g-3">
+        <!-- Clients by status -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">Clients by status</div>
+                <div class="card-body" style="height: 320px;">
+                    <canvas id="clientsPie"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Policies by status -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">Policies by status</div>
+                <div class="card-body" style="height: 320px;">
+                    <canvas id="policiesPie"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Claims by status -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">Claims by status</div>
+                <div class="card-body" style="height: 320px;">
+                    <canvas id="claimsPie"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<script>
+    // data from server
+    const revLabels  = @Html.Raw(Json.Encode(Model.RevenueMonthLabels));
+    const revValues  = @Html.Raw(Json.Encode(Model.RevenueMonthValues));
+    const newLabels  = @Html.Raw(Json.Encode(Model.NewUsersMonthLabels));
+    const newValues  = @Html.Raw(Json.Encode(Model.NewUsersMonthValues));
+ 
+    const clientLabels = @Html.Raw(Json.Encode(Model.ClientStatusLabels));
+    const clientVals   = @Html.Raw(Json.Encode(Model.ClientStatusValues));
+ 
+    const polLabels = @Html.Raw(Json.Encode(Model.PolicyStatusLabels));
+    const polVals   = @Html.Raw(Json.Encode(Model.PolicyStatusValues));
+ 
+    const claimLabels = @Html.Raw(Json.Encode(Model.ClaimStatusLabels));
+    const claimVals   = @Html.Raw(Json.Encode(Model.ClaimStatusValues));
+ 
+    // Revenue
+    new Chart(document.getElementById('revChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: revLabels, datasets: [{ label: 'Revenue', data: revValues }] },
+        options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+    });
+ 
+    // New users
+    new Chart(document.getElementById('usersChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: newLabels, datasets: [{ label: 'New Users', data: newValues }] },
+        options: { maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+    });
+ 
+    // Clients pie
+    new Chart(document.getElementById('clientsPie').getContext('2d'), {
+        type: 'pie',
+        data: { labels: clientLabels, datasets: [{ data: clientVals }] },
+        options: { maintainAspectRatio: false }
+    });
+ 
+    // Policies pie
+    new Chart(document.getElementById('policiesPie').getContext('2d'), {
+        type: 'pie',
+        data: { labels: polLabels, datasets: [{ data: polVals }] },
+        options: { maintainAspectRatio: false }
+    });
+ 
+    // Claims pie
+    new Chart(document.getElementById('claimsPie').getContext('2d'), {
+        type: 'pie',
+        data: { labels: claimLabels, datasets: [{ data: claimVals }] },
+        options: { maintainAspectRatio: false }
+    });
+</script>
+ 

@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Verify Code";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<h2>Verify Code</h2>
+
+@using (Html.BeginForm("VerifyResetCode", "Account", FormMethod.Post))
+{
+    <label>Enter the code sent to your email:</label>
+    <input type="text" name="code" class="form-control" required />
+    <button type="submit" class="btn btn-primary">Verify</button>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="text-danger">@ViewBag.Error</div>
+}

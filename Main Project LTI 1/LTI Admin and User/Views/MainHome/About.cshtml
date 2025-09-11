@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "About Us";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - LTI Vehicle Insurance System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .custom-gradient {
+            background: linear-gradient(135deg, #5a009d, #00ccff);
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 🔷 Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark custom-gradient shadow-sm">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">LTI Insurance</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#ltiNavbar" aria-controls="ltiNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="ltiNavbar">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Home", "MainHome")">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("UserLogin", "Account")">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("UserRegister", "Account")">Register</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Contact", "MainHome")">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="@Url.Action("About", "MainHome")">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Help", "MainHome")">Help</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("FAQ", "MainHome")">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 🧭 About Content -->
+    <div class="container py-5">
+        <h2 class="text-primary mb-4">About LTI Vehicle Insurance System</h2>
+
+        <p class="lead">Smarter coverage. Seamless experience. Built for the road ahead.</p>
+
+        <p>
+            LTI Vehicle Insurance System is a next-gen platform designed to simplify and secure every aspect of vehicle insurance. Whether you're insuring a car, bike, or fleet, our system ensures fast registration, transparent policy management, and real-time claim tracking — all without the paperwork.
+        </p>
+
+        <p>
+            Powered by modern web technologies and backed by robust admin workflows, our system empowers users, agents, and admins to collaborate effortlessly. From automated email notifications to visual analytics dashboards, every feature is crafted for clarity, speed, and control.
+        </p>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h5 class="text-success">🚗 What We Offer</h5>
+                <ul>
+                    <li>Instant policy generation & renewal</li>
+                    <li>Secure document verification</li>
+                    <li>Dynamic admin dashboards</li>
+                    <li>Audit logging for every action</li>
+                    <li>Responsive UI for all devices</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h5 class="text-success">💡 Why Choose Us</h5>
+                <ul>
+                    <li>No agents. No queues. Just smart insurance.</li>
+                    <li>Built with ASP.NET MVC for speed & reliability</li>
+                    <li>Modular design for easy upgrades</li>
+                    <li>Real-time analytics & KPI tracking</li>
+                    <li>End-to-end transparency</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-5 text-center">
+            <a href="@Url.Action("Register", "User")" class="btn btn-lg btn-outline-primary px-4">Join Us Today</a>
+        </div>
+    </div>
+
+    <!-- 🔻 Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p class="mb-0">© 2025 LTI Vehicle Insurance System. All rights reserved.</p>
+        <small>Built for smarter insurance management.</small>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

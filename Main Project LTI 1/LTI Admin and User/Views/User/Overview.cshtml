@@ -1,0 +1,119 @@
+﻿@model LTI.Models.OverviewViewModel
+@{
+    Layout = "~/Views/User/UserLayout.cshtml";
+    ViewBag.Title = "Overview";
+}
+
+
+
+<div class="container mt-4">
+    <h2 class="mb-3">Welcome to LTI Insurance Portal</h2>
+    <p class="lead">We’re proud to offer reliable, user-friendly insurance services with up to <strong>25% savings</strong> on select EMI extensions. Our platform is built for clarity, compliance, and convenience.</p>
+
+    <!-- Core Insurance Operations -->
+
+    <h4 class="mt-4">🧭 Quick Access Panel</h4>
+    <div class="row g-4">
+        <!-- Browse Insurance -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card dashboard-card text-center p-3 h-100">
+                <div class="dashboard-icon"><i class="bi bi-search"></i></div>
+                <div class="dashboard-card-title">Browse Insurance</div>
+                <a href="@Url.Action("BrowseInsurance", "User")" class="btn btn-sm btn-outline-primary mt-2">Explore</a>
+            </div>
+        </div>
+
+        <!-- Claim Insurance -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card dashboard-card text-center p-3 h-100">
+                <div class="dashboard-icon"><i class="bi bi-file-earmark-medical"></i></div>
+                <div class="dashboard-card-title">Claim Insurance</div>
+                <a href="@Url.Action("ClaimInsurance", "User")" class="btn btn-sm btn-outline-primary mt-2">Submit Claim</a>
+            </div>
+        </div>
+
+        <!-- Pending Policies -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card dashboard-card text-center p-3 h-100">
+                <div class="dashboard-icon"><i class="bi bi-hourglass-split"></i></div>
+                <div class="dashboard-card-title">Pending Policies</div>
+                <a href="@Url.Action("Index", "PendingPolicies")" class="btn btn-sm btn-outline-primary mt-2">Track</a>
+            </div>
+        </div>
+
+        <!-- Renew Insurance -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card dashboard-card text-center p-3 h-100">
+                <div class="dashboard-icon"><i class="bi bi-arrow-repeat"></i></div>
+                <div class="dashboard-card-title">Renew Insurance</div>
+                <a href="@Url.Action("RenewInsurance", "User")" class="btn btn-sm btn-outline-primary mt-2">Renew</a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <!-- Latest Insurance Plans -->
+    <h4 class="mt-5">📢 Latest Insurance Plans</h4>
+
+    @if (Model != null && Model.LatestPolicies != null && Model.LatestPolicies.Any())
+    {
+        <div class="d-flex overflow-auto gap-3 mt-3" style="scroll-snap-type: x mandatory;">
+            @foreach (var policy in Model.LatestPolicies)
+            {
+                <div class="card p-3 shadow-sm border-hover" style="min-width: 280px; scroll-snap-align: start; transition: transform 0.3s ease;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="fw-bold mb-0">@policy.PolicyName</h5>
+                        <span class="badge bg-secondary">@policy.Status</span>
+                    </div>
+                    <p class="text-muted">@policy.Description</p>
+                    <span class="badge bg-primary mb-2">₹@policy.BasePremium.ToString("F2")</span>
+                    <a href="@Url.Action("BuyNow", "User", new { id = policy.PolicyID })" class="btn btn-sm btn-outline-success">Buy Now</a>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning mt-3">
+            No insurance plans available at the moment. Please check back soon.
+        </div>
+    }
+</div>
+
+<style>
+    .border-hover:hover {
+        transform: scale(1.05);
+        border-color: #007bff;
+        box-shadow: 0 0 10px rgba(0,123,255,0.3);
+    }
+</style>
+
+
+<!-- Impact Summary -->
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+@if (currentAction == "Overview")
+{
+    <div class="mt-5 text-center">
+        <div class="alert alert-success">
+            <h5>📊 Trusted by Our Policyholders </h5>
+            <p><strong>@Model.TotalPolicies</strong> policies purchased by users</p>
+            <p><strong>@Model.TotalUsers</strong> users benefitting from active coverage</p>
+        </div>
+    </div>
+}
+
+<style>
+    .border-hover:hover {
+        transform: scale(1.05);
+        border-color: #007bff;
+        box-shadow: 0 0 10px rgba(0,123,255,0.3);
+    }
+</style>

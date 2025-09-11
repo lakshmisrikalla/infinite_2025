@@ -1,0 +1,24 @@
+﻿@model List<LTI.Models.EmailLog>
+   
+
+<h2>📧 All Sent Emails</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Recipient Type</th>
+            <th>Email Type</th>
+            <th>Sent At</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var email in Model)
+        {
+            <tr>
+                <td>@email.RecipientType</td>
+                <td>@email.EmailType</td>
+                <td>@email.SentAt.ToString("dd MMM yyyy hh:mm tt")</td>
+            </tr>
+        }
+    </tbody>
+</table>

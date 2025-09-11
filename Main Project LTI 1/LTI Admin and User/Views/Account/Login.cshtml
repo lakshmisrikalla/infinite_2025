@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Admin Login";
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+
+<h2>Admin Login</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{
+    <div>
+        <label>Username or Email</label>
+        <input type="text" name="UsernameOrEmail" class="form-control" required />
+    </div>
+
+    <div>
+        <label>Password</label>
+        <input type="password" name="Password" class="form-control" required />
+    </div>
+
+    <div>
+        <label>Captcha: <strong>@ViewBag.Captcha</strong></label>
+        <input type="text" name="Captcha" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success">Login</button>
+
+    <!-- 👇 Stylish Register Link -->
+    <div style="margin-top: 10px;">
+        <a href="@Url.Action("RegisterAdmin", "Account")" style="color: #007bff; text-decoration: none; font-weight: bold;">
+            ← Register here
+        </a>
+    </div>
+    <!-- 👇 Forgot Password Link -->
+    <div style="margin-top: 5px;">
+        <a href="@Url.Action("ForgotPassword", "Account")" style="color: #dc3545; text-decoration: none; font-weight: bold;">
+            Forgot Password?
+        </a>
+    </div>
+
+
+}
