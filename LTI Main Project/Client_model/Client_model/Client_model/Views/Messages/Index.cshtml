@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Client_model.ViewModels.MessageVm>
+@{ ViewBag.Title = "Messages"; }
+<div class="card card-soft">
+    <div class="card-body">
+        <h5 class="mb-3"><i class="bi bi-chat-dots me-2"></i>Messages</h5>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Message ID</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Body</th>
+                    <th>Sent At</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model)
+                {
+                    <tr>
+                        <td>@m.MessageID</td>
+                        <td>@m.SenderName</td>
+                        <td>@m.SenderPhoneNumber</td>
+                        <td>@m.Body</td>
+                        <td>@m.SentAt.ToString("yyyy-MM-dd HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

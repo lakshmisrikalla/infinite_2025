@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+    var appTitle = "LTI Insurance — Client Portal";
+}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@appTitle - @ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/Content/auth.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand h5 mb-0" href="@Url.Action("Index","Dashboard")">@appTitle</a>
+            <div>
+                <a class="btn btn-sm btn-outline-secondary" href="@Url.Action("Register","Account")">Register</a>
+                <a class="btn btn-sm btn-outline-primary ms-2" href="@Url.Action("Login","Account")">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="py-5">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="text-center py-4 text-muted">
+        &copy; @DateTime.UtcNow.Year LTI Insurance
+    </footer>
+    @RenderSection("Scripts", required: false)
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

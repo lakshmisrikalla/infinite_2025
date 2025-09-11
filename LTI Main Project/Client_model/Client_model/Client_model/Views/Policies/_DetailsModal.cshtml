@@ -1,0 +1,40 @@
+﻿@model Client_model.Models.Policy
+
+<div class="modal-header">
+    <h5 class="modal-title">Policy Details: @Model.PolicyName</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <table class="table">
+        <tr><th>Policy ID</th><td>@Model.PolicyID</td></tr>
+        <tr><th>Type</th><td>@Model.PolicyType?.TypeName ?? Model.PolicyTypeID.ToString()</td></tr>
+        <tr><th>Plan</th><td>@Model.PlanKind</td></tr>
+        <tr><th>Description</th><td>@Model.Description</td></tr>
+        <tr><th>Coverage Details</th><td>@Model.CoverageDetails</td></tr>
+        <tr><th>Duration</th><td>@Model.DurationMonths mos</td></tr>
+        <tr><th>Base Premium</th><td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.BasePremium)</td></tr>
+        <tr><th>Status</th><td>@Model.Status</td></tr>
+        <tr><th>Active</th><td>@(Model.IsActive ? "Yes" : "No")</td></tr>
+    </table>
+    <h6 class="mt-3">Uploaded Documents</h6>
+    @if (ViewBag.Documents != null && ViewBag.Documents.Count > 0)
+    {
+        <ul>
+            @foreach (var doc in ViewBag.Documents)
+            {
+                <li>
+                    <a href="@Url.Action("DownloadDocument", "Policies", new { id = doc.DocumentID })" target="_blank">
+                        @doc.DocumentType (@doc.UploadedAt.ToString("yyyy-MM-dd HH:mm"))
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>(No documents yet for this policy.)</p>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go Back</button>
+</div>

@@ -1,0 +1,68 @@
+﻿@model Client_model.Models.RegisterClientVm
+@{
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+    ViewBag.Title = "Register";
+}
+<div class="card auth-card">
+    <div class="row g-0 w-100">
+        <div class="col-md-5 auth-left">
+            <div class="auth-icon"><i class="bi bi-building-add"></i></div>
+            <h2 class="mt-2">Create Account</h2>
+            <p>Register your company on LTI Insurance. We’ll email your unique company code.</p>
+        </div>
+
+        <div class="col-md-7 auth-right">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-info-compact">@TempData["Success"]</div>
+            }
+
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Username)
+                    @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Choose a username" })
+                    @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "Contact email" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.CompanyName)
+                    @Html.TextBoxFor(m => m.CompanyName, new { @class = "form-control", placeholder = "Company name" })
+                    @Html.ValidationMessageFor(m => m.CompanyName, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.ContactPhone, "Contact Phone")
+                    @Html.TextBoxFor(m => m.ContactPhone, new { @class = "form-control", placeholder = "Phone number (optional)" })
+                    @Html.ValidationMessageFor(m => m.ContactPhone, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password (min 6)" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="mb-3">
+                    @Html.LabelFor(m => m.ConfirmPassword)
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password" })
+                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+
+                <button class="btn btn-primary btn-block w-100">Create account</button>
+
+                <div class="mt-3 small-note">
+                    Already registered? <a href="@Url.Action("Login","Account")">Login here</a>.
+                </div>
+            }
+        </div>
+    </div>
+</div>

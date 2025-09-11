@@ -1,0 +1,83 @@
+﻿@model Client_model.Models.PolicyHolderVm
+@{
+    ViewBag.Title = "Policy Holder Details";
+}
+
+<a href="@Url.Action("Index", "PolicyHolders")" class="btn btn-secondary mb-3">
+    <i class="bi bi-arrow-left"></i> Back to Policy Holders
+</a>
+
+<div class="card card-soft mb-4">
+    <div class="card-header">
+        <h5>@Model.FullName's Details</h5>
+    </div>
+    <div class="card-body">
+        <h6>Vehicle Details</h6>
+        @if (Model.VehicleDetails != null && Model.VehicleDetails.Any())
+        {
+            <table class="table table-bordered mb-4">
+                <thead>
+                    <tr>
+                        <th>Vehicle Type</th>
+                        <th>Name</th>
+                        <th>Model</th>
+                        <th>Registration Number</th>
+                        <th>Driving License</th>
+                        <th>Expiry Date</th>
+                        <th>Holder</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var v in Model.VehicleDetails)
+                    {
+                        <tr>
+                            <td>@v.VehicleType</td>
+                            <td>@v.VehicleName</td>
+                            <td>@v.Model</td>
+                            <td>@v.RegistrationNumber</td>
+                            <td>@v.DrivingLicense</td>
+                            <td>@v.ExpiryDate?.ToString("yyyy-MM-dd")</td>
+                            <td>@v.HolderName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No vehicle details available.</p>
+        }
+
+        <h6>Travel Details</h6>
+        @if (Model.TravelDetails != null && Model.TravelDetails.Any())
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Person Name</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>DOB</th>
+                        <th>Health Issues</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var t in Model.TravelDetails)
+                    {
+                        <tr>
+                            <td>@t.PersonName</td>
+                            <td>@t.Age</td>
+                            <td>@t.Gender</td>
+                            <td>@t.DOB.ToString("yyyy-MM-dd")</td>
+                            <td>@t.HealthIssues</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No travel details available.</p>
+        }
+    </div>
+</div>

@@ -1,0 +1,1677 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="InsuranceDB1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Admins">
+          <Key>
+            <PropertyRef Name="AdminID" />
+          </Key>
+          <Property Name="AdminID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoginID" Type="int" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ContactNumber" Type="varchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="Claims">
+          <Key>
+            <PropertyRef Name="ClaimID" />
+          </Key>
+          <Property Name="ClaimID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPolicyID" Type="int" Nullable="false" />
+          <Property Name="ClaimDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ClaimType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Reason" Type="nvarchar(max)" />
+          <Property Name="ClaimedAmount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="ApprovedAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="DecisionAt" Type="datetime2" Precision="7" />
+        </EntityType>
+        <EntityType Name="ClientPayments">
+          <Key>
+            <PropertyRef Name="ClientPaymentID" />
+          </Key>
+          <Property Name="ClientPaymentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PaidAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="ClientID" />
+          </Key>
+          <Property Name="ClientID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoginID" Type="int" Nullable="false" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="CompanyCode" Type="varchar" MaxLength="32" Nullable="false" />
+          <Property Name="ContactEmail" Type="varchar" MaxLength="100" />
+          <Property Name="ContactPhone" Type="varchar" MaxLength="20" />
+          <Property Name="Status" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="RegisteredAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Conversations">
+          <Key>
+            <PropertyRef Name="ConversationID" />
+          </Key>
+          <Property Name="ConversationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Documents">
+          <Key>
+            <PropertyRef Name="DocumentID" />
+          </Key>
+          <Property Name="DocumentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OwnerType" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="OwnerID" Type="int" Nullable="false" />
+          <Property Name="DocumentType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="UploadedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="IsVerified" Type="bit" Nullable="false" />
+          <Property Name="VerifiedByRole" Type="varchar" MaxLength="10" />
+          <Property Name="VerifiedByID" Type="int" />
+          <Property Name="VerifiedAt" Type="datetime2" Precision="7" />
+          <Property Name="Visibility" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmailLogs">
+          <Key>
+            <PropertyRef Name="EmailID" />
+          </Key>
+          <Property Name="EmailID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RecipientType" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="RecipientID" Type="int" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EmailType" Type="varchar" MaxLength="30" />
+          <Property Name="SentAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="LoginCredentials">
+          <Key>
+            <PropertyRef Name="LoginID" />
+          </Key>
+          <Property Name="LoginID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" />
+          <Property Name="Username" Type="varchar" MaxLength="50" />
+          <Property Name="PasswordHash" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Role" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Messages">
+          <Key>
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="MessageID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ConversationID" Type="int" Nullable="false" />
+          <Property Name="SenderRole" Type="varchar" MaxLength="6" Nullable="false" />
+          <Property Name="SenderID" Type="int" Nullable="false" />
+          <Property Name="Body" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SentAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Payments">
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+          <Property Name="PaymentID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPolicyID" Type="int" Nullable="false" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Mode" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="PaidAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="GatewayRef" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="Policies">
+          <Key>
+            <PropertyRef Name="PolicyID" />
+          </Key>
+          <Property Name="PolicyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="PolicyTypeID" Type="int" Nullable="false" />
+          <Property Name="PolicyName" Type="varchar" MaxLength="120" Nullable="false" />
+          <Property Name="PlanKind" Type="varchar" MaxLength="30" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="CoverageDetails" Type="nvarchar(max)" />
+          <Property Name="DurationMonths" Type="int" Nullable="false" />
+          <Property Name="BasePremium" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="AdminNotes" Type="nvarchar(max)" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PolicyApprovals">
+          <Key>
+            <PropertyRef Name="ApprovalID" />
+          </Key>
+          <Property Name="ApprovalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PolicyID" Type="int" Nullable="false" />
+          <Property Name="AdminID" Type="int" Nullable="false" />
+          <Property Name="Decision" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="DecisionAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="PolicyDueDates">
+          <Key>
+            <PropertyRef Name="DueDateID" />
+          </Key>
+          <Property Name="DueDateID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPolicyID" Type="int" Nullable="false" />
+          <Property Name="DueDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="IsPaid" Type="bit" Nullable="false" />
+          <Property Name="ReminderSent" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PolicyTypes">
+          <Key>
+            <PropertyRef Name="PolicyTypeID" />
+          </Key>
+          <Property Name="PolicyTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TypeName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PremiumCalculations">
+          <Key>
+            <PropertyRef Name="CalculationID" />
+          </Key>
+          <Property Name="CalculationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="PolicyTypeID" Type="int" Nullable="false" />
+          <Property Name="VehicleModel" Type="varchar" MaxLength="100" />
+          <Property Name="VehicleAge" Type="int" />
+          <Property Name="TravelDetails" Type="nvarchar(max)" />
+          <Property Name="EstimatedPremium" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CalculatedAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Renewals">
+          <Key>
+            <PropertyRef Name="RenewalID" />
+          </Key>
+          <Property Name="RenewalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPolicyID" Type="int" Nullable="false" />
+          <Property Name="RequestedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ApprovedAt" Type="datetime2" Precision="7" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="12" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TravelDetails">
+          <Key>
+            <PropertyRef Name="TravelDetailsID" />
+          </Key>
+          <Property Name="TravelDetailsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPolicyID" Type="int" Nullable="false" />
+          <Property Name="PersonName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Age" Type="int" Nullable="false" />
+          <Property Name="Gender" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="DOB" Type="date" Nullable="false" />
+          <Property Name="HealthIssues" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="UserPolicies">
+          <Key>
+            <PropertyRef Name="UserPolicyID" />
+          </Key>
+          <Property Name="UserPolicyID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="PolicyID" Type="int" Nullable="false" />
+          <Property Name="InsuranceType" Type="varchar" MaxLength="50" />
+          <Property Name="StartDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="Status" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="PaymentStatus" Type="varchar" MaxLength="12" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="NomineeName" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="UserPolicyApprovals">
+          <Key>
+            <PropertyRef Name="UserPolicyApprovalID" />
+          </Key>
+          <Property Name="UserPolicyApprovalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPolicyID" Type="int" Nullable="false" />
+          <Property Name="ClientID" Type="int" Nullable="false" />
+          <Property Name="Decision" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="DecisionAt" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Notes" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LoginID" Type="int" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="15" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="DateOfBirth" Type="date" />
+          <Property Name="Gender" Type="varchar" MaxLength="10" />
+          <Property Name="Status" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="CreatedAt" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VehicleDetails">
+          <Key>
+            <PropertyRef Name="VehicleDetailsID" />
+          </Key>
+          <Property Name="VehicleDetailsID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserPolicyID" Type="int" Nullable="false" />
+          <Property Name="VehicleType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="VehicleName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Model" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DrivingLicense" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RegistrationNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RCNumber" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="RegistrationDate" Type="date" />
+          <Property Name="ExpiryDate" Type="date" Nullable="false" />
+          <Property Name="EngineNumber" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ChassisNumber" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HolderName" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Admins__LoginID__3E52440B">
+          <End Role="LoginCredentials" Type="Self.LoginCredentials" Multiplicity="1" />
+          <End Role="Admins" Type="Self.Admins" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoginCredentials">
+              <PropertyRef Name="LoginID" />
+            </Principal>
+            <Dependent Role="Admins">
+              <PropertyRef Name="LoginID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Claims__UserPoli__08B54D69">
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="1" />
+          <End Role="Claims" Type="Self.Claims" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="Claims">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ClientPay__Clien__1CBC4616">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="ClientPayments" Type="Self.ClientPayments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="ClientPayments">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Clients__LoginID__440B1D61">
+          <End Role="LoginCredentials" Type="Self.LoginCredentials" Multiplicity="1" />
+          <End Role="Clients" Type="Self.Clients" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoginCredentials">
+              <PropertyRef Name="LoginID" />
+            </Principal>
+            <Dependent Role="Clients">
+              <PropertyRef Name="LoginID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Conversat__Clien__10566F31">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Conversations" Type="Self.Conversations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="Conversations">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Conversat__UserI__0F624AF8">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Conversations" Type="Self.Conversations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Conversations">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Messages__Conver__14270015">
+          <End Role="Conversations" Type="Self.Conversations" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conversations">
+              <PropertyRef Name="ConversationID" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="ConversationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Payments__UserPo__7D439ABD">
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Policies__Client__5BE2A6F2">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="Policies" Type="Self.Policies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="Policies">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Policies__Policy__5CD6CB2B">
+          <End Role="PolicyTypes" Type="Self.PolicyTypes" Multiplicity="1" />
+          <End Role="Policies" Type="Self.Policies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PolicyTypes">
+              <PropertyRef Name="PolicyTypeID" />
+            </Principal>
+            <Dependent Role="Policies">
+              <PropertyRef Name="PolicyTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PolicyApp__Admin__6477ECF3">
+          <End Role="Admins" Type="Self.Admins" Multiplicity="1" />
+          <End Role="PolicyApprovals" Type="Self.PolicyApprovals" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Admins">
+              <PropertyRef Name="AdminID" />
+            </Principal>
+            <Dependent Role="PolicyApprovals">
+              <PropertyRef Name="AdminID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PolicyApp__Polic__6383C8BA">
+          <End Role="Policies" Type="Self.Policies" Multiplicity="1" />
+          <End Role="PolicyApprovals" Type="Self.PolicyApprovals" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Policies">
+              <PropertyRef Name="PolicyID" />
+            </Principal>
+            <Dependent Role="PolicyApprovals">
+              <PropertyRef Name="PolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PolicyDue__UserP__2645B050">
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="1" />
+          <End Role="PolicyDueDates" Type="Self.PolicyDueDates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="PolicyDueDates">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PremiumCa__Polic__22751F6C">
+          <End Role="PolicyTypes" Type="Self.PolicyTypes" Multiplicity="1" />
+          <End Role="PremiumCalculations" Type="Self.PremiumCalculations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PolicyTypes">
+              <PropertyRef Name="PolicyTypeID" />
+            </Principal>
+            <Dependent Role="PremiumCalculations">
+              <PropertyRef Name="PolicyTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PremiumCa__UserI__2180FB33">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="PremiumCalculations" Type="Self.PremiumCalculations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="PremiumCalculations">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Renewals__UserPo__02FC7413">
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="1" />
+          <End Role="Renewals" Type="Self.Renewals" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="Renewals">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TravelDet__UserP__71D1E811">
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="1" />
+          <End Role="TravelDetails" Type="Self.TravelDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="TravelDetails">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__Clien__787EE5A0">
+          <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+          <End Role="UserPolicyApprovals" Type="Self.UserPolicyApprovals" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="UserPolicyApprovals">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__Polic__6A30C649">
+          <End Role="Policies" Type="Self.Policies" Multiplicity="1" />
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Policies">
+              <PropertyRef Name="PolicyID" />
+            </Principal>
+            <Dependent Role="UserPolicies">
+              <PropertyRef Name="PolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__UserI__693CA210">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="UserPolicies">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__UserP__778AC167">
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="1" />
+          <End Role="UserPolicyApprovals" Type="Self.UserPolicyApprovals" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="UserPolicyApprovals">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__LoginID__4AB81AF0">
+          <End Role="LoginCredentials" Type="Self.LoginCredentials" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoginCredentials">
+              <PropertyRef Name="LoginID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="LoginID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__VehicleDe__UserP__74AE54BC">
+          <End Role="UserPolicies" Type="Self.UserPolicies" Multiplicity="1" />
+          <End Role="VehicleDetails" Type="Self.VehicleDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="VehicleDetails">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="InsuranceDB1ModelStoreContainer">
+          <EntitySet Name="Admins" EntityType="Self.Admins" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Claims" EntityType="Self.Claims" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientPayments" EntityType="Self.ClientPayments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Conversations" EntityType="Self.Conversations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Documents" EntityType="Self.Documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailLogs" EntityType="Self.EmailLogs" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LoginCredentials" EntityType="Self.LoginCredentials" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Payments" EntityType="Self.Payments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Policies" EntityType="Self.Policies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PolicyApprovals" EntityType="Self.PolicyApprovals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PolicyDueDates" EntityType="Self.PolicyDueDates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PolicyTypes" EntityType="Self.PolicyTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PremiumCalculations" EntityType="Self.PremiumCalculations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Renewals" EntityType="Self.Renewals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TravelDetails" EntityType="Self.TravelDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPolicies" EntityType="Self.UserPolicies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPolicyApprovals" EntityType="Self.UserPolicyApprovals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VehicleDetails" EntityType="Self.VehicleDetails" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Admins__LoginID__3E52440B" Association="Self.FK__Admins__LoginID__3E52440B">
+            <End Role="LoginCredentials" EntitySet="LoginCredentials" />
+            <End Role="Admins" EntitySet="Admins" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Claims__UserPoli__08B54D69" Association="Self.FK__Claims__UserPoli__08B54D69">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="Claims" EntitySet="Claims" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ClientPay__Clien__1CBC4616" Association="Self.FK__ClientPay__Clien__1CBC4616">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="ClientPayments" EntitySet="ClientPayments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Clients__LoginID__440B1D61" Association="Self.FK__Clients__LoginID__440B1D61">
+            <End Role="LoginCredentials" EntitySet="LoginCredentials" />
+            <End Role="Clients" EntitySet="Clients" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Conversat__Clien__10566F31" Association="Self.FK__Conversat__Clien__10566F31">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Conversations" EntitySet="Conversations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Conversat__UserI__0F624AF8" Association="Self.FK__Conversat__UserI__0F624AF8">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Conversations" EntitySet="Conversations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Messages__Conver__14270015" Association="Self.FK__Messages__Conver__14270015">
+            <End Role="Conversations" EntitySet="Conversations" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Payments__UserPo__7D439ABD" Association="Self.FK__Payments__UserPo__7D439ABD">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Policies__Client__5BE2A6F2" Association="Self.FK__Policies__Client__5BE2A6F2">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Policies" EntitySet="Policies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Policies__Policy__5CD6CB2B" Association="Self.FK__Policies__Policy__5CD6CB2B">
+            <End Role="PolicyTypes" EntitySet="PolicyTypes" />
+            <End Role="Policies" EntitySet="Policies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PolicyApp__Admin__6477ECF3" Association="Self.FK__PolicyApp__Admin__6477ECF3">
+            <End Role="Admins" EntitySet="Admins" />
+            <End Role="PolicyApprovals" EntitySet="PolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PolicyApp__Polic__6383C8BA" Association="Self.FK__PolicyApp__Polic__6383C8BA">
+            <End Role="Policies" EntitySet="Policies" />
+            <End Role="PolicyApprovals" EntitySet="PolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PolicyDue__UserP__2645B050" Association="Self.FK__PolicyDue__UserP__2645B050">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="PolicyDueDates" EntitySet="PolicyDueDates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PremiumCa__Polic__22751F6C" Association="Self.FK__PremiumCa__Polic__22751F6C">
+            <End Role="PolicyTypes" EntitySet="PolicyTypes" />
+            <End Role="PremiumCalculations" EntitySet="PremiumCalculations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PremiumCa__UserI__2180FB33" Association="Self.FK__PremiumCa__UserI__2180FB33">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="PremiumCalculations" EntitySet="PremiumCalculations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Renewals__UserPo__02FC7413" Association="Self.FK__Renewals__UserPo__02FC7413">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="Renewals" EntitySet="Renewals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TravelDet__UserP__71D1E811" Association="Self.FK__TravelDet__UserP__71D1E811">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="TravelDetails" EntitySet="TravelDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__Clien__787EE5A0" Association="Self.FK__UserPolic__Clien__787EE5A0">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="UserPolicyApprovals" EntitySet="UserPolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__Polic__6A30C649" Association="Self.FK__UserPolic__Polic__6A30C649">
+            <End Role="Policies" EntitySet="Policies" />
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__UserI__693CA210" Association="Self.FK__UserPolic__UserI__693CA210">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__UserP__778AC167" Association="Self.FK__UserPolic__UserP__778AC167">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="UserPolicyApprovals" EntitySet="UserPolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__LoginID__4AB81AF0" Association="Self.FK__Users__LoginID__4AB81AF0">
+            <End Role="LoginCredentials" EntitySet="LoginCredentials" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK__VehicleDe__UserP__74AE54BC" Association="Self.FK__VehicleDe__UserP__74AE54BC">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="VehicleDetails" EntitySet="VehicleDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="InsuranceDB1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="AdminID" />
+          </Key>
+          <Property Name="AdminID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoginID" Type="Int32" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ContactNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="LoginCredential" Relationship="Self.FK__Admins__LoginID__3E52440B" FromRole="Admins" ToRole="LoginCredentials" />
+          <NavigationProperty Name="PolicyApprovals" Relationship="Self.FK__PolicyApp__Admin__6477ECF3" FromRole="Admins" ToRole="PolicyApprovals" />
+        </EntityType>
+        <EntityType Name="Claim">
+          <Key>
+            <PropertyRef Name="ClaimID" />
+          </Key>
+          <Property Name="ClaimID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" />
+          <Property Name="ClaimDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ClaimType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Reason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ClaimedAmount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ApprovedAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DecisionAt" Type="DateTime" Precision="7" />
+          <NavigationProperty Name="UserPolicy" Relationship="Self.FK__Claims__UserPoli__08B54D69" FromRole="Claims" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="ClientPayment">
+          <Key>
+            <PropertyRef Name="ClientPaymentID" />
+          </Key>
+          <Property Name="ClientPaymentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="PaidAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Status" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Client" Relationship="Self.FK__ClientPay__Clien__1CBC4616" FromRole="ClientPayments" ToRole="Clients" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ClientID" />
+          </Key>
+          <Property Name="ClientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoginID" Type="Int32" Nullable="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CompanyCode" Type="String" MaxLength="32" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ContactEmail" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ContactPhone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RegisteredAt" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="ClientPayments" Relationship="Self.FK__ClientPay__Clien__1CBC4616" FromRole="Clients" ToRole="ClientPayments" />
+          <NavigationProperty Name="LoginCredential" Relationship="Self.FK__Clients__LoginID__440B1D61" FromRole="Clients" ToRole="LoginCredentials" />
+          <NavigationProperty Name="Conversations" Relationship="Self.FK__Conversat__Clien__10566F31" FromRole="Clients" ToRole="Conversations" />
+          <NavigationProperty Name="Policies" Relationship="Self.FK__Policies__Client__5BE2A6F2" FromRole="Clients" ToRole="Policies" />
+          <NavigationProperty Name="UserPolicyApprovals" Relationship="Self.FK__UserPolic__Clien__787EE5A0" FromRole="Clients" ToRole="UserPolicyApprovals" />
+        </EntityType>
+        <EntityType Name="Conversation">
+          <Key>
+            <PropertyRef Name="ConversationID" />
+          </Key>
+          <Property Name="ConversationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Client" Relationship="Self.FK__Conversat__Clien__10566F31" FromRole="Conversations" ToRole="Clients" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Conversat__UserI__0F624AF8" FromRole="Conversations" ToRole="Users" />
+          <NavigationProperty Name="Messages" Relationship="Self.FK__Messages__Conver__14270015" FromRole="Conversations" ToRole="Messages" />
+        </EntityType>
+        <EntityType Name="Document">
+          <Key>
+            <PropertyRef Name="DocumentID" />
+          </Key>
+          <Property Name="DocumentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OwnerType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="OwnerID" Type="Int32" Nullable="false" />
+          <Property Name="DocumentType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="UploadedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsVerified" Type="Boolean" Nullable="false" />
+          <Property Name="VerifiedByRole" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="VerifiedByID" Type="Int32" />
+          <Property Name="VerifiedAt" Type="DateTime" Precision="7" />
+          <Property Name="Visibility" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EmailLog">
+          <Key>
+            <PropertyRef Name="EmailID" />
+          </Key>
+          <Property Name="EmailID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RecipientType" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RecipientID" Type="Int32" Nullable="false" />
+          <Property Name="Subject" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="EmailType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="SentAt" Type="DateTime" Nullable="false" Precision="7" />
+        </EntityType>
+        <EntityType Name="LoginCredential">
+          <Key>
+            <PropertyRef Name="LoginID" />
+          </Key>
+          <Property Name="LoginID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Role" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Admins" Relationship="Self.FK__Admins__LoginID__3E52440B" FromRole="LoginCredentials" ToRole="Admins" />
+          <NavigationProperty Name="Clients" Relationship="Self.FK__Clients__LoginID__440B1D61" FromRole="LoginCredentials" ToRole="Clients" />
+          <NavigationProperty Name="Users" Relationship="Self.FK__Users__LoginID__4AB81AF0" FromRole="LoginCredentials" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="MessageID" />
+          </Key>
+          <Property Name="MessageID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ConversationID" Type="Int32" Nullable="false" />
+          <Property Name="SenderRole" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SenderID" Type="Int32" Nullable="false" />
+          <Property Name="Body" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SentAt" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Conversation" Relationship="Self.FK__Messages__Conver__14270015" FromRole="Messages" ToRole="Conversations" />
+        </EntityType>
+        <EntityType Name="Payment">
+          <Key>
+            <PropertyRef Name="PaymentID" />
+          </Key>
+          <Property Name="PaymentID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Mode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PaidAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Status" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GatewayRef" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="UserPolicy" Relationship="Self.FK__Payments__UserPo__7D439ABD" FromRole="Payments" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="Policy">
+          <Key>
+            <PropertyRef Name="PolicyID" />
+          </Key>
+          <Property Name="PolicyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="PolicyTypeID" Type="Int32" Nullable="false" />
+          <Property Name="PolicyName" Type="String" MaxLength="120" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PlanKind" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CoverageDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DurationMonths" Type="Int32" Nullable="false" />
+          <Property Name="BasePremium" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AdminNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Client" Relationship="Self.FK__Policies__Client__5BE2A6F2" FromRole="Policies" ToRole="Clients" />
+          <NavigationProperty Name="PolicyType" Relationship="Self.FK__Policies__Policy__5CD6CB2B" FromRole="Policies" ToRole="PolicyTypes" />
+          <NavigationProperty Name="PolicyApprovals" Relationship="Self.FK__PolicyApp__Polic__6383C8BA" FromRole="Policies" ToRole="PolicyApprovals" />
+          <NavigationProperty Name="UserPolicies" Relationship="Self.FK__UserPolic__Polic__6A30C649" FromRole="Policies" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="PolicyApproval">
+          <Key>
+            <PropertyRef Name="ApprovalID" />
+          </Key>
+          <Property Name="ApprovalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PolicyID" Type="Int32" Nullable="false" />
+          <Property Name="AdminID" Type="Int32" Nullable="false" />
+          <Property Name="Decision" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DecisionAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Admin" Relationship="Self.FK__PolicyApp__Admin__6477ECF3" FromRole="PolicyApprovals" ToRole="Admins" />
+          <NavigationProperty Name="Policy" Relationship="Self.FK__PolicyApp__Polic__6383C8BA" FromRole="PolicyApprovals" ToRole="Policies" />
+        </EntityType>
+        <EntityType Name="PolicyDueDate">
+          <Key>
+            <PropertyRef Name="DueDateID" />
+          </Key>
+          <Property Name="DueDateID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" />
+          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsPaid" Type="Boolean" Nullable="false" />
+          <Property Name="ReminderSent" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="UserPolicy" Relationship="Self.FK__PolicyDue__UserP__2645B050" FromRole="PolicyDueDates" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="PolicyType">
+          <Key>
+            <PropertyRef Name="PolicyTypeID" />
+          </Key>
+          <Property Name="PolicyTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TypeName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Policies" Relationship="Self.FK__Policies__Policy__5CD6CB2B" FromRole="PolicyTypes" ToRole="Policies" />
+          <NavigationProperty Name="PremiumCalculations" Relationship="Self.FK__PremiumCa__Polic__22751F6C" FromRole="PolicyTypes" ToRole="PremiumCalculations" />
+        </EntityType>
+        <EntityType Name="PremiumCalculation">
+          <Key>
+            <PropertyRef Name="CalculationID" />
+          </Key>
+          <Property Name="CalculationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="PolicyTypeID" Type="Int32" Nullable="false" />
+          <Property Name="VehicleModel" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="VehicleAge" Type="Int32" />
+          <Property Name="TravelDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EstimatedPremium" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="CalculatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="PolicyType" Relationship="Self.FK__PremiumCa__Polic__22751F6C" FromRole="PremiumCalculations" ToRole="PolicyTypes" />
+          <NavigationProperty Name="User" Relationship="Self.FK__PremiumCa__UserI__2180FB33" FromRole="PremiumCalculations" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Renewal">
+          <Key>
+            <PropertyRef Name="RenewalID" />
+          </Key>
+          <Property Name="RenewalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" />
+          <Property Name="RequestedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ApprovedAt" Type="DateTime" Precision="7" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="Status" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="UserPolicy" Relationship="Self.FK__Renewals__UserPo__02FC7413" FromRole="Renewals" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="TravelDetail">
+          <Key>
+            <PropertyRef Name="TravelDetailsID" />
+          </Key>
+          <Property Name="TravelDetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" />
+          <Property Name="PersonName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Age" Type="Int32" Nullable="false" />
+          <Property Name="Gender" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DOB" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="HealthIssues" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserPolicy" Relationship="Self.FK__TravelDet__UserP__71D1E811" FromRole="TravelDetails" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="UserPolicy">
+          <Key>
+            <PropertyRef Name="UserPolicyID" />
+          </Key>
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="PolicyID" Type="Int32" Nullable="false" />
+          <Property Name="InsuranceType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Status" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PaymentStatus" Type="String" MaxLength="12" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="NomineeName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Claims" Relationship="Self.FK__Claims__UserPoli__08B54D69" FromRole="UserPolicies" ToRole="Claims" />
+          <NavigationProperty Name="Payments" Relationship="Self.FK__Payments__UserPo__7D439ABD" FromRole="UserPolicies" ToRole="Payments" />
+          <NavigationProperty Name="Policy" Relationship="Self.FK__UserPolic__Polic__6A30C649" FromRole="UserPolicies" ToRole="Policies" />
+          <NavigationProperty Name="PolicyDueDates" Relationship="Self.FK__PolicyDue__UserP__2645B050" FromRole="UserPolicies" ToRole="PolicyDueDates" />
+          <NavigationProperty Name="Renewals" Relationship="Self.FK__Renewals__UserPo__02FC7413" FromRole="UserPolicies" ToRole="Renewals" />
+          <NavigationProperty Name="TravelDetails" Relationship="Self.FK__TravelDet__UserP__71D1E811" FromRole="UserPolicies" ToRole="TravelDetails" />
+          <NavigationProperty Name="User" Relationship="Self.FK__UserPolic__UserI__693CA210" FromRole="UserPolicies" ToRole="Users" />
+          <NavigationProperty Name="UserPolicyApprovals" Relationship="Self.FK__UserPolic__UserP__778AC167" FromRole="UserPolicies" ToRole="UserPolicyApprovals" />
+          <NavigationProperty Name="VehicleDetails" Relationship="Self.FK__VehicleDe__UserP__74AE54BC" FromRole="UserPolicies" ToRole="VehicleDetails" />
+        </EntityType>
+        <EntityType Name="UserPolicyApproval">
+          <Key>
+            <PropertyRef Name="UserPolicyApprovalID" />
+          </Key>
+          <Property Name="UserPolicyApprovalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" />
+          <Property Name="ClientID" Type="Int32" Nullable="false" />
+          <Property Name="Decision" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DecisionAt" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Client" Relationship="Self.FK__UserPolic__Clien__787EE5A0" FromRole="UserPolicyApprovals" ToRole="Clients" />
+          <NavigationProperty Name="UserPolicy" Relationship="Self.FK__UserPolic__UserP__778AC167" FromRole="UserPolicyApprovals" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LoginID" Type="Int32" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
+          <Property Name="Gender" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedAt" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="Conversations" Relationship="Self.FK__Conversat__UserI__0F624AF8" FromRole="Users" ToRole="Conversations" />
+          <NavigationProperty Name="LoginCredential" Relationship="Self.FK__Users__LoginID__4AB81AF0" FromRole="Users" ToRole="LoginCredentials" />
+          <NavigationProperty Name="PremiumCalculations" Relationship="Self.FK__PremiumCa__UserI__2180FB33" FromRole="Users" ToRole="PremiumCalculations" />
+          <NavigationProperty Name="UserPolicies" Relationship="Self.FK__UserPolic__UserI__693CA210" FromRole="Users" ToRole="UserPolicies" />
+        </EntityType>
+        <EntityType Name="VehicleDetail">
+          <Key>
+            <PropertyRef Name="VehicleDetailsID" />
+          </Key>
+          <Property Name="VehicleDetailsID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserPolicyID" Type="Int32" Nullable="false" />
+          <Property Name="VehicleType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="VehicleName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Model" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="DrivingLicense" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RegistrationNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RCNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="0" />
+          <Property Name="ExpiryDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EngineNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ChassisNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="HolderName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="UserPolicy" Relationship="Self.FK__VehicleDe__UserP__74AE54BC" FromRole="VehicleDetails" ToRole="UserPolicies" />
+        </EntityType>
+        <Association Name="FK__Admins__LoginID__3E52440B">
+          <End Role="LoginCredentials" Type="Self.LoginCredential" Multiplicity="1" />
+          <End Role="Admins" Type="Self.Admin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoginCredentials">
+              <PropertyRef Name="LoginID" />
+            </Principal>
+            <Dependent Role="Admins">
+              <PropertyRef Name="LoginID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PolicyApp__Admin__6477ECF3">
+          <End Role="Admins" Type="Self.Admin" Multiplicity="1" />
+          <End Role="PolicyApprovals" Type="Self.PolicyApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Admins">
+              <PropertyRef Name="AdminID" />
+            </Principal>
+            <Dependent Role="PolicyApprovals">
+              <PropertyRef Name="AdminID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Claims__UserPoli__08B54D69">
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="1" />
+          <End Role="Claims" Type="Self.Claim" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="Claims">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ClientPay__Clien__1CBC4616">
+          <End Role="Clients" Type="Self.Client" Multiplicity="1" />
+          <End Role="ClientPayments" Type="Self.ClientPayment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="ClientPayments">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Clients__LoginID__440B1D61">
+          <End Role="LoginCredentials" Type="Self.LoginCredential" Multiplicity="1" />
+          <End Role="Clients" Type="Self.Client" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoginCredentials">
+              <PropertyRef Name="LoginID" />
+            </Principal>
+            <Dependent Role="Clients">
+              <PropertyRef Name="LoginID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Conversat__Clien__10566F31">
+          <End Role="Clients" Type="Self.Client" Multiplicity="1" />
+          <End Role="Conversations" Type="Self.Conversation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="Conversations">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Policies__Client__5BE2A6F2">
+          <End Role="Clients" Type="Self.Client" Multiplicity="1" />
+          <End Role="Policies" Type="Self.Policy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="Policies">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__Clien__787EE5A0">
+          <End Role="Clients" Type="Self.Client" Multiplicity="1" />
+          <End Role="UserPolicyApprovals" Type="Self.UserPolicyApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clients">
+              <PropertyRef Name="ClientID" />
+            </Principal>
+            <Dependent Role="UserPolicyApprovals">
+              <PropertyRef Name="ClientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Conversat__UserI__0F624AF8">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Conversations" Type="Self.Conversation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Conversations">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Messages__Conver__14270015">
+          <End Role="Conversations" Type="Self.Conversation" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conversations">
+              <PropertyRef Name="ConversationID" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="ConversationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Users__LoginID__4AB81AF0">
+          <End Role="LoginCredentials" Type="Self.LoginCredential" Multiplicity="1" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="LoginCredentials">
+              <PropertyRef Name="LoginID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="LoginID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Payments__UserPo__7D439ABD">
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="1" />
+          <End Role="Payments" Type="Self.Payment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="Payments">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Policies__Policy__5CD6CB2B">
+          <End Role="PolicyTypes" Type="Self.PolicyType" Multiplicity="1" />
+          <End Role="Policies" Type="Self.Policy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PolicyTypes">
+              <PropertyRef Name="PolicyTypeID" />
+            </Principal>
+            <Dependent Role="Policies">
+              <PropertyRef Name="PolicyTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PolicyApp__Polic__6383C8BA">
+          <End Role="Policies" Type="Self.Policy" Multiplicity="1" />
+          <End Role="PolicyApprovals" Type="Self.PolicyApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Policies">
+              <PropertyRef Name="PolicyID" />
+            </Principal>
+            <Dependent Role="PolicyApprovals">
+              <PropertyRef Name="PolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__Polic__6A30C649">
+          <End Role="Policies" Type="Self.Policy" Multiplicity="1" />
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Policies">
+              <PropertyRef Name="PolicyID" />
+            </Principal>
+            <Dependent Role="UserPolicies">
+              <PropertyRef Name="PolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PolicyDue__UserP__2645B050">
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="1" />
+          <End Role="PolicyDueDates" Type="Self.PolicyDueDate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="PolicyDueDates">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PremiumCa__Polic__22751F6C">
+          <End Role="PolicyTypes" Type="Self.PolicyType" Multiplicity="1" />
+          <End Role="PremiumCalculations" Type="Self.PremiumCalculation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PolicyTypes">
+              <PropertyRef Name="PolicyTypeID" />
+            </Principal>
+            <Dependent Role="PremiumCalculations">
+              <PropertyRef Name="PolicyTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PremiumCa__UserI__2180FB33">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="PremiumCalculations" Type="Self.PremiumCalculation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="PremiumCalculations">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Renewals__UserPo__02FC7413">
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="1" />
+          <End Role="Renewals" Type="Self.Renewal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="Renewals">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TravelDet__UserP__71D1E811">
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="1" />
+          <End Role="TravelDetails" Type="Self.TravelDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="TravelDetails">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__UserI__693CA210">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="UserPolicies">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserPolic__UserP__778AC167">
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="1" />
+          <End Role="UserPolicyApprovals" Type="Self.UserPolicyApproval" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="UserPolicyApprovals">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__VehicleDe__UserP__74AE54BC">
+          <End Role="UserPolicies" Type="Self.UserPolicy" Multiplicity="1" />
+          <End Role="VehicleDetails" Type="Self.VehicleDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserPolicies">
+              <PropertyRef Name="UserPolicyID" />
+            </Principal>
+            <Dependent Role="VehicleDetails">
+              <PropertyRef Name="UserPolicyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="InsuranceDB1Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Admins" EntityType="Self.Admin" />
+          <EntitySet Name="Claims" EntityType="Self.Claim" />
+          <EntitySet Name="ClientPayments" EntityType="Self.ClientPayment" />
+          <EntitySet Name="Clients" EntityType="Self.Client" />
+          <EntitySet Name="Conversations" EntityType="Self.Conversation" />
+          <EntitySet Name="Documents" EntityType="Self.Document" />
+          <EntitySet Name="EmailLogs" EntityType="Self.EmailLog" />
+          <EntitySet Name="LoginCredentials" EntityType="Self.LoginCredential" />
+          <EntitySet Name="Messages" EntityType="Self.Message" />
+          <EntitySet Name="Payments" EntityType="Self.Payment" />
+          <EntitySet Name="Policies" EntityType="Self.Policy" />
+          <EntitySet Name="PolicyApprovals" EntityType="Self.PolicyApproval" />
+          <EntitySet Name="PolicyDueDates" EntityType="Self.PolicyDueDate" />
+          <EntitySet Name="PolicyTypes" EntityType="Self.PolicyType" />
+          <EntitySet Name="PremiumCalculations" EntityType="Self.PremiumCalculation" />
+          <EntitySet Name="Renewals" EntityType="Self.Renewal" />
+          <EntitySet Name="TravelDetails" EntityType="Self.TravelDetail" />
+          <EntitySet Name="UserPolicies" EntityType="Self.UserPolicy" />
+          <EntitySet Name="UserPolicyApprovals" EntityType="Self.UserPolicyApproval" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="VehicleDetails" EntityType="Self.VehicleDetail" />
+          <AssociationSet Name="FK__Admins__LoginID__3E52440B" Association="Self.FK__Admins__LoginID__3E52440B">
+            <End Role="LoginCredentials" EntitySet="LoginCredentials" />
+            <End Role="Admins" EntitySet="Admins" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PolicyApp__Admin__6477ECF3" Association="Self.FK__PolicyApp__Admin__6477ECF3">
+            <End Role="Admins" EntitySet="Admins" />
+            <End Role="PolicyApprovals" EntitySet="PolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Claims__UserPoli__08B54D69" Association="Self.FK__Claims__UserPoli__08B54D69">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="Claims" EntitySet="Claims" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ClientPay__Clien__1CBC4616" Association="Self.FK__ClientPay__Clien__1CBC4616">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="ClientPayments" EntitySet="ClientPayments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Clients__LoginID__440B1D61" Association="Self.FK__Clients__LoginID__440B1D61">
+            <End Role="LoginCredentials" EntitySet="LoginCredentials" />
+            <End Role="Clients" EntitySet="Clients" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Conversat__Clien__10566F31" Association="Self.FK__Conversat__Clien__10566F31">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Conversations" EntitySet="Conversations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Policies__Client__5BE2A6F2" Association="Self.FK__Policies__Client__5BE2A6F2">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="Policies" EntitySet="Policies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__Clien__787EE5A0" Association="Self.FK__UserPolic__Clien__787EE5A0">
+            <End Role="Clients" EntitySet="Clients" />
+            <End Role="UserPolicyApprovals" EntitySet="UserPolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Conversat__UserI__0F624AF8" Association="Self.FK__Conversat__UserI__0F624AF8">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Conversations" EntitySet="Conversations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Messages__Conver__14270015" Association="Self.FK__Messages__Conver__14270015">
+            <End Role="Conversations" EntitySet="Conversations" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Users__LoginID__4AB81AF0" Association="Self.FK__Users__LoginID__4AB81AF0">
+            <End Role="LoginCredentials" EntitySet="LoginCredentials" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Payments__UserPo__7D439ABD" Association="Self.FK__Payments__UserPo__7D439ABD">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="Payments" EntitySet="Payments" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Policies__Policy__5CD6CB2B" Association="Self.FK__Policies__Policy__5CD6CB2B">
+            <End Role="PolicyTypes" EntitySet="PolicyTypes" />
+            <End Role="Policies" EntitySet="Policies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PolicyApp__Polic__6383C8BA" Association="Self.FK__PolicyApp__Polic__6383C8BA">
+            <End Role="Policies" EntitySet="Policies" />
+            <End Role="PolicyApprovals" EntitySet="PolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__Polic__6A30C649" Association="Self.FK__UserPolic__Polic__6A30C649">
+            <End Role="Policies" EntitySet="Policies" />
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PolicyDue__UserP__2645B050" Association="Self.FK__PolicyDue__UserP__2645B050">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="PolicyDueDates" EntitySet="PolicyDueDates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PremiumCa__Polic__22751F6C" Association="Self.FK__PremiumCa__Polic__22751F6C">
+            <End Role="PolicyTypes" EntitySet="PolicyTypes" />
+            <End Role="PremiumCalculations" EntitySet="PremiumCalculations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PremiumCa__UserI__2180FB33" Association="Self.FK__PremiumCa__UserI__2180FB33">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="PremiumCalculations" EntitySet="PremiumCalculations" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Renewals__UserPo__02FC7413" Association="Self.FK__Renewals__UserPo__02FC7413">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="Renewals" EntitySet="Renewals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TravelDet__UserP__71D1E811" Association="Self.FK__TravelDet__UserP__71D1E811">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="TravelDetails" EntitySet="TravelDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__UserI__693CA210" Association="Self.FK__UserPolic__UserI__693CA210">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserPolic__UserP__778AC167" Association="Self.FK__UserPolic__UserP__778AC167">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="UserPolicyApprovals" EntitySet="UserPolicyApprovals" />
+          </AssociationSet>
+          <AssociationSet Name="FK__VehicleDe__UserP__74AE54BC" Association="Self.FK__VehicleDe__UserP__74AE54BC">
+            <End Role="UserPolicies" EntitySet="UserPolicies" />
+            <End Role="VehicleDetails" EntitySet="VehicleDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="InsuranceDB1ModelStoreContainer" CdmEntityContainer="InsuranceDB1Entities">
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Admin">
+              <MappingFragment StoreEntitySet="Admins">
+                <ScalarProperty Name="AdminID" ColumnName="AdminID" />
+                <ScalarProperty Name="LoginID" ColumnName="LoginID" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="ContactNumber" ColumnName="ContactNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Claims">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Claim">
+              <MappingFragment StoreEntitySet="Claims">
+                <ScalarProperty Name="ClaimID" ColumnName="ClaimID" />
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="ClaimDate" ColumnName="ClaimDate" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="ClaimedAmount" ColumnName="ClaimedAmount" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ApprovedAmount" ColumnName="ApprovedAmount" />
+                <ScalarProperty Name="DecisionAt" ColumnName="DecisionAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientPayments">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.ClientPayment">
+              <MappingFragment StoreEntitySet="ClientPayments">
+                <ScalarProperty Name="ClientPaymentID" ColumnName="ClientPaymentID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="PaidAt" ColumnName="PaidAt" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Client">
+              <MappingFragment StoreEntitySet="Clients">
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="LoginID" ColumnName="LoginID" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ContactEmail" ColumnName="ContactEmail" />
+                <ScalarProperty Name="ContactPhone" ColumnName="ContactPhone" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="RegisteredAt" ColumnName="RegisteredAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Conversations">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Conversation">
+              <MappingFragment StoreEntitySet="Conversations">
+                <ScalarProperty Name="ConversationID" ColumnName="ConversationID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Documents">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Document">
+              <MappingFragment StoreEntitySet="Documents">
+                <ScalarProperty Name="DocumentID" ColumnName="DocumentID" />
+                <ScalarProperty Name="OwnerType" ColumnName="OwnerType" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="UploadedAt" ColumnName="UploadedAt" />
+                <ScalarProperty Name="IsVerified" ColumnName="IsVerified" />
+                <ScalarProperty Name="VerifiedByRole" ColumnName="VerifiedByRole" />
+                <ScalarProperty Name="VerifiedByID" ColumnName="VerifiedByID" />
+                <ScalarProperty Name="VerifiedAt" ColumnName="VerifiedAt" />
+                <ScalarProperty Name="Visibility" ColumnName="Visibility" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailLogs">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.EmailLog">
+              <MappingFragment StoreEntitySet="EmailLogs">
+                <ScalarProperty Name="EmailID" ColumnName="EmailID" />
+                <ScalarProperty Name="RecipientType" ColumnName="RecipientType" />
+                <ScalarProperty Name="RecipientID" ColumnName="RecipientID" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="EmailType" ColumnName="EmailType" />
+                <ScalarProperty Name="SentAt" ColumnName="SentAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LoginCredentials">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.LoginCredential">
+              <MappingFragment StoreEntitySet="LoginCredentials">
+                <ScalarProperty Name="LoginID" ColumnName="LoginID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Message">
+              <MappingFragment StoreEntitySet="Messages">
+                <ScalarProperty Name="MessageID" ColumnName="MessageID" />
+                <ScalarProperty Name="ConversationID" ColumnName="ConversationID" />
+                <ScalarProperty Name="SenderRole" ColumnName="SenderRole" />
+                <ScalarProperty Name="SenderID" ColumnName="SenderID" />
+                <ScalarProperty Name="Body" ColumnName="Body" />
+                <ScalarProperty Name="SentAt" ColumnName="SentAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Payments">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Payment">
+              <MappingFragment StoreEntitySet="Payments">
+                <ScalarProperty Name="PaymentID" ColumnName="PaymentID" />
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Mode" ColumnName="Mode" />
+                <ScalarProperty Name="PaidAt" ColumnName="PaidAt" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="GatewayRef" ColumnName="GatewayRef" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Policies">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Policy">
+              <MappingFragment StoreEntitySet="Policies">
+                <ScalarProperty Name="PolicyID" ColumnName="PolicyID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="PolicyTypeID" ColumnName="PolicyTypeID" />
+                <ScalarProperty Name="PolicyName" ColumnName="PolicyName" />
+                <ScalarProperty Name="PlanKind" ColumnName="PlanKind" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CoverageDetails" ColumnName="CoverageDetails" />
+                <ScalarProperty Name="DurationMonths" ColumnName="DurationMonths" />
+                <ScalarProperty Name="BasePremium" ColumnName="BasePremium" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AdminNotes" ColumnName="AdminNotes" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PolicyApprovals">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.PolicyApproval">
+              <MappingFragment StoreEntitySet="PolicyApprovals">
+                <ScalarProperty Name="ApprovalID" ColumnName="ApprovalID" />
+                <ScalarProperty Name="PolicyID" ColumnName="PolicyID" />
+                <ScalarProperty Name="AdminID" ColumnName="AdminID" />
+                <ScalarProperty Name="Decision" ColumnName="Decision" />
+                <ScalarProperty Name="DecisionAt" ColumnName="DecisionAt" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PolicyDueDates">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.PolicyDueDate">
+              <MappingFragment StoreEntitySet="PolicyDueDates">
+                <ScalarProperty Name="DueDateID" ColumnName="DueDateID" />
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
+                <ScalarProperty Name="ReminderSent" ColumnName="ReminderSent" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PolicyTypes">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.PolicyType">
+              <MappingFragment StoreEntitySet="PolicyTypes">
+                <ScalarProperty Name="PolicyTypeID" ColumnName="PolicyTypeID" />
+                <ScalarProperty Name="TypeName" ColumnName="TypeName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PremiumCalculations">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.PremiumCalculation">
+              <MappingFragment StoreEntitySet="PremiumCalculations">
+                <ScalarProperty Name="CalculationID" ColumnName="CalculationID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="PolicyTypeID" ColumnName="PolicyTypeID" />
+                <ScalarProperty Name="VehicleModel" ColumnName="VehicleModel" />
+                <ScalarProperty Name="VehicleAge" ColumnName="VehicleAge" />
+                <ScalarProperty Name="TravelDetails" ColumnName="TravelDetails" />
+                <ScalarProperty Name="EstimatedPremium" ColumnName="EstimatedPremium" />
+                <ScalarProperty Name="CalculatedAt" ColumnName="CalculatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Renewals">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.Renewal">
+              <MappingFragment StoreEntitySet="Renewals">
+                <ScalarProperty Name="RenewalID" ColumnName="RenewalID" />
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="RequestedAt" ColumnName="RequestedAt" />
+                <ScalarProperty Name="ApprovedAt" ColumnName="ApprovedAt" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TravelDetails">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.TravelDetail">
+              <MappingFragment StoreEntitySet="TravelDetails">
+                <ScalarProperty Name="TravelDetailsID" ColumnName="TravelDetailsID" />
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="PersonName" ColumnName="PersonName" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="DOB" ColumnName="DOB" />
+                <ScalarProperty Name="HealthIssues" ColumnName="HealthIssues" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPolicies">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.UserPolicy">
+              <MappingFragment StoreEntitySet="UserPolicies">
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="PolicyID" ColumnName="PolicyID" />
+                <ScalarProperty Name="InsuranceType" ColumnName="InsuranceType" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+                <ScalarProperty Name="NomineeName" ColumnName="NomineeName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPolicyApprovals">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.UserPolicyApproval">
+              <MappingFragment StoreEntitySet="UserPolicyApprovals">
+                <ScalarProperty Name="UserPolicyApprovalID" ColumnName="UserPolicyApprovalID" />
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="ClientID" ColumnName="ClientID" />
+                <ScalarProperty Name="Decision" ColumnName="Decision" />
+                <ScalarProperty Name="DecisionAt" ColumnName="DecisionAt" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="LoginID" ColumnName="LoginID" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VehicleDetails">
+            <EntityTypeMapping TypeName="InsuranceDB1Model.VehicleDetail">
+              <MappingFragment StoreEntitySet="VehicleDetails">
+                <ScalarProperty Name="VehicleDetailsID" ColumnName="VehicleDetailsID" />
+                <ScalarProperty Name="UserPolicyID" ColumnName="UserPolicyID" />
+                <ScalarProperty Name="VehicleType" ColumnName="VehicleType" />
+                <ScalarProperty Name="VehicleName" ColumnName="VehicleName" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="DrivingLicense" ColumnName="DrivingLicense" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+                <ScalarProperty Name="RCNumber" ColumnName="RCNumber" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="EngineNumber" ColumnName="EngineNumber" />
+                <ScalarProperty Name="ChassisNumber" ColumnName="ChassisNumber" />
+                <ScalarProperty Name="HolderName" ColumnName="HolderName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

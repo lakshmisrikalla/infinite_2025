@@ -1,0 +1,90 @@
+﻿/* sidebar layout for client portal */
+body {
+    font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* container layout */
+.d-flex > aside.sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: linear-gradient(180deg,#082033 0%, #053448 100%);
+    color: #fff;
+    padding: 20px;
+    box-shadow: 6px 0 30px rgba(3,10,18,0.12);
+}
+
+/* nav link styles */
+aside.sidebar .nav-link {
+    color: rgba(255,255,255,0.92);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+    aside.sidebar .nav-link i {
+        font-size: 1.1rem;
+        opacity: .95;
+    }
+
+    aside.sidebar .nav-link:hover,
+    aside.sidebar .nav-link.active {
+        background: rgba(255,255,255,0.06);
+        color: #fff;
+    }
+
+/* make main area scrollable */
+main.flex-grow-1 {
+    min-height: 100vh;
+    background: #f7fafc;
+}
+
+main .container-fluid {
+    max-width: 1200px;
+}
+
+/* small header tweaks */
+nav.navbar {
+    height: 64px;
+}
+
+.navbar .badge {
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+/* responsive: collapse sidebar to top on small screens */
+@media (max-width: 991px) {
+    .d-flex {
+        flex-direction: column;
+    }
+
+    aside.sidebar {
+        width: 100%;
+        min-height: auto;
+        display: flex;
+        align-items: center;
+    }
+
+        aside.sidebar .nav {
+            flex-direction: row;
+            overflow-x: auto;
+            gap: .5rem;
+        }
+
+    main.flex-grow-1 {
+        padding-top: 0;
+    }
+}
+
+/* dark theme toggle support (simple) */
+body.dark {
+    background: #0b1220;
+    color: #e6eef6;
+}
+
+    body.dark main {
+        background: #071226;
+    }

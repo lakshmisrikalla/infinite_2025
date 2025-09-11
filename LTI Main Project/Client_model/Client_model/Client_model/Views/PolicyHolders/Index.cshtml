@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Client_model.Models.PolicyHolderVm>
+@{
+    ViewBag.Title = "Policy Holders";
+}
+<div class="card card-soft">
+    <div class="card-body">
+        <h5 class="mb-3"><i class="bi bi-people me-2"></i>Policy Holders</h5>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Holder</th>
+                    <th>Policy</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var x in Model)
+                    {
+                        <tr>
+                            <td>@Html.Encode(x.FullName)</td>
+                            <td>@Html.Encode(x.Policy)</td>
+                            <td>@Html.Encode(x.Status)</td>
+                            <td>@Html.Encode(x.PaymentStatus)</td>
+                            <td>@x.StartDate.ToString("yyyy-MM-dd")</td>
+                            <td>@x.EndDate.ToString("yyyy-MM-dd")</td>
+                            <td><a href="@Url.Action("Details", "PolicyHolders", new { id = x.UserPolicyID })" class="btn btn-sm btn-primary">View</a></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="7" class="text-center">No policy holders found.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
