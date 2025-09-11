@@ -1,0 +1,23 @@
+﻿@model IEnumerable<dynamic>
+@{ ViewBag.Title = "Renewals"; }
+<div class="card card-soft">
+    <div class="card-body">
+        <h5 class="mb-3"><i class="bi bi-arrow-repeat me-2"></i>Renewals</h5>
+        <table class="table table-striped">
+            <thead><tr><th>Policy</th><th>Holder</th><th>Amount</th><th>Status</th><th>Requested</th><th>Approved</th></tr></thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.Policy</td>
+                        <td>@r.Holder</td>
+                        <td>₹@((decimal)r.Amount).ToString("N2")</td>
+                        <td>@r.Status</td>
+                        <td>@((System.DateTime)r.RequestedAt).ToString("yyyy-MM-dd")</td>
+                        <td>@(r.ApprovedAt==null?"—":((System.DateTime)r.ApprovedAt).ToString("yyyy-MM-dd"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

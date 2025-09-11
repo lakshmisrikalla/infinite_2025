@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="801cf659faa14d3588f4c7a4a1c2ab30" Name="Diagram1">
+        <EntityTypeShape EntityType="InsuranceDB1Model.Admin" Width="1.5" PointX="3" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Claim" Width="1.5" PointX="12.75" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.ClientPayment" Width="1.5" PointX="5.25" PointY="19.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Client" Width="1.5" PointX="3" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Conversation" Width="1.5" PointX="5.25" PointY="22.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Document" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.EmailLog" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.LoginCredential" Width="1.5" PointX="0.75" PointY="19.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Message" Width="1.5" PointX="7.5" PointY="23.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Payment" Width="1.5" PointX="12.75" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Policy" Width="1.5" PointX="8.25" PointY="18.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.PolicyApproval" Width="1.5" PointX="5.25" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.PolicyDueDate" Width="1.5" PointX="12.75" PointY="19.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.PolicyType" Width="1.5" PointX="6" PointY="12.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.PremiumCalculation" Width="1.5" PointX="5.25" PointY="26.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.Renewal" Width="1.5" PointX="12.75" PointY="22.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.TravelDetail" Width="1.5" PointX="12.75" PointY="25.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.UserPolicy" Width="1.5" PointX="10.5" PointY="20.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.UserPolicyApproval" Width="1.5" PointX="15.75" PointY="20.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.User" Width="1.5" PointX="3" PointY="23.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="InsuranceDB1Model.VehicleDetail" Width="1.5" PointX="12.75" PointY="32.125" IsExpanded="true" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Admins__LoginID__3E52440B" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__PolicyApp__Admin__6477ECF3" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Claims__UserPoli__08B54D69" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__ClientPay__Clien__1CBC4616" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Clients__LoginID__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Conversat__Clien__10566F31" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Policies__Client__5BE2A6F2" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__UserPolic__Clien__787EE5A0" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Conversat__UserI__0F624AF8" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Messages__Conver__14270015" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Users__LoginID__4AB81AF0" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Payments__UserPo__7D439ABD" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Policies__Policy__5CD6CB2B" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__PolicyApp__Polic__6383C8BA" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__UserPolic__Polic__6A30C649" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__PolicyDue__UserP__2645B050" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__PremiumCa__Polic__22751F6C" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__PremiumCa__UserI__2180FB33" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__Renewals__UserPo__02FC7413" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__TravelDet__UserP__71D1E811" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__UserPolic__UserI__693CA210" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__UserPolic__UserP__778AC167" ManuallyRouted="false" />
+        <AssociationConnector Association="InsuranceDB1Model.FK__VehicleDe__UserP__74AE54BC" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

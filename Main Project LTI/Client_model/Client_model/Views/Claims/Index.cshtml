@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Client_model.Models.Claim>
+@{
+    ViewBag.Title = "Claims";
+}
+<div class="card card-soft">
+    <div class="card-body">
+        <h5 class="mb-3"><i class="bi bi-clipboard2-pulse me-2"></i>Claims</h5>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Policy</th>
+                    <th>Holder</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Decision</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.UserPolicy.Policy.PolicyName</td>
+                        <td>@c.UserPolicy.User.FullName</td>
+                        <td>@c.ClaimType</td>
+                        <td>₹@(c.ClaimedAmount.ToString("N2"))</td>
+                        <td>@c.Status</td>
+                        <td>@c.ClaimDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @if (c.Status == "Approved")
+                            {
+                                <span>
+                                    ₹@(c.ApprovedAmount.HasValue ? c.ApprovedAmount.Value.ToString("N2") : "N/A") on
+                                    @(c.DecisionAt.HasValue ? c.DecisionAt.Value.ToString("yyyy-MM-dd") : "N/A")
+                                </span>
+                            }
+                            else if (c.Status == "Submitted")
+                            {
+                                <form action="@Url.Action("Approve", "Claims")" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@c.ClaimID" />
+                                    <input type="number" name="approvedAmount" step="0.01" required />
+                                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

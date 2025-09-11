@@ -1,0 +1,82 @@
+﻿@model Client_model.Models.PolicyCreateVm
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Edit Policy";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h3 class="mb-0">Edit Policy</h3>
+            <small class="text-muted">Make changes and replace terms file if needed.</small>
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary" href="@Url.Action("Details","Policies", new { id = Model.PolicyID })"><i class="bi bi-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Edit", "Policies", FormMethod.Post, new { enctype = "multipart/form-data", @class = "card card-body shadow-sm" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.PolicyID)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger mb-2" })
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">@Html.DisplayNameFor(m => m.PolicyName)</label>
+                @Html.TextBoxFor(m => m.PolicyName, new { @class = "form-control" })
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">@Html.DisplayNameFor(m => m.PolicyTypeID)</label>
+                @Html.DropDownListFor(m => m.PolicyTypeID, (SelectList)ViewBag.PolicyTypes, "Select type", new { @class = "form-select" })
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">@Html.DisplayNameFor(m => m.PlanKind)</label>
+                @Html.DropDownListFor(m => m.PlanKind, new SelectList(new[] {
+                        new { Value = "ThirdParty", Text = "Third-Party" },
+                        new { Value = "Comprehensive", Text = "Comprehensive" }
+                    }, "Value", "Text", Model?.PlanKind), "Select plan", new { @class = "form-select" })
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">@Html.DisplayNameFor(m => m.CoverageDetails)</label>
+                @Html.TextAreaFor(m => m.CoverageDetails, 5, 100, new { @class = "form-control" })
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">@Html.DisplayNameFor(m => m.Description)</label>
+                @Html.TextAreaFor(m => m.Description, 3, 100, new { @class = "form-control" })
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">@Html.DisplayNameFor(m => m.DurationMonths)</label>
+                @Html.TextBoxFor(m => m.DurationMonths, new { @class = "form-control" })
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">@Html.DisplayNameFor(m => m.BasePremium)</label>
+                @Html.TextBoxFor(m => m.BasePremium, new { @class = "form-control" })
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Active</label>
+                <div class="form-check form-switch mt-2">
+                    @Html.CheckBoxFor(m => m.IsActive, new { @class = "form-check-input", id = "isActiveSwitch" })
+                    <label class="form-check-label" for="isActiveSwitch">@((Model.IsActive) ? "Active" : "Inactive")</label>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Replace Terms (optional)</label>
+                <input type="file" name="termsFile" class="form-control" />
+            </div>
+
+            <div class="col-12 text-end">
+                <a class="btn btn-secondary me-2" href="@Url.Action("Index","Policies")">Cancel</a>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Save Changes</button>
+            </div>
+        </div>
+    }
+</div>

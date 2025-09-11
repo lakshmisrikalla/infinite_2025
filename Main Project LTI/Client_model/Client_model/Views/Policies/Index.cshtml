@@ -1,0 +1,127 @@
+﻿@model IEnumerable<Client_model.Models.PolicyListVm>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Policies";
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h2 class="mb-0 display-6">My Policies</h2>
+            <small class="text-muted">Manage your policy templates and terms</small>
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary me-2" href="@Url.Action("Index","Home")"><i class="bi bi-chevron-left"></i> Dashboard</a>
+            <a class="btn btn-primary" href="@Url.Action("Create","Policies")"><i class="bi bi-plus-lg"></i> Create Policy</a>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    @if (TempData["DocError"] != null)
+    {
+        <div class="alert alert-warning">@TempData["DocError"]</div>
+    }
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:70px">Id</th>
+                            <th>Policy</th>
+                            <th>Type</th>
+                            <th>Plan</th>
+                            <th>Premium</th>
+                            @*<th>Status</th>*@
+                            <th>Active</th>
+                            <th>Created</th>
+                            <th style="width:170px" class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var p in Model)
+                            {
+                                <tr>
+                                    <td>@p.PolicyID</td>
+                                    <td>
+                                        <div class="fw-semibold">@p.PolicyName</div>
+                                        <div class="text-muted small">@Html.Raw((p.Description ?? "").Length > 80 ? p.Description.Substring(0, 80) + "…" : p.Description)</div>
+                                    </td>
+                                    <td>@p.PolicyTypeName</td>
+                                    <td>@(p.PlanKind == "Comprehensive" ? "Comprehensive" : "Third-Party")</td>
+                                    <td>₹@String.Format("{0:N2}", p.BasePremium)</td>
+                                    @*<td><span class="badge bg-info text-uppercase">@p.Status</span></td>*@
+                                    <td>
+                                        <form class="d-inline toggleForm" data-id="@p.PolicyID" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@p.PolicyID" />
+                                            <input type="hidden" name="isActive" value="@(p.IsActive ? "false" : "true")" />
+                                            <button type="submit" class="btn btn-sm @(p.IsActive ? "btn-success" : "btn-outline-danger")">
+                                                <i class="bi @(p.IsActive ? "bi-toggle2-on" : "bi-toggle2-off")"></i>
+                                                <span class="ms-1">@((p.IsActive) ? "Active" : "Inactive")</span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>@p.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                    <td class="text-center">
+                                        <a class="btn btn-sm btn-outline-primary me-1" href="@Url.Action("Edit","Policies", new { id = p.PolicyID })"><i class="bi bi-pencil"></i></a>
+                                        <a class="btn btn-sm btn-outline-secondary" href="@Url.Action("Details","Policies", new { id = p.PolicyID })"><i class="bi bi-eye"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-4">
+                                    <div class="mb-2"><i class="bi bi-inbox" style="font-size:28px"></i></div>
+                                    No policies yet — click <strong>Create Policy</strong> to add the first one.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    $(function () {
+        $('.toggleForm').off('submit').on('submit', function (e) {
+            e.preventDefault();
+            var $form = $(this);
+            var id = $form.find('input[name="id"]').val();
+            var isActiveVal = $form.find('input[name="isActive"]').val() === "true";
+            var token = $form.find('input[name="__RequestVerificationToken"]').val();
+
+            if (!confirm('Are you sure you want to set this policy as ' + (isActiveVal ? 'Active' : 'Inactive') + '?')) return;
+
+            $.ajax({
+                url: '@Url.Action("ToggleActive","Policies")',
+                type: 'POST',
+                data: { id: id, isActive: isActiveVal },
+                headers: { 'RequestVerificationToken': token },
+                success: function (res) {
+                    if (res && res.ok) {
+                        // small visual feedback: reload to reflect state
+                        location.reload();
+                    } else {
+                        alert('Update failed: ' + (res && (res.error || res.message) ? (res.error || res.message) : 'Unknown'));
+                    }
+                },
+                error: function () {
+                    alert('Server error updating active state.');
+                }
+            });
+        });
+    });
+    </script>
+}
